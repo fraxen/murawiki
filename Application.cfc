@@ -16,7 +16,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 		on how to access these methods.
 
 */
-component persistent="false" accessors="true" output="false" extends="murawiki.murafw1.includes.framework.one" {
+component persistent="false" accessors="true" output="false" extends="fw1.framework.one" {
 
 	include 'includes/fw1config.cfm'; // framework variables
 	include '../../config/applicationSettings.cfm';
