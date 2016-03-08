@@ -130,7 +130,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 			for CFC-based objects determine whether they are cached or instantiated
 			on a per-request basis.
 		-->
-		<!---
 		<displayobjects location="global">
 			<displayobject
 				name="TagCloud_pd"
@@ -139,7 +138,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 				persist="false"
 			/>
 		</displayobjects>
-		--->
 
 		<!-- 
 			Extensions :
@@ -147,7 +145,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 			See /default/includes/themes/MuraBootstrap/config.xml.cfm
 			for examples.
 		-->
-		<!---
 		<extensions>
 			<extension adminonly="0" availablesubtypes="" basekeyfield="contentHistID" basetable="tcontent" datatable="tclassextenddata" description="" hasassocfile="1" hasbody="1" hasconfigurator="0" hassummary="1" iconclass="icon-inbox" subtype="Directory" type="Page">
 				<relatedcontentset name="Project" availableSubTypes="Page/Project" />
@@ -156,7 +153,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 				</attributeset>
 			</extension>
 		</extensions>
-		--->
 		<!-- <extensions></extensions> -->
 
 
