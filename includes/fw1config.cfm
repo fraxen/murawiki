@@ -37,7 +37,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 	variables.framework.diEngine = 'di1';
 	variables.framework.diLocations = 'model,controllers';
 	variables.framework.diConfig = {};
-	variables.framework.diComponent = variables.framework.package & '.includes.framework.ioc';
+	variables.framework.diComponent = variables.framework.package & '.murafw1.includes.framework.ioc';
 	variables.framework.diOverrideAllowed = true;
 
 	// less commonly modified

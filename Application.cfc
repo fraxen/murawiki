@@ -16,7 +16,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 		on how to access these methods.
 
 */
-component persistent="false" accessors="true" output="false" extends="includes.framework.one" {
+component persistent="false" accessors="true" output="false" extends="murawiki.murafw1.includes.framework.one" {
 
 	include 'includes/fw1config.cfm'; // framework variables
 	include '../../config/applicationSettings.cfm';
@@ -109,7 +109,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 
 		// Bean Factory (uses DI/1)
 		// Be sure to pass in your comma-separated list of folders to scan for CFCs
-		local.beanFactory = new includes.framework.ioc(
+		local.beanFactory = new murawiki.murafw1.includes.framework.ioc(
 			'/#variables.framework.package#/model',
 			{
 				strict = true,
