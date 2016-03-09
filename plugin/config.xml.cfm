@@ -146,10 +146,20 @@ http://www.apache.org/licenses/LICENSE-2.0
 			for examples.
 		-->
 		<extensions>
-			<extension adminonly="0" availablesubtypes="" basekeyfield="contentHistID" basetable="tcontent" datatable="tclassextenddata" description="" hasassocfile="1" hasbody="1" hasconfigurator="0" hassummary="1" iconclass="icon-inbox" subtype="Directory" type="Page">
-				<relatedcontentset name="Project" availableSubTypes="Page/Project" />
-				<attributeset categoryid="" container="Advanced" name="Meta" orderno="1">
-					<attribute adminonly="0" defaultvalue="" hint="Fields in projects to skip" label="Fields to skip" message="" name="FieldsSkip" optionlabellist="" optionlist="" orderno="1" regex="" required="false" type="TextBox" validation=""/>
+			<extension adminonly="0" availablesubtypes="Page/WikiPage" basekeyfield="contentHistID" basetable="tcontent" datatable="tclassextenddata" description="Wiki folder/container for wiki pages (using MuraWiki plugin)" hasassocfile="1" hasbody="0" hasconfigurator="0" hassummary="0" iconclass="icon-book" subtype="Wiki" type="Folder">
+				<relatedcontentset name="Pages" availableSubTypes="Page/WikiPage" />
+				<attributeset categoryid="" container="Advanced" name="Properties" orderno="1">
+					<attribute adminonly="1" defaultvalue="No" label="Is this Wiki initialized?" name="isInit" optionlist="Yes^No" orderno="1" required="true" type="RadioGroup" />
+					<attribute adminonly="1" defaultvalue="Home" label="Label of home/index page" name="Home" orderno="2" required="true" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="" label="Wiki engine" name="WikiEngine" orderno="3" required="false" type="TextBox" />
+				</attributeset>
+			</extension>
+			<extension adminonly="0" basekeyfield="contentHistID" basetable="tcontent" datatable="tclassextenddata" description="Wiki page (using MuraWiki plugin)" hasassocfile="1" hasbody="0" hasconfigurator="0" hassummary="0" iconclass="icon-file-text-alt" subtype="WikiPage" type="Page">
+				<relatedcontentset name="Wiki" availableSubTypes="Folder/Wiki" />
+				<attributeset categoryid="" container="Basic" name="Properties" orderno="1">
+					<attribute adminonly="0" defaultvalue="" label="Label of home/index page" name="Home" orderno="1" required="true" type="TextBox" />
+					<attribute adminonly="0" defaultvalue="" label="Change notes" name="Changelog" orderno="2" required="false" type="TextBox" />
+					<attribute adminonly="0" defaultvalue="" label="Outgoing wiki links" name="OutgoingLinks" orderno="3" required="false" type="TextBox" />
 				</attributeset>
 			</extension>
 		</extensions>
