@@ -13,6 +13,10 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	// framework variables
 	include 'fw1config.cfm';
 
+	public void function onFolderWikiBodyRender($) {
+		getApplication().doAction('frontend:main.wikiFolder')
+	}
+
 	public void function onPageProjectBodyRender($) {
 		writeOutput(getApplication().doAction('frontend:main.project'));
 	}
