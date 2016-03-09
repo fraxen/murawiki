@@ -126,40 +126,6 @@ component persistent="false" accessors="true" output="false" extends="fw1.framew
 		local.beanFactory.setParent(local.parentBeanFactory);
 
 		setBeanFactory(local.beanFactory);
-
-		schedule 
-			action='update'
-			task='generateSitemap'
-			operation='HTTPRequest'
-			startDate='1900-01-15'
-			startTime='14:30'
-			url='http://#CGI.SERVER_NAME#/plugins/amappd/?amappdaction=tasks:main.sitemap&nocache=1'
-			publish='yes'
-			file='#ExpandPath('/sitemap.xml')#'
-			interval='86400'
-			requesttimeout='5000';
-		if (isProd()) {
-			schedule 
-				action='update'
-				task='checkweblinks'
-				operation='HTTPRequest'
-				startDate='1900-01-15'
-				startTime='10:30'
-				url='http://projects.amap.no/plugins/amappd/?amappdaction=tasks:main.checkweblinks&nocache=1'
-				publish='no'
-				interval='86400'
-				requesttimeout='5000';
-			schedule 
-				action='update'
-				task='emailNotifications'
-				operation='HTTPRequest'
-				startDate='1900-01-01'
-				startTime='11:00'
-				url='http://#CGI.server_name#/plugins/amappd/?amappdaction=tasks:main.emailNotifications&nocache=1'
-				publish='no'
-				interval='monthly'
-				requesttimeout='5000';
-		}
 	}
 
 	public void function setupRequest() {
@@ -336,6 +302,10 @@ component persistent="false" accessors="true" output="false" extends="fw1.framew
 
 		public boolean function isFrontEndRequest() {
 			return StructKeyExists(request, 'murascope');
+		}
+
+		public string function getPackage() {
+			return variables.framework.package
 		}
 
 	// ========================== STATE ===========================================
