@@ -9,8 +9,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	public void function wikiFolder() {
 		if ( $.content().getIsInit() ) {
 			// This is initialized, then redirect to the home
-			writeDump( 'Here we are redirecting' );
-			abort;
+			$.redirect(
+				location = $.createHREF( filename= '#$.content().getfilename()#/#$.content().getHome()#', statusCode= '302' )
+			)
 		} else {
 			// Redirect to admin for initialization
 			$.redirect(
