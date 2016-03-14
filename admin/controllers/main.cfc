@@ -1,12 +1,19 @@
 <cfscript>
 component persistent="false" accessors="true" output="false" extends="controller" {
 	property name='NotifyService';
+	property name='WikiManagerService';
 
-	// *********************************  PAGES  *******************************************
+	public void function before() {
+		rc.wikis = getWikiManagerService().loadWikis();
+		SUPER.before(rc);
+	}
 
-	public any function default(required rc) {
-		getWikimanagerService().setWikis({hej='hopp'})
-		rc.wikis = getWikimanagerService().getWikis();
+
+	public void function default(required rc) {
+	}
+
+	public void function edit() {
+		rc.wikiEdit = getWikiManagerService().getWiki(rc.wiki);
 	}
 
 }

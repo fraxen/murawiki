@@ -18,16 +18,5 @@ component persistent="false" accessors="true" output="false" extends="mura.cfobj
 
 	}
 
-	public any function setupApplication() {
-		writedump('e');
-		abort;
-	}
-
-	public any function init() {
-		writeDump(getWikimanagerService());
-		abort;
-		return THIS;
-	}
-
 }
 </cfscript>

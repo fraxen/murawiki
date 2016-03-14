@@ -31,6 +31,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 	<cfscript>
 		param name="rc.compactDisplay" default="false";
 		body = local.errors & body;
+		wikiList = rc.wikis.reduce( function(carry, ContentID, w) {
+			carry[w.getSiteID()][w.getFileName()] = w;
+			return carry;
+		}, {});
 	</cfscript>
 </cfsilent>
 <cfsavecontent variable="local.newBody">
@@ -48,11 +52,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 								<a href="#buildURL('admin:main')#"><i class="icon-home"></i> Main</a>
 							</li>
 							<li>
+								<cfloop index="SiteID" collection="#wikiList#">
+								#SiteId#
 								<ul>
-									<li class="<cfif rc.action eq 'admin:main.license'>active</cfif>">
-										<a href="#buildURL('admin:main.edit')#"><i class="icon-book"></i> Wiki list goes here</a>
+									<cfloop index="wiki" collection="#wikiList[SiteId]#">
+									<li class="<cfif rc.action eq 'admin:main.edit' AND rc.wiki EQ wikiList[SiteId][wiki].getContentID()>active</cfif>">
+										<a href="#buildURL(action='admin:main.edit', queryString='wiki=#wikiList[SiteId][wiki].getContentID()#')#"><i class="icon-book"></i> #wiki#</a>
 									</li>
+									</cfloop>
 								</ul>
+								</cfloop>
 							</li>
 							<li class="<cfif rc.action eq 'admin:main.license'>active</cfif>">
 								<a href="#buildURL('admin:main.license')#"><i class="icon-file"></i> License</a>

@@ -1,3 +1,4 @@
 <cfoutput>
-	<h2>Editing wiki...</h2>
+	<h2>#rc.WikiEdit.getTitle()#</h2>
+	<cfdump var="#rc.wikiEdit#" />
 </cfoutput>

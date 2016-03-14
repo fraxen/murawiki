@@ -8,8 +8,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function wikiFolder() {
-		writeDump(getWikimanagerService().getWikis());
-		abort;
 		if ( $.content().getIsInit() ) {
 			// This is initialized, then redirect to the home
 			$.redirect(
