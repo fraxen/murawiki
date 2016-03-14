@@ -4,6 +4,7 @@ component persistent="false" accessors="true" output="false" extends="mura.cfobj
 	property name='$';
 	property name='beanfactory';
 	property name='framework';
+	property name='WikimanagerService';
 
 	public any function before(required struct rc) {
 		if ( StructKeyExists(rc, '$') ) {
@@ -15,6 +16,17 @@ component persistent="false" accessors="true" output="false" extends="mura.cfobj
 			location(url='#rc.$.globalConfig('context')#/', addtoken=false);
 		}
 
+	}
+
+	public any function setupApplication() {
+		writedump('e');
+		abort;
+	}
+
+	public any function init() {
+		writeDump(getWikimanagerService());
+		abort;
+		return THIS;
 	}
 
 }

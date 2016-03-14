@@ -1,11 +1,7 @@
 <cfscript>
 /*
 
-This file is part of MuraFW1
-
-Copyright 2010-2014 Stephen J. Withington, Jr.
-Licensed under the Apache License, Version v2.0
-http://www.apache.org/licenses/LICENSE-2.0
+Inherited from MuraFW1
 
 */
 component persistent="false" accessors="true" output="false" extends="mura.plugin.pluginGenericEventHandler" {
@@ -28,6 +24,28 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		// trigger FW/1 to reload
 		lock scope='application' type='exclusive' timeout=20 {
 			getApplication().setupApplicationWrapper(); // this ensures the appCache is cleared as well
+<!---
+
+			var wm = getApplication().getBeanFactory().getBean('wikimanager');
+			var wikis = {};
+			$.getBean('feed')
+				.setMaxItems(0)
+				.setSiteID( StructKeyList($.getBean('settingsManager').getSites()) )
+				.addParam(
+					field='subtype',
+					condition='EQUALS',
+					criteria='Wiki',
+					dataType='varchar'
+				)
+				.getQuery()
+				.each( function(w) {
+					wikis[w.ContentID] = $.getBean('content').loadBy(
+						ContentId=w.ContentId,
+						SiteID=w.SiteID
+					);
+				});
+			wm.setWikis(wikis);
+--->
 		};
 
 		// register this file as a Mura eventHandler

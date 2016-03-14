@@ -116,7 +116,7 @@ component persistent="false" accessors="true" output="false" extends="fw1.framew
 				constants={
 					gntphost='roquefort.vpn',
 					gntppassword='AlGlut',
-					gntpicon='http://projects.amap.no/projects/includes/themes/amappd/images/amap.png'
+					gntpicon='http://projects.amap.no/projects/includes/themes/amappd/images/amap.png',
 				}
 			}
 		);

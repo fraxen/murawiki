@@ -8,3 +8,4 @@
 		</li>
 	</ul>
 </cfoutput>
+<cfdump var="#rc.wikis#" />
