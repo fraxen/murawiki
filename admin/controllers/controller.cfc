@@ -16,6 +16,8 @@ component persistent="false" accessors="true" output="false" extends="mura.cfobj
 			location(url='#rc.$.globalConfig('context')#/', addtoken=false);
 		}
 
+		// We do this on every request to the admin, just to make sure that everything is current...
+		rc.wikis = getWikiManagerService().loadWikis();
 	}
 
 }

@@ -16,7 +16,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		} else {
 			// Redirect to admin for initialization
 			$.redirect(
-				location = '#application.configBean.getContext()#/plugins/#framework.getPackage()#/?#framework.getPackage()#action=admin:main.edit&wiki=#$.content().getContentID()#'
+				location = '#application.configBean.getContext()#/plugins/#framework.getPackage()#/?#framework.getPackage()#action=admin:edit&wiki=#$.content().getContentID()#'
 				, statusCode = '302'
 			)
 		}

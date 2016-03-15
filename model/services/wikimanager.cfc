@@ -8,7 +8,11 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		var wikis = {};
 		getBean('feed')
 			.setMaxItems(0)
-			.setSiteID( StructKeyList(getBean('settingsManager').getSites()) )
+			.setSiteID(
+				getBean('pluginManager')
+					.getAssignedSites(application.murawiki.pluginconfig.getModuleID())
+					.siteID
+			)
 			.addParam(
 				field='subtype',
 				condition='EQUALS',

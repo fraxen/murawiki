@@ -24,28 +24,6 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		// trigger FW/1 to reload
 		lock scope='application' type='exclusive' timeout=20 {
 			getApplication().setupApplicationWrapper(); // this ensures the appCache is cleared as well
-<!---
-
-			var wm = getApplication().getBeanFactory().getBean('wikimanager');
-			var wikis = {};
-			$.getBean('feed')
-				.setMaxItems(0)
-				.setSiteID( StructKeyList($.getBean('settingsManager').getSites()) )
-				.addParam(
-					field='subtype',
-					condition='EQUALS',
-					criteria='Wiki',
-					dataType='varchar'
-				)
-				.getQuery()
-				.each( function(w) {
-					wikis[w.ContentID] = $.getBean('content').loadBy(
-						ContentId=w.ContentId,
-						SiteID=w.SiteID
-					);
-				});
-			wm.setWikis(wikis);
---->
 		};
 
 		// register this file as a Mura eventHandler

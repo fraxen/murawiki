@@ -43,26 +43,20 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 			<!--- MAIN CONTENT AREA --->
 			<div class="row-fluid">
-				<cfif rc.action contains 'admin:main'>
 
 					<!--- SUB-NAV --->
 					<div class="span3">
 						<ul class="nav nav-list murafw1-sidenav">
 							<li class="<cfif rc.action eq 'admin:main.default'>active</cfif>">
-								<a href="#buildURL('admin:main')#"><i class="icon-home"></i> Main</a>
+								<a href="#buildURL('admin:main')#"><i class="icon-home"></i> Plugin home</a>
 							</li>
-							<li>
-								<cfloop index="SiteID" collection="#wikiList#">
-								#SiteId#
-								<ul>
-									<cfloop index="wiki" collection="#wikiList[SiteId]#">
-									<li class="<cfif rc.action eq 'admin:main.edit' AND rc.wiki EQ wikiList[SiteId][wiki].getContentID()>active</cfif>">
-										<a href="#buildURL(action='admin:main.edit', queryString='wiki=#wikiList[SiteId][wiki].getContentID()#')#"><i class="icon-book"></i> #wiki#</a>
-									</li>
-									</cfloop>
-								</ul>
+							<cfloop index="SiteID" collection="#wikiList#">
+								<cfloop index="wiki" collection="#wikiList[SiteId]#">
+								<li class="<cfif rc.action eq 'admin:edit.default' AND rc.wiki EQ wikiList[SiteId][wiki].getContentID()>active</cfif>">
+									<a href="#buildURL(action='admin:edit.default', queryString='wiki=#wikiList[SiteId][wiki].getContentID()#')#"><i class="icon-book"></i> #wiki# (#SiteID#)</a>
+								</li>
 								</cfloop>
-							</li>
+							</cfloop>
 							<li class="<cfif rc.action eq 'admin:main.license'>active</cfif>">
 								<a href="#buildURL('admin:main.license')#"><i class="icon-file"></i> License</a>
 							</li>
@@ -74,14 +68,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						#body#
 					</div>
 
-				<cfelse>
 
-					<!--- BODY --->
-					<div class="span12">
-						#body#
-					</div>
-
-				</cfif>
 			</div><!--- /.row --->
 		</div><!--- /.container-murafw1 --->
 	</cfoutput>
