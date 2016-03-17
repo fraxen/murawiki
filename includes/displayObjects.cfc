@@ -11,6 +11,47 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 
 	// ========================== Configured Display Object(s) ================
 
+	public any function dspTagCloudPd($) {
+		return getApplication().doAction('frontend:body.tagcloud');
+	}
+
+	public any function dspShortcutPanel($) {
+		return getApplication().doAction('frontend:sidebar.shortcutpanel');
+	}
+
+	public any function dspPageOperations($) {
+		return getApplication().doAction('frontend:sidebar.pageoperations');
+	}
+
+	public any function dspAttachments($) {
+		return getApplication().doAction('frontend:sidebar.attachments');
+	}
+
+	public any function dspRecents($) {
+		return getApplication().doAction('frontend:sidebar.recents');
+	}
+
+	public any function dspLatestUpdates($) {
+		return getApplication().doAction('frontend:sidebar.latestupdates');
+	}
+
+	public any function dspMaintenanceTasks($) {
+		return getApplication().doAction('frontend:sidebar.maintenancetasks');
+	}
+
+	public any function dspMaintenanceOld($) {
+		return getApplication().doAction('frontend:body.old');
+	}
+
+	public any function dspMaintenanceOrphan($) {
+		return getApplication().doAction('frontend:body.orphan');
+	}
+
+	public any function dspMaintenanceUndefined($) {
+		return getApplication().doAction('frontend:body.undefined');
+	}
+
+
 	// ========================== Helper Methods ==============================
 
 	private any function getApplication() {

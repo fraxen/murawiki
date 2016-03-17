@@ -10,6 +10,7 @@
 	<p>For best results, reload Mura after any changes in the Site Manager.</p>
 	<form class="mura-form-builder form-horizontal" method="post" action="#buildURL('admin:edit.submit')#" onsubmit="return validateForm(this);">
 	<input type="hidden" name="ContentID" value="#rc.wikiEdit.getContentID()#" />
+	<input type="hidden" name="SiteID" value="#rc.wikiEdit.getSiteID()#" />
 	<div class="mura-form-textfield req form-group control-group">
 		<label for="title">
 		Title <ins>Required</ins>
@@ -60,6 +61,33 @@
 		<input type="checkbox" name="sitesearch" value="Yes" <cfif rc.wikiedit.getSiteSearch() == 'Yes'>checked="checked"</cfif> />
 		</dd>
 		</dl>
+	</div>
+	<div class="mura-form-dropdown form-group">
+		<label for="regionmain">Region for main content</label>
+		<select id="regionmain" name="regionmain" class="form-control" data-placeholder="Select language" data-allow-clear="false">
+			<cfloop from="1" to="#APPLICATION.settingsManager.getSite(rc.siteid).getcolumnCount()#" index="r">
+				<option value="#r#"
+					<cfif
+						rc.wikiedit.getMainContent() == r
+						OR
+						(rc.wikiEdit.getMainContent() == ''
+						AND
+						ListGetAt(APPLICATION.settingsManager.getSite(rc.siteid).getcolumnNames(),r,"^") == 'Main Content'
+						)
+					>selected="selected"</cfif>
+				>#ListGetAt(APPLICATION.settingsManager.getSite(rc.siteid).getcolumnNames(),r,"^")#</option>
+			</cfloop>
+		</select>
+	</div>
+	<div class="mura-form-dropdown form-group">
+		<label for="regionside">Region for sidebar</label>
+		<select id="regionside" name="regionside" class="form-control" data-placeholder="Select language" data-allow-clear="false">
+			<cfloop from="1" to="#APPLICATION.settingsManager.getSite(rc.siteid).getcolumnCount()#" index="r">
+				<option value="#r#"
+					<cfif rc.wikiedit.getMainContent() == r>selected="selected"</cfif>
+				>#ListGetAt(APPLICATION.settingsManager.getSite(rc.siteid).getcolumnNames(),r,"^")#</option>
+			</cfloop>
+		</select>
 	</div>
 	<div >
 		<br/><input type="submit" class="btn btn-default" value="<cfif rc.wikiedit.getIsInit() == 'Yes'>Update<cfelse>Initialize</cfif>" accesskey="s" style="WIDTH: 100%;" />

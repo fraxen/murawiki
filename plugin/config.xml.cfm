@@ -210,6 +210,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<attribute adminonly="1" defaultvalue="No" label="Include in site nav" name="SiteNav" orderno="5" required="false" type="RadioGroup" optionlist="Yes^No" />
 					<attribute adminonly="1" defaultvalue="No" label="Include in site search" name="SiteSearch" orderno="6" required="false" type="RadioGroup" optionlist="Yes^No" />
 					<attribute adminonly="1" defaultvalue="No" label="Use tags" name="UseTags" orderno="7" required="false" type="RadioGroup" optionlist="Yes^No" />
+					<attribute adminonly="1" defaultvalue="2" label="Region for main content" name="regionmain" orderno="8" required="true" type="Numeric" />
+					<attribute adminonly="1" defaultvalue="3" label="Region for sidebar" name="regionside" orderno="9" required="true" type="Numeric" />
 				</attributeset>
 			</extension>
 			<extension adminonly="0" basekeyfield="contentHistID" basetable="tcontent" datatable="tclassextenddata" description="Wiki page (using MuraWiki plugin)" hasassocfile="1" hasbody="0" hasconfigurator="0" hassummary="0" iconclass="icon-file-text-alt" subtype="WikiPage" type="Page">

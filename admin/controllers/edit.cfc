@@ -7,32 +7,31 @@ component persistent="false" accessors="true" output="false" extends="controller
 	}
 
 	public void function submit() {
-		var wiki = $.getBean('content').loadBy(ContentID = rc.ContentID);
+		var wiki = getWikiManagerService().getWiki(rc.ContentID);
 		var rb = new mura.resourceBundle.resourceBundleFactory(
 			parentFactory = $.siteConfig('rbFactory'),
 			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
 			locale = 'en_US'
 		)
 
-		dump(wiki.getDisplayRegion());
-		abort;
-
-
-
-		if (wiki.getIsInit() == 'No') {
-			// Initalize the wiki
-
-			// wiki.setIsInit('Yes');
-		} 
 		wiki.set({
 			  Title      = rc.title
 			, Home       = rc.Home
 			, WikiEngine = rc.WikiEngine
 			, Language   = rc.Language
+			, InheritObjects = 'cascade'
+			, regionmain = rc.regionmain
+			, regionside = rc.regionside
 			, UseTags    = StructKeyExists(rc, 'UseTags') ? rc.UseTags : 'No'
 			, SiteNav    = StructKeyExists(rc, 'SiteNav') ? rc.SiteNav : 'No'
 			, SiteSearch = StructKeyExists(rc, 'SiteSearch') ? rc.SiteSearch : 'No'
 		});
+
+		if (wiki.getIsInit() == 'No') {
+			// Initalize the wiki
+			getWikiManagerService().Initialize(wiki);
+			// wiki.setIsInit('Yes');
+		} 
 		wiki.save();
 		framework.redirect(action='admin:edit', querystring='wiki=#rc.ContentID#');
 	}
