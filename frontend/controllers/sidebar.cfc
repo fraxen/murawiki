@@ -7,6 +7,10 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		return;
 	}
 
+	public void function shortcutpanel() {
+		return;
+	}
+
 	public void function pageoperations() {
 		return;
 	}

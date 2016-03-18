@@ -4,6 +4,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 
 	public void function default() {
 		rc.wikiEdit = getWikiManagerService().getWiki(rc.wiki);
+		rc.wikiEdit.setIsInit('No');
 	}
 
 	public void function submit() {
@@ -26,6 +27,8 @@ component persistent="false" accessors="true" output="false" extends="controller
 			, SiteNav    = StructKeyExists(rc, 'SiteNav') ? rc.SiteNav : 'No'
 			, SiteSearch = StructKeyExists(rc, 'SiteSearch') ? rc.SiteSearch : 'No'
 		});
+
+		wiki.setIsInit('No');
 
 		if (wiki.getIsInit() == 'No') {
 			// Initalize the wiki

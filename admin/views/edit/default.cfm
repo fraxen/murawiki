@@ -68,9 +68,9 @@
 			<cfloop from="1" to="#APPLICATION.settingsManager.getSite(rc.siteid).getcolumnCount()#" index="r">
 				<option value="#r#"
 					<cfif
-						rc.wikiedit.getMainContent() == r
+						rc.wikiedit.getRegionMain() == r
 						OR
-						(rc.wikiEdit.getMainContent() == ''
+						(rc.wikiEdit.getRegionMain() == ''
 						AND
 						ListGetAt(APPLICATION.settingsManager.getSite(rc.siteid).getcolumnNames(),r,"^") == 'Main Content'
 						)
@@ -84,7 +84,7 @@
 		<select id="regionside" name="regionside" class="form-control" data-placeholder="Select language" data-allow-clear="false">
 			<cfloop from="1" to="#APPLICATION.settingsManager.getSite(rc.siteid).getcolumnCount()#" index="r">
 				<option value="#r#"
-					<cfif rc.wikiedit.getMainContent() == r>selected="selected"</cfif>
+					<cfif rc.wikiedit.getRegionSide() == r>selected="selected"</cfif>
 				>#ListGetAt(APPLICATION.settingsManager.getSite(rc.siteid).getcolumnNames(),r,"^")#</option>
 			</cfloop>
 		</select>

@@ -60,19 +60,33 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		var page = {};
 		var dspO = getDisplayObjects();
 
+		// Remove any existing display objects
+		for (var r=1; r < APPLICATION.settingsManager.getSite(wiki.getSiteID()).getcolumnCount()+1; r++) {
+			wiki.getDisplayRegion(r).each( function(d) {
+				wiki.removeDisplayObject(r, d.object, d.objectid);
+			});
+		}
+
 		// Sidebar displayobjects
 		for (var name in ['ShortCutPanel','PageOperations', 'Attachments', 'RecentlyVisited', 'LatestUpdates']) {
 			wiki.addDisplayObject(
-				regionid = ARGUMENTS.wiki.getRegionside(),
-				object = dspO[name].name,
+				regionid = wiki.getRegionside(),
+				object = 'plugin',
 				name = dspO[name].name,
 				objectID = dspO[name].ObjectID
 			)
 		}
 
 		// Create home
+		Wiki.getKidsQuery()
+			.filter( function(c) {
+				return ListLast(c.filename, '/') == Wiki.getHome();
+			})
+			.each( function(c) {
+				getBean('content').loadBy(ContentId=c.ContentID, SiteID = c.SiteID).delete();
+			});
 		getBean('content').set({
-			siteid = ARGUMENTS.wiki.getSiteID(),
+			siteid = wiki.getSiteID(),
 			type = 'Page',
 			subType = 'WikiPage',
 			title = 'Home',
@@ -90,19 +104,28 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			Notes = 'Changelog',
 			OutgoingLinks = 'OutgoingLinks',
 			Tags = 'home',
-			isNav = ARGUMENTS.wiki.getSiteNav() == 'Yes',
-			searchExclude = ARGUMENTS.wiki.getSiteSearch() == 'No',
-			parentid = ARGUMENTS.wiki.getContentID()
+			isNav = wiki.getSiteNav() == 'Yes',
+			searchExclude = wiki.getSiteSearch() == 'No',
+			parentid = wiki.getContentID()
 		})
 			.addDisplayObject(
-				regionid = ARGUMENTS.wiki.getRegionMain(),
-				object = dspO['TagCloud'].name,
+				regionid = wiki.getRegionMain(),
+				object = 'plugin',
 				name = dspO['TagCloud'].name,
 				objectID = dspO['TagCloud'].ObjectID
 			)
 			.save()
 
-		ARGUMENTS.wiki.setIsInit(true);
+		wiki.setIsInit(true);
+
+		// Create Sandbox
+		// Create Instructions
+		// Create AllPages
+		// Create Maintenance home
+		// Create Maintenance Undefined
+		// Create Maintenance Orphan
+		// Create Maintenance Old
+		// Create Tag
 
 		return wiki;
 	}
