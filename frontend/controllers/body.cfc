@@ -8,22 +8,18 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function tagcloud() {
-		framework.setview('main.blank');
 		return;
 	}
 
 	public void function maintenanceold() {
-		framework.setview('main.blank');
 		return;
 	}
 
 	public void function maintenanceorphan() {
-		framework.setview('main.blank');
 		return;
 	}
 
 	public void function maintenanceundefined() {
-		framework.setview('main.blank');
 		return;
 	}
 

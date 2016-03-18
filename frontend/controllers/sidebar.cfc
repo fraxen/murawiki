@@ -8,27 +8,22 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function pageoperations() {
-		framework.setview('main.blank');
 		return;
 	}
 
 	public void function attachments() {
-		framework.setview('main.blank');
 		return;
 	}
 
 	public void function recents() {
-		framework.setview('main.blank');
 		return;
 	}
 
 	public void function latestupdates() {
-		framework.setview('main.blank');
 		return;
 	}
 
 	public void function maintenancetasks() {
-		framework.setview('main.blank');
 		return;
 	}
 

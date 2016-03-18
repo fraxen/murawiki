@@ -54,20 +54,56 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		return do;
 	}
 
-	public any function Initialize(required any wiki) {
+	public any function Initialize(required any wiki, required any rb) {
 		// 'Formats' the wiki - adds display objects + creates default pages. Only meant to be run one per wiki
 		var wiki = ARGUMENTS.wiki;
+		var page = {};
 		var dspO = getDisplayObjects();
 
 		// Sidebar displayobjects
 		for (var name in ['ShortCutPanel','PageOperations', 'Attachments', 'RecentlyVisited', 'LatestUpdates']) {
 			wiki.addDisplayObject(
-				regionid = regionside,
+				regionid = ARGUMENTS.wiki.getRegionside(),
 				object = dspO[name].name,
 				name = dspO[name].name,
 				objectID = dspO[name].ObjectID
 			)
 		}
+
+		// Create home
+		getBean('content').set({
+			siteid = ARGUMENTS.wiki.getSiteID(),
+			type = 'Page',
+			subType = 'WikiPage',
+			title = 'Home',
+			seotitle = 'home',
+			mentitle = 'Home',
+			active = 1,
+			approved = 1,
+			created = Now(),
+			lastupdate = Now(),
+			display = 1,
+			Summary = 'Summary',
+			Body = 'Body',
+			MetaDesc = 'MetaDesc',
+			MetaKeywords = 'metakeywords',
+			Notes = 'Changelog',
+			OutgoingLinks = 'OutgoingLinks',
+			Tags = 'home',
+			isNav = ARGUMENTS.wiki.getSiteNav() == 'Yes',
+			searchExclude = ARGUMENTS.wiki.getSiteSearch() == 'No',
+			parentid = ARGUMENTS.wiki.getContentID()
+		})
+			.addDisplayObject(
+				regionid = ARGUMENTS.wiki.getRegionMain(),
+				object = dspO['TagCloud'].name,
+				name = dspO['TagCloud'].name,
+				objectID = dspO['TagCloud'].ObjectID
+			)
+			.save()
+
+		ARGUMENTS.wiki.setIsInit(true);
+
 		return wiki;
 	}
 }

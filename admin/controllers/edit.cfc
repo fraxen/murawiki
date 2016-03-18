@@ -29,8 +29,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 
 		if (wiki.getIsInit() == 'No') {
 			// Initalize the wiki
-			getWikiManagerService().Initialize(wiki);
-			// wiki.setIsInit('Yes');
+			getWikiManagerService().Initialize(wiki, rb);
 		} 
 		wiki.save();
 		framework.redirect(action='admin:edit', querystring='wiki=#rc.ContentID#');
