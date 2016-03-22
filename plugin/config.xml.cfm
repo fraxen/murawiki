@@ -191,6 +191,18 @@ http://www.apache.org/licenses/LICENSE-2.0
 				displaymethod="dspMaintenanceUndefined"
 				persist="false"
 			/>
+			<displayobject
+				name="AllPages"
+				component="includes.displayObjects"
+				displaymethod="dspAllPages"
+				persist="false"
+			/>
+			<displayobject
+				name="AllTags"
+				component="includes.displayObjects"
+				displaymethod="dspAllTags"
+				persist="false"
+			/>
 		</displayobjects>
 
 		<!-- 
@@ -218,8 +230,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<extension adminonly="0" basekeyfield="contentHistID" basetable="tcontent" datatable="tclassextenddata" description="Wiki page (using MuraWiki plugin)" hasassocfile="1" hasbody="0" hasconfigurator="0" hassummary="0" iconclass="icon-file-text-alt" subtype="WikiPage" type="Page">
 				<relatedcontentset name="Wiki" availableSubTypes="Folder/Wiki" />
 				<attributeset categoryid="" container="Advanced" name="Properties" orderno="1">
-					<attribute adminonly="1" defaultvalue="" label="Outgoing wiki links" name="OutgoingLinks" orderno="1" required="true" type="TextBox" />
-					<attribute adminonly="1" defaultvalue="" label="Blurb" name="Blurb" orderno="2" required="true" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="" label="Outgoing wiki links" name="OutgoingLinks" orderno="1" required="false" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="" label="Blurb" name="Blurb" orderno="2" required="false" type="TextBox" />
 				</attributeset>
 			</extension>
 		</extensions>

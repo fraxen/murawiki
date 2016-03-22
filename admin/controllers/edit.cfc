@@ -34,7 +34,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 			, UseTags    = StructKeyExists(rc, 'UseTags') ? rc.UseTags : 'No'
 			, SiteNav    = StructKeyExists(rc, 'SiteNav') ? rc.SiteNav : 'No'
 			, SiteSearch = StructKeyExists(rc, 'SiteSearch') ? rc.SiteSearch : 'No'
-		});
+		}).save();
 
 		wiki.setIsInit('No');
 

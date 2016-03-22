@@ -7,19 +7,27 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		return;
 	}
 
+	public void function alltags() {
+		return;
+	}
+
+	public void function allpages() {
+		return;
+	}
+
 	public void function tagcloud() {
 		return;
 	}
 
-	public void function maintenanceold() {
+	public void function old() {
 		return;
 	}
 
-	public void function maintenanceorphan() {
+	public void function orphan() {
 		return;
 	}
 
-	public void function maintenanceundefined() {
+	public void function undefined() {
 		return;
 	}
 

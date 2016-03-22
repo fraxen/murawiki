@@ -11,6 +11,14 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 
 	// ========================== Configured Display Object(s) ================
 
+	public any function dspAllTags($) {
+		return getApplication().doAction('frontend:body.alltags');
+	}
+
+	public any function dspAllPages($) {
+		return getApplication().doAction('frontend:body.allpages');
+	}
+
 	public any function dspTagCloud($) {
 		return getApplication().doAction('frontend:body.tagcloud');
 	}
