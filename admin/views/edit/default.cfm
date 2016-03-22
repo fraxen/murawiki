@@ -28,14 +28,18 @@
 		<label for="wikiengine">Wiki engine</label>
 		<!--- TODO Dynamically select here... --->
 		<select id="wikiengine" name="wikiengine" class="form-control" data-placeholder="Select engine" data-allow-clear="false" <cfif rc.wikiedit.getIsInit() == 'Yes'>disabled="disabled"</cfif>>
-			<option value="cfwiki">CfWiki</option>
+			<cfloop index="e" array="#rc.engines#">
+				<option value="#e#" <cfif rc.wikiedit.getEngine() == e>selected="selected"</cfif>>#e#</option>
+			</cfloop>
 		</select>
 	</div>
 	<div class="mura-form-dropdown form-group">
 		<label for="language">Language for user interface (does not impact content)</label>
 		<!--- TODO Dynamically select here... --->
 		<select id="language" name="language" class="form-control" data-placeholder="Select language" data-allow-clear="false">
-			<option value="en">English</option>
+			<cfloop index="l" array="#rc.language#">
+				<option value="#l#" <cfif rc.wikiedit.getLanguage() == l>selected="selected"</cfif>>#l#</option>
+			</cfloop>
 		</select>
 	</div>
 	<div class="mura-form-checkbox form-group">
@@ -86,6 +90,17 @@
 				<option value="#r#"
 					<cfif rc.wikiedit.getRegionSide() == r>selected="selected"</cfif>
 				>#ListGetAt(APPLICATION.settingsManager.getSite(rc.siteid).getcolumnNames(),r,"^")#</option>
+			</cfloop>
+		</select>
+	</div>
+	<div class="mura-form-dropdown form-group">
+		<label for="stylesheet">Stylesheet/theme <em>Choose 'none' to manage it through a global stylesheet/site theme</em></label>
+		<select id="stylesheet" name="stylesheet" class="form-control" data-placeholder="Select stylesheet" data-allow-clear="false">
+			<option value="">None</option>
+			<cfloop index="s" array="#rc.stylesheets#">
+				<option value="#s#"
+					<cfif rc.wikiedit.getStyleSheet() == s>selected="selected"</cfif>
+				>#s#</option>
 			</cfloop>
 		</select>
 	</div>

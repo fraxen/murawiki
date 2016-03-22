@@ -204,7 +204,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<relatedcontentset name="Pages" availableSubTypes="Page/WikiPage" />
 				<attributeset categoryid="" container="Advanced" name="Properties" orderno="1">
 					<attribute adminonly="1" defaultvalue="No" label="Is this Wiki initialized?" name="isInit" optionlist="Yes^No" orderno="1" required="true" type="RadioGroup" />
-					<attribute adminonly="1" defaultvalue="Home" label="Label of home/index page" name="Home" orderno="2" required="true" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="home" label="Label of home/index page" name="Home" orderno="2" required="true" type="TextBox" />
 					<attribute adminonly="1" defaultvalue="" label="Wiki engine" name="WikiEngine" orderno="3" required="false" type="TextBox" />
 					<attribute adminonly="1" defaultvalue="en" label="Language" name="Language" orderno="4" required="false" type="TextBox" />
 					<attribute adminonly="1" defaultvalue="No" label="Include in site nav" name="SiteNav" orderno="5" required="false" type="RadioGroup" optionlist="Yes^No" />
@@ -212,12 +212,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<attribute adminonly="1" defaultvalue="No" label="Use tags" name="UseTags" orderno="7" required="false" type="RadioGroup" optionlist="Yes^No" />
 					<attribute adminonly="1" defaultvalue="2" label="Region for main content" name="regionmain" orderno="8" required="true" type="Numeric" />
 					<attribute adminonly="1" defaultvalue="3" label="Region for sidebar" name="regionside" orderno="9" required="true" type="Numeric" />
+					<attribute adminonly="1" defaultvalue="" label="Stylesheet" name="stylesheet" orderno="10" required="true" type="TextBox" />
 				</attributeset>
 			</extension>
 			<extension adminonly="0" basekeyfield="contentHistID" basetable="tcontent" datatable="tclassextenddata" description="Wiki page (using MuraWiki plugin)" hasassocfile="1" hasbody="0" hasconfigurator="0" hassummary="0" iconclass="icon-file-text-alt" subtype="WikiPage" type="Page">
 				<relatedcontentset name="Wiki" availableSubTypes="Folder/Wiki" />
-				<attributeset categoryid="" container="Basic" name="Properties" orderno="1">
-					<attribute adminonly="0" defaultvalue="" label="Outgoing wiki links" name="OutgoingLinks" orderno="3" required="false" type="TextBox" />
+				<attributeset categoryid="" container="Advanced" name="Properties" orderno="1">
+					<attribute adminonly="1" defaultvalue="" label="Outgoing wiki links" name="OutgoingLinks" orderno="1" required="true" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="" label="Blurb" name="Blurb" orderno="2" required="true" type="TextBox" />
 				</attributeset>
 			</extension>
 		</extensions>

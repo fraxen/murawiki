@@ -2,8 +2,10 @@
 component displayname='WikiManager' name='wikiManager' accessors='true' extends="mura.cfobject" {
 	property type='any' name='beanFactory';
 	property type='struct' name='wikis';
+	property type='struct' name='engines';
 
 	setWikis({});
+	setEngines({});
 
 	public any function loadWikis() {
 		var wikis = {};
@@ -37,6 +39,21 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		return getWikis()[ARGUMENTS.ContentID];
 	}
 
+	public void function setEngine(required string enginename, required any engine) {
+		setEngines( getEngines().insert(ARGUMENTS.enginename, ARGUMENTS.engine) );
+	}
+
+	public any function getEngine(required string enginename) {
+		// Lazy load the engine
+		if (StructKeyExists(getEngines(), ARGUMENTS.enginename)) {
+			return getEngines()[ARGUMENTS.enginename];
+		} else {
+			setEngine(ARGUMENTS.enginename, beanFactory.getBean('cfwiki') );
+			return getEngines()[ARGUMENTS.enginename];
+		}
+		return getWikis()[ARGUMENTS.ContentID];
+	}
+
 	public any function getDisplayObjects() {
 		var do = {};
 		getBean('pluginManager')
@@ -59,6 +76,8 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		var wiki = ARGUMENTS.wiki;
 		var page = {};
 		var dspO = getDisplayObjects();
+		var rb = ARGUMENTS.rb;
+		var engine = getEngine(wiki.getEngine());
 
 		// Remove any existing display objects
 		for (var r=1; r < APPLICATION.settingsManager.getSite(wiki.getSiteID()).getcolumnCount()+1; r++) {
@@ -89,21 +108,22 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			siteid = wiki.getSiteID(),
 			type = 'Page',
 			subType = 'WikiPage',
-			title = 'Home',
-			seotitle = 'home',
-			mentitle = 'Home',
+			title = rb.getKey('homeTitle'),
+			seotitle = wiki.getHome(),
+			mentitle = rb.getKey('homeTitle'),
 			active = 1,
 			approved = 1,
 			created = Now(),
 			lastupdate = Now(),
 			display = 1,
-			Summary = 'Summary',
-			Body = 'Body',
-			MetaDesc = 'MetaDesc',
-			MetaKeywords = 'metakeywords',
-			Notes = 'Changelog',
-			OutgoingLinks = 'OutgoingLinks',
-			Tags = 'home',
+			Summary = engine.renderHTML( rb.getKey('homeBody') ),
+			Body = engine.renderHTML( rb.getKey('homeBody') ),
+			Blurb = rb.getKey('homeBody'),
+			MetaDesc = engine.renderHTML( rb.getKey('homeBody') ),
+			MetaKeywords = rb.getKey('homeTags'),
+			Notes = 'Initialized',
+			OutgoingLinks = engine.OutgoingLinks( rb.getKey('homeBody') ),
+			Tags = rb.getKey('homeTags'),
 			isNav = wiki.getSiteNav() == 'Yes',
 			searchExclude = wiki.getSiteSearch() == 'No',
 			parentid = wiki.getContentID()
@@ -116,9 +136,6 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			)
 			.save()
 
-		wiki.setIsInit(true);
-
-		// Create Sandbox
 		// Create Instructions
 		// Create AllPages
 		// Create Maintenance home
