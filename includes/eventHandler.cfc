@@ -35,6 +35,13 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		arguments.$.setCustomMuraScopeKey(variables.framework.package, new displayObjects());
 	}
 
+	<!---
+	public void function onAfterPageWikiPageSave(required struct $) {
+		dump($.event('contentBean').getAllValues());
+		abort;
+	}
+	--->
+
 	// ========================== Helper Methods ==============================
 
 	private any function getApplication() {
