@@ -1,5 +1,8 @@
 <cfscript>
 component persistent="false" accessors="false" output="false" {
+	/*
+		This code is modified from the original CfWiki by Brian Shearer and many others
+	*/
 
 	wikiPattern = '([^[:space:]|[:punct:]]*(?:[A-Z]{2,}[a-z0-9]+|[a-z]+[A-Z]+){1,}[^[:space:]|^[:punct:]]*)';
 	entry = '/';

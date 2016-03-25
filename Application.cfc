@@ -1,11 +1,10 @@
 <cfscript>
 /*
 
-This file is part of MuraFW1
-
+This file was modified from MuraFW1
 Copyright 2010-2014 Stephen J. Withington, Jr.
 Licensed under the Apache License, Version v2.0
-http://www.apache.org/licenses/LICENSE-2.0
+https://github.com/stevewithington/MuraFW1
 
 	NOTES: 
 		Edit the setSessionCache() method to alter the 'expires' key.
