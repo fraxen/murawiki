@@ -29,10 +29,12 @@ https://github.com/stevewithington/MuraFW1
 			<a class="close" data-dismiss="alert" href="##">&times;</a>
 			<h2>Debug Output</h2>
 			<!--- <cfset local.scopes = 'application,arguments,cgi,client,cookie,form,local,request,server,session,url,variables'> --->
-			<cfset local.scopes = 'local,request,session'>
-			<cfloop list="#local.scopes#" index="s">
-				<cfdump var="#Evaluate(s)#" label="#UCase(s)#" />
-			</cfloop>
+			<cfscript>
+				[rc].each( function(s) {
+					dump(s);
+					flush;
+				});
+			</cfscript>
 		</div>
 	</cfif>
 
