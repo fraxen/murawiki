@@ -124,6 +124,9 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		local.parentBeanFactory = application.serviceFactory;
 		local.beanFactory.setParent(local.parentBeanFactory);
 
+		// Load wikis
+		local.beanFactory.getBean('wikiManagerService').loadWikis()
+
 		setBeanFactory(local.beanFactory);
 	}
 
