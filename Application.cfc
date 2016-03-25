@@ -16,7 +16,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 		on how to access these methods.
 
 */
-component persistent="false" accessors="true" output="false" extends="fw1.framework.one" {
+component persistent="false" accessors="true" output="false" extends="includes.fw1.framework.one" {
 
 	include 'includes/fw1config.cfm'; // framework variables
 	include '../../config/applicationSettings.cfm';
@@ -109,7 +109,7 @@ component persistent="false" accessors="true" output="false" extends="fw1.framew
 
 		// Bean Factory (uses DI/1)
 		// Be sure to pass in your comma-separated list of folders to scan for CFCs
-		local.beanFactory = new murawiki.murafw1.includes.framework.ioc(
+		local.beanFactory = new murawiki.includes.fw1.framework.ioc(
 			'/#variables.framework.package#/model',
 			{
 				strict = true,
@@ -275,7 +275,7 @@ component persistent="false" accessors="true" output="false" extends="fw1.framew
 			// forward to appropriate error screen
 			if ( isFrontEndRequest() ) {
 				ArrayAppend(rc.errors, "The page you're looking for doesn't exist.");
-				redirect(action='app1:main.error', preserve='errors,isMissingView');
+				redirect(action='frontend:main.error', preserve='errors,isMissingView');
 			} else {
 				ArrayAppend(rc.errors, "The page you're looking for <strong>#rc.action#</strong> doesn't exist.");
 				redirect(action='admin:main', preserve='errors,isMissingView');

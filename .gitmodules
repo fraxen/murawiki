@@ -1,6 +1,3 @@
-[submodule "murafw1"]
-	path = murafw1
-	url = https://github.com/stevewithington/MuraFW1.git
-[submodule "fw1"]
-	path = fw1
+[submodule "includes/fw1"]
+	path = includes/fw1
 	url = https://github.com/framework-one/fw1.git
