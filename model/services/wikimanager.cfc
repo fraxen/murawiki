@@ -474,6 +474,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		}
 
 		// HERE IS WHERE THE IMPORT FROM THE NOTES WIKI STARTS
+		// TODO: Import history, attachments, redirects
 		queryExecute(
 			"
 				SELECT
