@@ -78,14 +78,14 @@
 
 		<!--
 			AutoDeploy :
-			Works with Mura's plugin auto-discovery feature. If true,
+			Works with Mura's plugin auto-discovery feature. If 1,
 			every time Mura loads, it will look in the /plugins directory
-			for new plugins and install them. If false, or not defined,
+			for new plugins and install them. If 0, or not defined,
 			Mura will register the plugin with the default setting values,
 			but a Super Admin will need to login and manually complete
 			the deployment.
 		-->
-		<!-- <autoDeploy>false|true</autoDeploy> -->
+		<!-- <autoDeploy>0|1</autoDeploy> -->
 
 		<!--
 			SiteID :
@@ -109,7 +109,7 @@
 			<eventHandler 
 					event="onApplicationLoad" 
 					component="includes.eventHandler" 
-					persist="false" />
+					persist="0" />
 		</eventHandlers>
 
 
@@ -126,73 +126,73 @@
 				name="TagCloud"
 				component="includes.displayObjects"
 				displaymethod="dspTagCloud"
-				persist="false"
+				persist="0"
 			/>
 			<displayobject
 				name="ShortcutPanel"
 				component="includes.displayObjects"
 				displaymethod="dspShortcutPanel"
-				persist="false"
+				persist="0"
 			/>
 			<displayobject
 				name="PageOperations"
 				component="includes.displayObjects"
 				displaymethod="dspPageOperations"
-				persist="false"
+				persist="0"
 			/>
 			<displayobject
 				name="Attachments"
 				component="includes.displayObjects"
 				displaymethod="dspAttachments"
-				persist="false"
+				persist="0"
 			/>
 			<displayobject
 				name="RecentlyVisited"
 				component="includes.displayObjects"
 				displaymethod="dspRecents"
-				persist="false"
+				persist="0"
 			/>
 			<displayobject
 				name="LatestUpdates"
 				component="includes.displayObjects"
 				displaymethod="dspLatestUpdates"
-				persist="false"
+				persist="0"
 			/>
 			<displayobject
 				name="MaintenanceTasks"
 				component="includes.displayObjects"
 				displaymethod="dspMaintenanceTasks"
-				persist="false"
+				persist="0"
 			/>
 			<displayobject
 				name="MaintenanceOld"
 				component="includes.displayObjects"
 				displaymethod="dspMaintenanceOld"
-				persist="false"
+				persist="0"
 			/>
 			<displayobject
 				name="MaintenanceOrphan"
 				component="includes.displayObjects"
 				displaymethod="dspMaintenanceOrphan"
-				persist="false"
+				persist="0"
 			/>
 			<displayobject
 				name="MaintenanceUndefined"
 				component="includes.displayObjects"
 				displaymethod="dspMaintenanceUndefined"
-				persist="false"
+				persist="0"
 			/>
 			<displayobject
 				name="AllPages"
 				component="includes.displayObjects"
 				displaymethod="dspAllPages"
-				persist="false"
+				persist="0"
 			/>
 			<displayobject
 				name="AllTags"
 				component="includes.displayObjects"
 				displaymethod="dspAllTags"
-				persist="false"
+				persist="0"
 			/>
 		</displayobjects>
 
@@ -206,23 +206,24 @@
 			<extension adminonly="0" availablesubtypes="Page/WikiPage" basekeyfield="contentHistID" basetable="tcontent" datatable="tclassextenddata" description="Wiki folder/container for wiki pages (using MuraWiki plugin)" hasassocfile="1" hasbody="0" hasconfigurator="0" hassummary="0" iconclass="icon-book" subtype="Wiki" type="Folder">
 				<relatedcontentset name="Pages" availableSubTypes="Page/WikiPage" />
 				<attributeset categoryid="" container="Advanced" name="Properties" orderno="1">
-					<attribute adminonly="1" defaultvalue="No" label="Is this Wiki initialized?" name="isInit" optionlist="Yes^No" orderno="1" required="true" type="RadioGroup" />
-					<attribute adminonly="1" defaultvalue="home" label="Label of home/index page" name="Home" orderno="2" required="true" type="TextBox" />
-					<attribute adminonly="1" defaultvalue="" label="Wiki engine" name="WikiEngine" orderno="3" required="false" type="TextBox" />
-					<attribute adminonly="1" defaultvalue="en" label="Language" name="Language" orderno="4" required="false" type="TextBox" />
-					<attribute adminonly="1" defaultvalue="No" label="Include in site nav" name="SiteNav" orderno="5" required="false" type="RadioGroup" optionlist="Yes^No" />
-					<attribute adminonly="1" defaultvalue="No" label="Include in site search" name="SiteSearch" orderno="6" required="false" type="RadioGroup" optionlist="Yes^No" />
-					<attribute adminonly="1" defaultvalue="No" label="Use tags" name="UseTags" orderno="7" required="false" type="RadioGroup" optionlist="Yes^No" />
-					<attribute adminonly="1" defaultvalue="2" label="Region for main content" name="regionmain" orderno="8" required="true" type="Numeric" />
-					<attribute adminonly="1" defaultvalue="3" label="Region for sidebar" name="regionside" orderno="9" required="true" type="Numeric" />
-					<attribute adminonly="1" defaultvalue="" label="Stylesheet" name="stylesheet" orderno="10" required="true" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="0" label="Is this Wiki initialized?" name="isInit" optionlist="1^0" orderno="1" required="1" type="RadioGroup" />
+					<attribute adminonly="1" defaultvalue="home" label="Label of home/index page" name="Home" orderno="2" required="1" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="" label="Wiki engine" name="WikiEngine" orderno="3" required="0" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="en" label="Language" name="Language" orderno="4" required="0" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="0" label="Include in site nav" name="SiteNav" orderno="5" required="0" type="RadioGroup" optionlist="1^0" />
+					<attribute adminonly="1" defaultvalue="0" label="Include in site search" name="SiteSearch" orderno="6" required="0" type="RadioGroup" optionlist="1^0" />
+					<attribute adminonly="1" defaultvalue="0" label="Use tags" name="UseTags" orderno="7" required="0" type="RadioGroup" optionlist="1^0" />
+					<attribute adminonly="1" defaultvalue="2" label="Region for main content" name="regionmain" orderno="8" required="1" type="Numeric" />
+					<attribute adminonly="1" defaultvalue="3" label="Region for sidebar" name="regionside" orderno="9" required="1" type="Numeric" />
+					<attribute adminonly="1" defaultvalue="" label="Stylesheet" name="stylesheet" orderno="10" required="1" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="0" label="Allow Mura tags" name="stylesheet" orderno="11" required="RadioGroup" type="1^0" />
 				</attributeset>
 			</extension>
 			<extension adminonly="0" basekeyfield="contentHistID" basetable="tcontent" datatable="tclassextenddata" description="Wiki page (using MuraWiki plugin)" hasassocfile="1" hasbody="0" hasconfigurator="0" hassummary="0" iconclass="icon-file-text-alt" subtype="WikiPage" type="Page">
 				<relatedcontentset name="Wiki" availableSubTypes="Folder/Wiki" />
 				<attributeset categoryid="" container="Advanced" name="Properties" orderno="1">
-					<attribute adminonly="1" defaultvalue="" label="Outgoing wiki links" name="OutgoingLinks" orderno="1" required="false" type="TextBox" />
-					<attribute adminonly="1" defaultvalue="" label="Blurb" name="Blurb" orderno="2" required="false" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="" label="Outgoing wiki links" name="OutgoingLinks" orderno="1" required="0" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="" label="Blurb" name="Blurb" orderno="2" required="0" type="TextBox" />
 				</attributeset>
 			</extension>
 		</extensions>
