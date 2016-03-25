@@ -4,7 +4,8 @@ component persistent="false" accessors="false" output="false" {
 		This code is modified from the original CfWiki by Brian Shearer and many others
 	*/
 
-	wikiPattern = '([^[:space:]|[:punct:]]*(?:[A-Z]{2,}[a-z0-9]+|[a-z]+[A-Z]+){1,}[^[:space:]|^[:punct:]]*)';
+	// wikiPattern = '([^[:space:]|[:punct:]]*(?:[A-Z]{2,}[a-z0-9]+|[a-z]+[A-Z]+){1,}[^[:space:]|^[:punct:]]*)';
+	wikiPattern = '([^[:space:]|[:punct:]]*[[:upper:]][^[:space:]]*[[:upper:]][^[:space:]|^[:punct:]]*)';
 
 	private struct function tuckAway(required string thisBlurb, required string token, required string blockStart, required string blockEnd, boolean include="no") {
 		var returnVar={};
