@@ -171,6 +171,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				criteria='WikiPage',
 				dataType='varchar'
 			)
+			.setSortBy('filename')
 			.setShowNavOnly(0)
 			.setShowExcludeSearch(1)
 			.getQuery()
@@ -471,6 +472,58 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				.save();
 			wiki.wikiList[rb.getKey('tagsLabel')] = links;
 		}
+
+		// HERE IS WHERE THE IMPORT FROM THE NOTES WIKI STARTS
+		queryExecute(
+			"
+				SELECT
+					*
+				FROM
+					wiki_tblWiki
+				WHERE
+					AppName = 'giswiki'
+					AND
+					Status = 1
+				ORDER BY
+					Label;
+		", [], {datasource='wiki'})
+		.each( function(w) {
+			body = engine.renderHTML( w.blurb, rb.getKey('tagsLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
+			links = arrayToList(body['outGoingLinks']);
+			body = body.blurb;
+			getBean('content').set({
+				siteid = wiki.getSiteID(),
+				type = 'Page',
+				subType = 'WikiPage',
+				title = w.Label,
+				urltitle = LCase(w.Label),
+				mentitle = w.Label,
+				active = 1,
+				approved = 1,
+				created = w.TimeCreated,
+				lastupdate = w.TimeUpdated,
+				display = 1,
+				Summary = body,
+				Body = body,
+				Blurb = w.blurb,
+				MetaDesc = stripHTML(body),
+				MetaKeywords = '',
+				Notes = w.ChangeLog,
+				OutgoingLinks = links,
+				Tags = '',
+				isNav = wiki.getSiteNav(),
+				searchExclude = !wiki.getSiteSearch(),
+				parentid = wiki.getContentID()
+			}).save();
+			writeoutput('<li>Added #w.Label#</li>');
+			try {
+				flush;
+			}
+			catch (any e) {
+				pass;
+			}
+		});
+		writeoutput(' ');
 
 		return wiki;
 	}
