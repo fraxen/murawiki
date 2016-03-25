@@ -70,7 +70,11 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 	}
 
 	public any function getWiki(required string ContentID='') {
-		return getWikis()[ARGUMENTS.ContentID];
+		if (StructKeyExists(getWikis(), ARGUMENTS.ContentID) ) {
+			return getWikis()[ARGUMENTS.ContentID];
+		} else {
+			return false;
+		}
 	}
 
 	public void function setEngine(required string enginename, required any engine) {
@@ -107,6 +111,20 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 	public string function stripHTML(required string html) {
 		return ReReplace(ARGUMENTS.html, '<[^>]*(?:>|$)', 'ALL');
+	}
+
+	public string function outGoingLinks(required any wikiPage) {
+		var wiki = getWiki(ARGUMENTS.wikiPage.getParentID());
+		var engine = getEngine(wiki.getEngine());
+		return ArrayToList(
+			engine.renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') ).OutgoingLinks
+		);
+	}
+
+	public string function renderHTML(required any wikiPage) {
+		var wiki = getWiki(ARGUMENTS.wikiPage.getParentID());
+		var engine = getEngine(wiki.getEngine());
+		return engine.renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') ).blurb;
 	}
 
 	public any function Initialize(required any wiki, required any rb) {
@@ -162,7 +180,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		// Create home
 		blurb = Replace(rb.getKey('homeBody'), '\r', Chr(13), 'ALL');
-		body = engine.renderHTML( blurb, wiki.getHome(), wiki.wikiList );
+		body = engine.renderHTML( blurb, wiki.getHome(), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		links = arrayToList(body['outGoingLinks']);
 		body = body.blurb;
 		blurb = getBean('content').set({
@@ -185,11 +203,11 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			Notes = 'Initialized',
 			OutgoingLinks = links,
 			Tags = rb.getKey('homeTags'),
-			isNav = wiki.getSiteNav() == 'Yes' ? 1 : 0,
-			searchExclude = wiki.getSiteSearch() == 'No',
+			isNav = wiki.getSiteNav(),
+			searchExclude = !wiki.getSiteSearch(),
 			parentid = wiki.getContentID()
 		}).save();
-		if (wiki.getUseTags() == 'Yes') {
+		if (wiki.getUseTags()) {
 			blurb.addDisplayObject(
 				regionid = wiki.getRegionMain(),
 				object = 'plugin',
@@ -201,7 +219,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		// Create Instructions
 		blurb = Replace(rb.getKey('instructionsBody'), '\r', Chr(13), 'ALL');
-		body = engine.renderHTML( blurb, rb.getKey('instructionsLabel'), wiki.wikiList );
+		body = engine.renderHTML( blurb, rb.getKey('instructionsLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		links = arrayToList(body['outGoingLinks']);
 		body = body.blurb;
 		getBean('content').set({
@@ -224,15 +242,15 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			Notes = 'Initialized',
 			OutgoingLinks = links,
 			Tags = rb.getKey('instructionsTags'),
-			isNav = wiki.getSiteNav() == 'Yes' ? 1 : 0,
-			searchExclude = wiki.getSiteSearch() == 'No',
+			isNav = wiki.getSiteNav(),
+			searchExclude = !wiki.getSiteSearch(),
 			parentid = wiki.getContentID()
 		}).save();
 		wiki.wikiList[rb.getKey('instructionsLabel')] = links;
 
 		// Create AllPages
 		blurb = Replace(rb.getKey('allpagesBody'), '\r', Chr(13), 'ALL');
-		body = engine.renderHTML( blurb, rb.getKey('allpagesLabel'), wiki.wikiList );
+		body = engine.renderHTML( blurb, rb.getKey('allpagesLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		links = arrayToList(body['outGoingLinks']);
 		body = body.blurb;
 		getBean('content').set({
@@ -255,8 +273,8 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			Notes = 'Initialized',
 			OutgoingLinks = links,
 			Tags = rb.getKey('allpagesTags'),
-			isNav = wiki.getSiteNav() == 'Yes' ? 1 : 0,
-			searchExclude = wiki.getSiteSearch() == 'No',
+			isNav = wiki.getSiteNav(),
+			searchExclude = !wiki.getSiteSearch(),
 			parentid = wiki.getContentID()
 		})
 			.addDisplayObject(
@@ -271,7 +289,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		// Create Maintenance home
 		blurb = Replace(rb.getKey('mainthomeBody'), '\r', Chr(13), 'ALL');
-		body = engine.renderHTML( blurb, rb.getKey('mainthomeLabel'), wiki.wikiList );
+		body = engine.renderHTML( blurb, rb.getKey('mainthomeLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		links = arrayToList(body['outGoingLinks']);
 		body = body.blurb;
 		getBean('content').set({
@@ -294,15 +312,15 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			Notes = 'Initialized',
 			OutgoingLinks = links,
 			Tags = rb.getKey('mainthomeTags'),
-			isNav = wiki.getSiteNav() == 'Yes' ? 1 : 0,
-			searchExclude = wiki.getSiteSearch() == 'No',
+			isNav = wiki.getSiteNav(),
+			searchExclude = !wiki.getSiteSearch(),
 			parentid = wiki.getContentID()
 		}).save();
 		wiki.wikiList[rb.getKey('mainthomeLabel')] = links;
 
 		// Create Maintenance Undefined
 		blurb = Replace(rb.getKey('maintundefinedBody'), '\r', Chr(13), 'ALL');
-		body = engine.renderHTML( blurb, rb.getKey('maintundefinedLabel'), wiki.wikiList );
+		body = engine.renderHTML( blurb, rb.getKey('maintundefinedLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		links = arrayToList(body['outGoingLinks']);
 		body = body.blurb;
 		getBean('content').set({
@@ -325,8 +343,8 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			Notes = 'Initialized',
 			OutgoingLinks = links,
 			Tags = rb.getKey('maintundefinedTags'),
-			isNav = wiki.getSiteNav() == 'Yes' ? 1 : 0,
-			searchExclude = wiki.getSiteSearch() == 'No',
+			isNav = wiki.getSiteNav(),
+			searchExclude = !wiki.getSiteSearch(),
 			parentid = wiki.getContentID()
 		})
 			.addDisplayObject(
@@ -340,7 +358,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		// Create Maintenance Orphan
 		blurb = Replace(rb.getKey('maintorphanBody'), '\r', Chr(13), 'ALL');
-		body = engine.renderHTML( blurb, rb.getKey('maintorphanLabel'), wiki.wikiList );
+		body = engine.renderHTML( blurb, rb.getKey('maintorphanLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		links = arrayToList(body['outGoingLinks']);
 		body = body.blurb;
 		getBean('content').set({
@@ -363,8 +381,8 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			Notes = 'Initialized',
 			OutgoingLinks = links,
 			Tags = rb.getKey('maintorphanTags'),
-			isNav = wiki.getSiteNav() == 'Yes' ? 1 : 0,
-			searchExclude = wiki.getSiteSearch() == 'No',
+			isNav = wiki.getSiteNav(),
+			searchExclude = !wiki.getSiteSearch(),
 			parentid = wiki.getContentID()
 		})
 			.addDisplayObject(
@@ -378,7 +396,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		// Create Maintenance Old
 		blurb = Replace(rb.getKey('maintoldBody'), '\r', Chr(13), 'ALL');
-		body = engine.renderHTML( blurb, rb.getKey('maintoldLabel'), wiki.wikiList );
+		body = engine.renderHTML( blurb, rb.getKey('maintoldLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		links = arrayToList(body['outGoingLinks']);
 		body = body.blurb;
 		getBean('content').set({
@@ -401,8 +419,8 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			Notes = 'Initialized',
 			OutgoingLinks = links,
 			Tags = rb.getKey('maintoldTags'),
-			isNav = wiki.getSiteNav() == 'Yes' ? 1 : 0,
-			searchExclude = wiki.getSiteSearch() == 'No',
+			isNav = wiki.getSiteNav(),
+			searchExclude = !wiki.getSiteSearch(),
 			parentid = wiki.getContentID()
 		})
 			.addDisplayObject(
@@ -415,9 +433,9 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		wiki.wikiList[rb.getKey('maintoldLabel')] = links;
 
 		// Create Tag
-		if (wiki.getUseTags() == 'Yes') {
+		if (wiki.getUseTags()) {
 			blurb = Replace(rb.getKey('tagsBody'), '\r', Chr(13), 'ALL');
-			body = engine.renderHTML( blurb, rb.getKey('tagsLabel'), wiki.wikiList );
+			body = engine.renderHTML( blurb, rb.getKey('tagsLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 			links = arrayToList(body['outGoingLinks']);
 			body = body.blurb;
 			getBean('content').set({
@@ -440,8 +458,8 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				Notes = 'Initialized',
 				OutgoingLinks = links,
 				Tags = rb.getKey('tagsTags'),
-				isNav = wiki.getSiteNav() == 'Yes' ? 1 : 0,
-				searchExclude = wiki.getSiteSearch() == 'No',
+				isNav = wiki.getSiteNav(),
+				searchExclude = !wiki.getSiteSearch(),
 				parentid = wiki.getContentID()
 			})
 				.addDisplayObject(

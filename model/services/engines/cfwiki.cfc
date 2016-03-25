@@ -5,9 +5,6 @@ component persistent="false" accessors="false" output="false" {
 	*/
 
 	wikiPattern = '([^[:space:]|[:punct:]]*(?:[A-Z]{2,}[a-z0-9]+|[a-z]+[A-Z]+){1,}[^[:space:]|^[:punct:]]*)';
-	entry = '/';
-	sepVal = '&';
-	sepPair = '=';
 
 	private struct function tuckAway(required string thisBlurb, required string token, required string blockStart, required string blockEnd, boolean include="no") {
 		var returnVar={};
@@ -47,7 +44,7 @@ component persistent="false" accessors="false" output="false" {
 	}
 	
 
-	public object function renderHTML(required string blurb, required string label, required struct wikiList) {
+	public object function renderHTML(required string blurb, required string label, required struct wikiList, required string parentpath, required any ContentRenderer) {
 		var thisBlurb = '#ARGUMENTS.blurb##Chr(10)#';
 		var temp = 0;
 		var tuckedawayStrings = {};
@@ -124,14 +121,14 @@ component persistent="false" accessors="false" output="false" {
 				// grab first item in list and check it against the structure
 				thisLabel = ListFirst(sTemp.labelList,",");
 				if (thisLabel != ARGUMENTS.Label) {
-					thisLink = "showPage&label=#URLEncodedFormat(thisLabel)#"
+					thisLink = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#LCase(thisLabel)#');
 					if (StructKeyExists(ARGUMENTS.wikiList,ListFirst(sTemp.labelList,","))) {
 						// create a link to view the document and replace all Instances of that wikiname with the link
-						sTemp.labelLink = "<a href='#VARIABLES.entry##Replace(Replace(thisLink,"&",VARIABLES.sepPair,"ALL"),"=",VARIABLES.sepVal,"ALL")#'>#thisLabel#</a>";
+						sTemp.labelLink = "<a href='#thisLink#'>#thisLabel#</a>";
 						thisBlurb = Replace(thisBlurb, "<wiki>#thisLabel#</wiki>", sTemp.LabelLink, "ALL");
 					} else {		
 						// otherwise create a link to edit the document and replace all Instances of that wikiname with the link
-						sTemp.labelLink = "#thisLabel#<a href='#VARIABLES.entry##Replace(Replace(thisLink,"&",VARIABLES.sepPair,"ALL"),"=",VARIABLES.sepVal,"ALL")#' class=""undefined"">?</a>";
+						sTemp.labelLink = "#thisLabel#<a href='#thisLink#' class=""undefined"">?</a>";
 						thisBlurb = Replace(thisBlurb, "<wiki>#thisLabel#</wiki>", sTemp.LabelLink, "ALL");
 					}
 				} else {
