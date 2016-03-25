@@ -16,8 +16,8 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		getApplication().doAction('frontend:main.wikiFolder')
 	}
 
-	public void function onPageProjectBodyRender($) {
-		writeOutput(getApplication().doAction('frontend:main.project'));
+	public void function onPageWikiPageBodyRender($) {
+		writeOutput(getApplication().doAction('frontend:main.wikiPage'));
 	}
 
 	// ========================== Mura CMS Specific Methods ==============================
