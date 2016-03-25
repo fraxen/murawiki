@@ -125,15 +125,15 @@ component persistent="false" accessors="false" output="false" {
 					thisLink = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#LCase(thisLabel)#');
 					if (StructKeyExists(ARGUMENTS.wikiList,ListFirst(sTemp.labelList,","))) {
 						// create a link to view the document and replace all Instances of that wikiname with the link
-						sTemp.labelLink = "<a href='#thisLink#'>#thisLabel#</a>";
-						thisBlurb = Replace(thisBlurb, "<wiki>#thisLabel#</wiki>", sTemp.LabelLink, "ALL");
+						sTemp.labelLink = '<a href="#thisLink#">#thisLabel#</a>';
+						thisBlurb = Replace(thisBlurb, '<wiki>#thisLabel#</wiki>', sTemp.LabelLink, 'ALL');
 					} else {		
 						// otherwise create a link to edit the document and replace all Instances of that wikiname with the link
-						sTemp.labelLink = "#thisLabel#<a href='#thisLink#' class=""undefined"">?</a>";
-						thisBlurb = Replace(thisBlurb, "<wiki>#thisLabel#</wiki>", sTemp.LabelLink, "ALL");
+						sTemp.labelLink = '<a href="#thisLink#" class="undefined">#thisLabel#<i class="fa fa-question"></i></a>';
+						thisBlurb = Replace(thisBlurb, '<wiki>#thisLabel#</wiki>', sTemp.LabelLink, 'ALL');
 					}
 				} else {
-					thisBlurb = Replace(thisBlurb,"<wiki>#thisLabel#</wiki>", "<span class=""thisLabel"">#thisLabel#</span>","ALL");
+					thisBlurb = Replace(thisBlurb,'<wiki>#thisLabel#</wiki>', '<span class="thisLabel">#thisLabel#</span>','ALL');
 				}
 				// remove the list item we just checked
 				sTemp.LabelList = listdeleteat(sTemp.LabelList, 1, ',');
