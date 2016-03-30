@@ -146,7 +146,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		}
 
 		// Sidebar displayobjects
-		for (var name in ['ShortCutPanel','PageOperations', 'Attachments', 'RecentlyVisited', 'LatestUpdates']) {
+		for (var name in ['ShortCutPanel','PageOperations', 'Attachments', 'Backlinks', 'RecentlyVisited', 'LatestUpdates']) {
 			wiki.addDisplayObject(
 				regionid = wiki.getRegionside(),
 				object = 'plugin',

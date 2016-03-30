@@ -147,6 +147,12 @@
 				persist="0"
 			/>
 			<displayobject
+				name="BackLinks"
+				component="includes.displayObjects"
+				displaymethod="dspBacklinksPanel"
+				persist="0"
+			/>
+			<displayobject
 				name="RecentlyVisited"
 				component="includes.displayObjects"
 				displaymethod="dspRecents"

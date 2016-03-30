@@ -17,7 +17,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 		var rb = new mura.resourceBundle.resourceBundleFactory(
 			parentFactory = $.siteConfig('rbFactory'),
 			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
-			locale = 'en_US'
+			locale = rc.language
 		)
 		param rc.UseTags=0;
 		param rc.SiteNav=0;

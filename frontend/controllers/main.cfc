@@ -15,6 +15,17 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 
 	public void function wikiPage() {
 		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
+		var history = StructKeyExists(COOKIE, '#rc.wiki.getContentID()#history') ? Cookie['#rc.wiki.getContentID()#history'] : '';
+		var label = ListLast($.content().getFilename(), '/');
+		if (ListContainsNoCase(history, label)) {
+			history = ListDeleteAt(history, ListContainsNoCase(history, label));
+		}
+		while(ListLen(history) GT 9) {
+			history = ListDeleteAt(history, 10);
+		}
+		history = '#label#,#history#';
+		Cookie['#rc.wiki.getContentID()#history'] = history;
+
 		if (!isObject(rc.wiki)) {
 			framework.setView('main.plainpage');
 			return;

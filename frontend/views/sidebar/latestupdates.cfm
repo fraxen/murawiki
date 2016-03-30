@@ -1,5 +1,8 @@
 <cfoutput>
 <div id="panelLatestUpdates" class="panel">
-	<em>Latest updates</em>
+	<h3>#rc.rb.getKey('sidebarLatestTitle')#</h3>
+	<ul>
+		<li>None</li>
+	</ul>
 </div>
 </cfoutput>

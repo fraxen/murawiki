@@ -1,0 +1,26 @@
+a.undefined:link {
+	COLOR: #555;
+}
+a.undefined:after {
+	font-family: FontAwesome;
+	top:0;
+	padding-left:0.2em;
+	content: "\f128"; 
+}
+div.panel {
+	PADDING: 0.5em;
+	BORDER: 2px outset;
+	MARGIN-BOTTOM: 1em;
+	BACKGROUND: #eee;
+}
+#panelRecents li.history10 a { OPACITY: 0.31; }
+#panelRecents li.history9 a { OPACITY: 0.39; }
+#panelRecents li.history8 a { OPACITY: 0.47; }
+#panelRecents li.history7 a { OPACITY: 0.55; }
+#panelRecents li.history6 a { OPACITY: 0.63; }
+#panelRecents li.history5 a { OPACITY: 0.71; }
+#panelRecents li.history4 a { OPACITY: 0.79; }
+#panelRecents li.history3 a { OPACITY: 0.87; }
+#panelRecents li.history2 a { OPACITY: 0.95; }
+#panelRecents li a:hover {OPACITY: 1 !important;}
+a .uline {TEXT-DECORATION: Underline;}

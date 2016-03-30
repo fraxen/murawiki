@@ -27,6 +27,10 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		return getApplication().doAction('frontend:sidebar.shortcutpanel');
 	}
 
+	public any function dspBacklinksPanel($) {
+		return getApplication().doAction('frontend:sidebar.backlinks');
+	}
+
 	public any function dspPageOperations($) {
 		return getApplication().doAction('frontend:sidebar.pageoperations');
 	}

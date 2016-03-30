@@ -129,7 +129,7 @@ component persistent="false" accessors="false" output="false" {
 						thisBlurb = Replace(thisBlurb, '<wiki>#thisLabel#</wiki>', sTemp.LabelLink, 'ALL');
 					} else {		
 						// otherwise create a link to edit the document and replace all Instances of that wikiname with the link
-						sTemp.labelLink = '<a href="#thisLink#" class="undefined">#thisLabel#<i class="fa fa-question"></i></a>';
+						sTemp.labelLink = '<a href="#thisLink#" class="undefined">#thisLabel#</a>';
 						thisBlurb = Replace(thisBlurb, '<wiki>#thisLabel#</wiki>', sTemp.LabelLink, 'ALL');
 					}
 				} else {
