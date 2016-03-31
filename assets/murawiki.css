@@ -12,7 +12,10 @@ div.panel {
 	BORDER: 2px outset;
 	MARGIN-BOTTOM: 1em;
 	BACKGROUND: #eee;
+	OVERFLOW: Hidden;
 }
+div.panel a {DISPLAY: Block;}
+div.panel a:hover {BACKGROUND: #BEC6EE; COLOR: Navy;}
 #panelRecents li.history10 a { OPACITY: 0.31; }
 #panelRecents li.history9 a { OPACITY: 0.39; }
 #panelRecents li.history8 a { OPACITY: 0.47; }
