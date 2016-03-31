@@ -2,7 +2,7 @@
 <div id="panelPageOperations" class="panel">
 	<h3>#rc.rb.getKey('sidebarPageopsTitle')#</h3>
 	<ul>
-		<li><a href="#buildURL(action='frontend:edit', querystring='contentid=#$.content().getContentID()#')#" accesskey="#rc.rb.getKey('sidebarPageopsEditAccessKey')#">
+		<li><a id="pageedit" href="#buildURL(action='frontend:edit', querystring='contentid=#$.content().getContentID()#')#" accesskey="#rc.rb.getKey('sidebarPageopsEditAccessKey')#">
 			#ReReplaceNoCase(rc.rb.getKey('sidebarPageopsEdit'), '(#rc.rb.getKey('sidebarPageopsEditAccessKey')#)', '<span class="uline">\1</span>')#
 		</a></li>
 		<li><a href="#buildURL(action='frontend:main.history', querystring='contentid=#$.content().getContentID()#')#" accesskey="#rc.rb.getKey('sidebarPageopsHistoryAccessKey')#">

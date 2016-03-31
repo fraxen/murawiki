@@ -231,6 +231,7 @@
 					<attribute adminonly="1" defaultvalue="" label="Outgoing wiki links" name="OutgoingLinks" orderno="1" required="0" type="TextBox" />
 					<attribute adminonly="1" defaultvalue="" label="Blurb" name="Blurb" orderno="2" required="0" type="TextBox" />
 					<attribute adminonly="1" defaultvalue="" label="Redirect to label" name="Redirect" orderno="3" required="0" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="" label="Label" name="Label" orderno="4" required="0" type="TextBox" regex="[A-Za-z0-9]+" />
 				</attributeset>
 			</extension>
 		</extensions>

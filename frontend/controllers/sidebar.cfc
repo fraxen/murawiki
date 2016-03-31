@@ -18,7 +18,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function backlinks() {
-		var label = ListLast($.content().getFilename(), '/');
+		var label = $.content().getLabel();
 		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
 		rc.rb = new mura.resourceBundle.resourceBundleFactory(
 			parentFactory = $.siteConfig('rbFactory'),
@@ -62,7 +62,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
 			locale = rc.wiki.getLanguage()
 		)
-		rc.backlinks = ListToArray(Cookie['#rc.wiki.getContentID()#history']).filter(function(l) { return l!=ListLast($.content().getFilename(), '/');});
+		rc.backlinks = ListToArray(Cookie['#rc.wiki.getContentID()#history']).filter(function(l) { return l!=$.content().getLabel();});
 		return;
 	}
 

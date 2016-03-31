@@ -15,7 +15,8 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 					tcontent.Filename,
 					tcontent.ContentID,
 					tcontent.lastUpdate,
-					tclassextenddata.attributeValue AS OutgoingLinks
+					tclassextendattributes.name AS AttributeName,
+					tclassextenddata.attributeValue
 				FROM
 					(tclassextenddata tclassextenddata
 					LEFT OUTER JOIN tclassextendattributes tclassextendattributes
@@ -32,11 +33,16 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 					AND
 					tcontent.ParentID = '#ARGUMENTS.Wiki.getContentID()#'
 					AND
-					(tclassextendattributes.name = 'OutgoingLinks' OR tclassextendattributes.name IS NULL)
+					(tclassextendattributes.name IN ('Label', 'OutgoingLinks') OR tclassextendattributes.name IS NULL)
 				ORDER BY tcontent.ContentID ASC
 		")
 		.reduce( function(carry, p) {
-			return carry.insert(ListLast(p.filename, '/'), ListToArray(p.OutgoingLinks));
+			carry[p.ContentID][p.AttributeName] = p.AttributeValue;
+			return carry;
+		}, {})
+		.reduce( function(carry, ContentID, p) {
+			carry[p.Label] = ListToArray(p.OutgoingLinks);
+			return carry;
 		}, {});
 	}
 
@@ -177,7 +183,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			.getQuery()
 			.each( function(c) {
 				getBean('content').loadBy(ContentId=c.ContentID, SiteID = c.SiteID).delete();
-			});
+			}, true, 8);
 
 		// Create home
 		blurb = Replace(rb.getKey('homeBody'), '\r', Chr(13), 'ALL');
@@ -191,6 +197,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			title = rb.getKey('homeTitle'),
 			urltitle = wiki.getHome(),
 			mentitle = rb.getKey('homeTitle'),
+			label = wiki.getHome(),
 			active = 1,
 			approved = 1,
 			created = Now(),
@@ -228,8 +235,9 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('instructionsTitle'),
-			urltitle = rb.getKey('instructionsLabel'),
+			urltitle = LCase(rb.getKey('instructionsLabel')),
 			mentitle = rb.getKey('instructionsTitle'),
+			label = rb.getKey('instructionsTitle'),
 			active = 1,
 			approved = 1,
 			created = Now(),
@@ -259,7 +267,8 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('allpagesTitle'),
-			urltitle = rb.getKey('allpagesLabel'),
+			urltitle = LCase(rb.getKey('allpagesLabel')),
+			label = rb.getKey('allpagesLabel'),
 			mentitle = rb.getKey('allpagesTitle'),
 			active = 1,
 			approved = 1,
@@ -298,7 +307,8 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('mainthomeTitle'),
-			urltitle = rb.getKey('mainthomeLabel'),
+			urltitle = LCase(rb.getKey('mainthomeLabel')),
+			label = rb.getKey('mainthomeLabel'),
 			mentitle = rb.getKey('mainthomeTitle'),
 			active = 1,
 			approved = 1,
@@ -329,7 +339,8 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('maintundefinedTitle'),
-			urltitle = rb.getKey('maintundefinedLabel'),
+			urltitle = LCase(rb.getKey('maintundefinedLabel')),
+			label = rb.getKey('maintundefinedLabel'),
 			mentitle = rb.getKey('maintundefinedTitle'),
 			active = 1,
 			approved = 1,
@@ -367,7 +378,8 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('maintorphanTitle'),
-			urltitle = rb.getKey('maintorphanLabel'),
+			urltitle = LCase(rb.getKey('maintorphanLabel')),
+			label = rb.getKey('maintorphanLabel'),
 			mentitle = rb.getKey('maintorphanTitle'),
 			active = 1,
 			approved = 1,
@@ -405,7 +417,8 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('maintoldTitle'),
-			urltitle = rb.getKey('maintoldLabel'),
+			urltitle = LCase(rb.getKey('maintoldLabel')),
+			label = rb.getKey('maintoldLabel'),
 			mentitle = rb.getKey('maintoldTitle'),
 			active = 1,
 			approved = 1,
@@ -444,7 +457,8 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				type = 'Page',
 				subType = 'WikiPage',
 				title = rb.getKey('tagsTitle'),
-				urltitle = rb.getKey('tagsLabel'),
+				urltitle = LCase(rb.getKey('tagsLabel')),
+				label = rb.getKey('tagsLabel'),
 				mentitle = rb.getKey('tagsTitle'),
 				active = 1,
 				approved = 1,
@@ -474,7 +488,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		}
 
 		// HERE IS WHERE THE IMPORT FROM THE NOTES WIKI STARTS
-		// TODO: Import history, attachments, redirects
+		// TODO: Import history, attachments, redirects, set LAST UPDATE
 		queryExecute(
 			"
 				SELECT
@@ -498,6 +512,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				subType = 'WikiPage',
 				title = w.Label,
 				urltitle = LCase(w.Label),
+				label = w.Label,
 				mentitle = w.Label,
 				active = 1,
 				approved = 1,
@@ -517,14 +532,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				parentid = wiki.getContentID()
 			}).save();
 			writeoutput('<li>Added #w.Label#</li>');
-			try {
-				flush;
-			}
-			catch (any e) {
-				pass;
-			}
 		});
-		writeoutput(' ');
 
 		return wiki;
 	}
