@@ -27,3 +27,13 @@ div.panel a:hover {BACKGROUND: #BEC6EE; COLOR: Navy;}
 #panelRecents li.history2 a { OPACITY: 0.95; }
 #panelRecents li a:hover {OPACITY: 1 !important;}
 a .uline {TEXT-DECORATION: Underline;}
+
+#editform input[type='submit'] { MARGIN: 0 auto; WIDTH: 80%; DISPLAY: Block;}
+#editform textarea {HEIGHT: 20em;}
+
+div.undefined {
+	MARGIN: 4em;
+	TEXT-ALIGN: Center;
+	FONT-STYLE: Italic;
+	FONT-SIZE: 150%;
+}

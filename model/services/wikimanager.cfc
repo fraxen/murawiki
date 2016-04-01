@@ -46,6 +46,47 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		}, {});
 	}
 
+	public array function loadTags(required any wiki) {
+		return queryExecute(
+			sql="
+				SELECT
+					tcontent.Title,
+					tcontent.Filename,
+					tcontent.ContentID,
+					tcontent.lastUpdate,
+					tcontent.tags,
+					tclassextenddata.attributeValue AS Label
+				FROM
+					(tclassextenddata tclassextenddata
+					LEFT OUTER JOIN tclassextendattributes tclassextendattributes
+					ON (tclassextenddata.attributeID =
+					tclassextendattributes.attributeID))
+					RIGHT OUTER JOIN tcontent tcontent
+					ON (tcontent.ContentHistID = tclassextenddata.baseID)
+				WHERE
+					tcontent.SiteID = '#ARGUMENTS.Wiki.getSiteID()#'
+					AND
+					tcontent.Active = 1
+					AND
+					tcontent.subType = 'WikiPage'
+					AND
+					tcontent.ParentID = '#ARGUMENTS.Wiki.getContentID()#'
+					AND
+					tclassextendattributes.name = 'Label'
+				ORDER BY tcontent.ContentID ASC
+		")
+		.reduce( function(carry, p) {
+			ListToArray(p.tags).each( function(t) {
+				carry[t] = 1;
+			});
+			return carry;
+		}, {})
+		.reduce( function(carry, t) {
+			return carry.append(t);
+		}, [])
+		.sort('text', 'asc');
+	}
+
 	public any function loadWikis() {
 		var wikis = {};
 		getBean('feed')
@@ -70,6 +111,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 					SiteID=w.SiteID
 				)
 				wikis[w.ContentID].wikiList = loadWikiList(wikis[w.ContentID]);
+				wikis[w.ContentID].tags = loadTags(wikis[w.ContentID]);
 			});
 		setWikis(wikis);
 		return wikis;

@@ -38,6 +38,34 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		arguments.$.setCustomMuraScopeKey(variables.framework.package, new displayObjects());
 	}
 
+	public void function onsite404 (required struct $) {
+		// If the current filename is under a wiki, load a content bean
+		var cf = $.event('currentfilename');
+		if (ListLen(cf, '/') > 1) {
+			getApplication().getSubSystemBeanFactory('frontend').getBean('WikiManagerService').getWikis()
+			.each( function(ContentID, w) {
+				if (w.getFilename() == ListDeleteAt($.event('currentfilename'), ListLen(cf, '/'), '/')) {
+					$.setContentBean(
+						$.getBean('contentBean').set({
+							ContentID = ContentID,
+							siteid = 'projects',
+							type = 'Page',
+							subType = 'WikiPage',
+							label = ListLast(cf, '/'),
+							title = ListLast(cf, '/'),
+							approved = 1,
+							display = 1,
+							isnew = 0,
+							parentid = ContentID
+						})
+					);
+					$.content()['isUndefined'] = 1;
+					return;
+				}
+			});
+		}
+	}
+
 	<!---
 	public void function onAfterPageWikiPageSave(required struct $) {
 		dump($.event('contentBean').getAllValues());
