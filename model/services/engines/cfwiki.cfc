@@ -122,10 +122,10 @@ component persistent="false" accessors="false" output="false" {
 				// grab first item in list and check it against the structure
 				thisLabel = ListFirst(sTemp.labelList,",");
 				if (thisLabel != ARGUMENTS.Label) {
-					thisLink = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#LCase(thisLabel)#');
+					thisLink = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#thisLabel#');
 					if (StructKeyExists(ARGUMENTS.wikiList,ListFirst(sTemp.labelList,","))) {
 						// create a link to view the document and replace all Instances of that wikiname with the link
-						sTemp.labelLink = '<a href="#thisLink#">#thisLabel#</a>';
+						sTemp.labelLink = '<a href="#LCase(thisLink)#">#thisLabel#</a>';
 						thisBlurb = Replace(thisBlurb, '<wiki>#thisLabel#</wiki>', sTemp.LabelLink, 'ALL');
 					} else {		
 						// otherwise create a link to edit the document and replace all Instances of that wikiname with the link
