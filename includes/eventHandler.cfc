@@ -67,9 +67,20 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	}
 
 	public void function onBeforePageWikiPageSave(required struct $) {
-		$.setContentBean(
-			getApplication().getSubSystemBeanFactory('frontend').getBean('WikiManagerService').BeforePageWikiPageSave($.content())
-		);
+		var wm = '';
+		try {
+			wm = getApplication().getSubSystemBeanFactory('frontend').getBean('WikiManagerService');
+		}
+		catch(e) {
+			try {
+				wm = getApplication().getSubSystemBeanFactory('admin').getBean('WikiManagerService');
+			}
+			catch(e) {
+			}
+		}
+		if (isObject(wm)) {
+			wm.BeforePageWikiPageSave($.content())
+		}
 	}
 
 	// ========================== Helper Methods ==============================
