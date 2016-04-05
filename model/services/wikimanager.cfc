@@ -442,7 +442,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				WHERE
 					AppName = 'giswiki'
 					AND
-					Status = 1
+					Status IN (1,2)
 				ORDER BY
 					Label;
 		", [], {datasource='wiki'})
@@ -459,6 +459,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				lastupdate = w.TimeUpdated,
 				Blurb = w.blurb,
 				Notes = w.ChangeLog,
+				Redirect = w.status == 2 ? w.blurb : '',
 				Tags = '',
 				parentid = wiki.getContentID()
 			}).save();
