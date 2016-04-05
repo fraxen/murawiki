@@ -62,7 +62,10 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
 			locale = rc.wiki.getLanguage()
 		)
-		rc.backlinks = ListToArray(Cookie['#rc.wiki.getContentID()#history']).filter(function(l) { return l!=$.content().getLabel();});
+		rc.backlinks = [];
+		if (StructKeyExists(COOKIE, '#rc.wiki.getContentID()#history')) {
+			rc.backlinks = ListToArray(Cookie['#rc.wiki.getContentID()#history']).filter(function(l) { return l!=$.content().getLabel();});
+		}
 		return;
 	}
 
