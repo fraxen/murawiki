@@ -41,3 +41,11 @@ div.undefined {
 span.thisLabel {
 	FONT-WEIGHT: Bold;
 }
+
+div.message {
+	WIDTH: 100%;
+	TEXT-ALIGN: Center;
+	PADDING: 1em;
+	BORDER: 2px solid #999;
+	MARGIN-BOTTOM: 2em;
+}

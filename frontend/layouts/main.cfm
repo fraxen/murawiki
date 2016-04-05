@@ -5,6 +5,9 @@
 			<link rel="stylesheet" type="text/css" href="#pluginPath#/assets/murawiki.css" rel="stylesheet" />
 			<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
 			<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+			<style>.select2-dropdown--below {
+				top: 3rem; /*your input height*/
+			}</style>
 		')
 	}
 	$.addToHTMLFootQueue(action='append', text="
@@ -15,13 +18,53 @@
 					return false;
 				});
 				$('##editModal').on('shown.bs.modal', function() {
-					$('select.s2').select2();
+					$('##editModal select.s2').select2();
+				});
+				$('a.redirect').click(function() {
+					$('##redirectModal').modal('show');
+					return false;
+				});
+				$('##redirectModal').on('shown.bs.modal', function() {
+					$('##redirectModal select.s2').select2();
 				});
 			})();
 		</script>
 	");
 </cfscript>
 <cfoutput>
+<cfif structKeyExists(rc, 'redirectfrom')>
+	<div class="message" id="redirectfrom">
+		#rc.rb.getKey('redirectStatus')# <strong><a href="##">#rc.redirectfrom#</a></strong>
+	</div>
+	<div id="removeredirectModal" class="modal fade" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">#rc.rb.getKey('redirectRemove')# <em>#rc.redirectfrom#</em></h4>
+		</div>
+		<div class="modal-body">
+			<form id="editform" class="mura-form-builder" method="post" action="#BuildURL('frontend:main.redirectremovesubmit')#" onsubmit="return validateForm(this);">
+				<input type="hidden" name="ParentID" value="#rc.wiki.getContentID()#" />
+				<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />
+				<input type="hidden" name="labelfrom" value="#rc.redirectfrom#" />
+				<div >
+					<br/><input type="submit" class="btn btn-default" value="#rc.rb.getKey('redirectSubmit')#" /><br/>
+				</div>
+			</form>
+		</div>
+	</div></div></div>
+	<cfscript>
+	$.addToHTMLFootQueue(action='append', text="
+		<script type=""text/javascript"">
+			(function() {
+				$('##redirectfrom a').click(function() {
+					$('##removeredirectModal').modal('show');
+					return false;
+				});
+			})();
+		</script>
+	");
+	</cfscript>
+</cfif>
 #body#
 <div id="editModal" class="modal fade" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content">
 	<div class="modal-header">
@@ -71,6 +114,38 @@
 			</div>
 			<div>
 				#rc.rb.getKey('editInstructions')#
+			</div>
+		</form>
+	</div>
+</div></div></div>
+<div id="redirectModal" class="modal fade" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h4 class="modal-title">#rc.rb.getKey('redirect')# <em>#rc.wikiPage.getLabel()#</em></h4>
+	</div>
+	<div class="modal-body">
+		<form id="editform" class="mura-form-builder" method="post" action="#BuildURL('frontend:main.redirectsubmit')#" onsubmit="return validateForm(this);">
+			<input type="hidden" name="ParentID" value="#rc.wiki.getContentID()#" />
+			<input type="hidden" name="ContentID" value="#rc.wikiPage.getContentID()#" />
+			<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />
+			<div class="mura-form-textfield req form-group control-group">
+				<label for="redirect">
+				#rc.rb.getKey('redirectlabel')# <ins>Required</ins>
+				</label>
+				<select name="redirectlabel" class="form-control s2" data-placeholder="#rc.rb.getKey('redirectPlaceholder')#" data-tags="tags">
+					<option></option>
+					<cfloop item="label" array="#StructKeyArray(rc.wiki.wikiList)#">
+						<cfif label != rc.wikiPage.getLabel()>
+						<option value="#label#">#label#</option>
+						</cfif>
+					</cfloop>
+				</select>
+			</div>
+			<div >
+				<br/><input type="submit" class="btn btn-default" value="#rc.rb.getKey('submit')#" /><br/>
+			</div>
+			<div>
+				<p>#rc.rb.getKey('redirectInstructions')#</p>
 			</div>
 		</form>
 	</div>

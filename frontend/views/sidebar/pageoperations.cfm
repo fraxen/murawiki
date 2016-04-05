@@ -11,7 +11,7 @@
 		<li><a href="#buildURL(action='frontend:edit.delete', querystring='contentid=#$.content().getContentID()#')#">
 			#rc.rb.getKey('sidebarPageopsDelete')#
 		</a></li>
-		<li><a href="#buildURL(action='frontend:edit.redirect', querystring='contentid=#$.content().getContentID()#')#" accesskey="#rc.rb.getKey('sidebarPageopsRedirectAccessKey')#">
+		<li><a href="##" class="redirect" accesskey="#rc.rb.getKey('sidebarPageopsRedirectAccessKey')#">
 			#rc.rb.getKey('sidebarPageopsRedirect')#
 		</a></li>
 		<li><a href="#buildURL(action='frontend:edit.touch', querystring='contentid=#$.content().getContentID()#')#" accesskey="#rc.rb.getKey('sidebarPageopsTouchAccessKey')#">

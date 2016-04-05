@@ -13,6 +13,44 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		return;
 	}
 
+	public void function redirectRemoveSubmit() {
+		param rc.parentid = $.content().getParentID();
+		rc.wiki = getWikiManagerService().getWiki(rc.parentid);
+		rc.wikiPage = $.getBean('content').loadBy(filename='#rc.wiki.getFileName()#/#rc.labelfrom#', SiteID=rc.SiteID);
+		rc.rb = new mura.resourceBundle.resourceBundleFactory(
+			parentFactory = $.siteConfig('rbFactory'),
+			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
+			locale = rc.wiki.getLanguage()
+		);
+		rc.wikiPage.set({
+			redirect='',
+			notes= rc.rb.getKey('redirectRemoveNote')
+		}).save();
+		$.redirect(
+			location = $.createHREF(filename=rc.wikiPage.getFilename())
+			, statusCode = '302'
+		)
+	}
+
+	public void function redirectSubmit() {
+		param rc.parentid = $.content().getParentID();
+		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=rc.SiteID);
+		rc.wiki = getWikiManagerService().getWiki(rc.parentid);
+		rc.rb = new mura.resourceBundle.resourceBundleFactory(
+			parentFactory = $.siteConfig('rbFactory'),
+			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
+			locale = rc.wiki.getLanguage()
+		);
+		rc.wikiPage.set({
+			redirect=rc.redirectlabel,
+			notes= rc.rb.getKey('redirectNote')
+		}).save();
+		$.redirect(
+			location = $.createHREF(filename=rc.wikiPage.getFilename())
+			, statusCode = '302'
+		)
+	}
+
 	public void function pagesubmit() {
 		var body = '';
 		param rc.parentid = $.content().getParentID();
@@ -43,10 +81,18 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			location = $.createHREF(filename=rc.wikiPage.getFilename())
 			, statusCode = '302'
 		)
+		return;
 	}
 
 	public void function wikiPage() {
 		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
+		if( $.content().getRedirect() != '' ) {
+			$.redirect(
+				location = '#$.createHREF(filename=rc.wiki.getFilename())##$.content().getRedirect()#/?redirectfrom=#$.content().getLabel()#'
+				, statusCode = '301'
+			);
+			return;
+		}
 		var history = StructKeyExists(COOKIE, '#rc.wiki.getContentID()#history') ? Cookie['#rc.wiki.getContentID()#history'] : '';
 		var label = $.content().getLabel();
 		rc.rb = new mura.resourceBundle.resourceBundleFactory(
