@@ -27,6 +27,10 @@
 				$('##redirectModal').on('shown.bs.modal', function() {
 					$('##redirectModal select.s2').select2();
 				});
+				$('a.delete').click(function() {
+					$('##deleteModal').modal('show');
+					return false;
+				});
 			})();
 		</script>
 	");
@@ -128,13 +132,14 @@
 			<input type="hidden" name="ParentID" value="#rc.wiki.getContentID()#" />
 			<input type="hidden" name="ContentID" value="#rc.wikiPage.getContentID()#" />
 			<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />
+			<input type="hidden" name="fromLabel" value="#rc.wikiPage.getLabel()#" />
 			<div class="mura-form-textfield req form-group control-group">
 				<label for="redirect">
 				#rc.rb.getKey('redirectlabel')# <ins>Required</ins>
 				</label>
 				<select name="redirectlabel" class="form-control s2" data-placeholder="#rc.rb.getKey('redirectPlaceholder')#" data-tags="tags">
 					<option></option>
-					<cfloop item="label" array="#StructKeyArray(rc.wiki.wikiList)#">
+					<cfloop item="label" array="#StructKeyArray(rc.wiki.wikiList).sort('text','asc')#">
 						<cfif label != rc.wikiPage.getLabel()>
 						<option value="#label#">#label#</option>
 						</cfif>
@@ -146,6 +151,22 @@
 			</div>
 			<div>
 				<p>#rc.rb.getKey('redirectInstructions')#</p>
+			</div>
+		</form>
+	</div>
+</div></div></div>
+<div id="deleteModal" class="modal fade" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h4 class="modal-title">#rc.rb.getKey('delete')# <em>#rc.wikiPage.getLabel()#</em>?</h4>
+	</div>
+	<div class="modal-body">
+		<form id="editform" class="mura-form-builder" method="post" action="#BuildURL('frontend:main.delete')#" onsubmit="return validateForm(this);">
+			<input type="hidden" name="ParentID" value="#rc.wiki.getContentID()#" />
+			<input type="hidden" name="ContentID" value="#rc.wikiPage.getContentID()#" />
+			<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />
+			<div >
+				<br/><input type="submit" class="btn btn-default" value="#rc.rb.getKey('deleteyes')#" /><br/>
 			</div>
 		</form>
 	</div>

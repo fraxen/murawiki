@@ -49,3 +49,7 @@ div.message {
 	BORDER: 2px solid #999;
 	MARGIN-BOTTOM: 2em;
 }
+a[disabled] {
+	POINTER-EVENTS: none;
+	COLOR: Gray;
+}

@@ -2,20 +2,47 @@
 <div id="panelPageOperations" class="panel">
 	<h3>#rc.rb.getKey('sidebarPageopsTitle')#</h3>
 	<ul>
-		<li><a id="pageedit" class="pageedit" href="##" accesskey="#rc.rb.getKey('sidebarPageopsEditAccessKey')#">
-			#ReReplaceNoCase(rc.rb.getKey('sidebarPageopsEdit'), '(#rc.rb.getKey('sidebarPageopsEditAccessKey')#)', '<span class="uline">\1</span>')#
+		<li><a
+			id="pageedit" class="pageedit" href="##"
+			<cfif rc.isUndefined>
+				accesskey="#rc.rb.getKey('sidebarPageopsEditAccessKey')#"
+			<cfelse>
+				accesskey="#rc.rb.getKey('sidebarPageopsCreateAccessKey')#"
+			</cfif>
+		>
+			<cfif rc.isUndefined>
+				#ReReplaceNoCase(rc.rb.getKey('sidebarPageopsCreate'), '(#rc.rb.getKey('sidebarPageopsCreateAccessKey')#)', '<span class="uline">\1</span>')#
+			<cfelse>
+				#ReReplaceNoCase(rc.rb.getKey('sidebarPageopsEdit'), '(#rc.rb.getKey('sidebarPageopsEditAccessKey')#)', '<span class="uline">\1</span>')#
+			</cfif>
 		</a></li>
-		<li><a href="#buildURL(action='frontend:main.history', querystring='contentid=#$.content().getContentID()#')#" accesskey="#rc.rb.getKey('sidebarPageopsHistoryAccessKey')#">
-			#ReReplaceNoCase(rc.rb.getKey('sidebarPageopsHistory'), '(#rc.rb.getKey('sidebarPageopsHistoryAccessKey')#)', '<span class="uline">\1</span>')#
+		<li><a
+			href="#buildURL(action='frontend:main.history', querystring='contentid=#rc.wikiPage.getContentID()#')#"
+			<cfif !rc.isUndefined>accesskey="#rc.rb.getKey('sidebarPageopsHistoryAccessKey')#"</cfif>
+			<cfif rc.isUndefined>disabled="disabled"</cfif>
+		>
+			<cfif rc.isUndefined>
+				#rc.rb.getKey('sidebarPageopsHistory')#
+			<cfelse>
+				#ReReplaceNoCase(rc.rb.getKey('sidebarPageopsHistory'), '(#rc.rb.getKey('sidebarPageopsHistoryAccessKey')#)', '<span class="uline">\1</span>')#
+			</cfif>
 		</a></li>
-		<li><a href="#buildURL(action='frontend:edit.delete', querystring='contentid=#$.content().getContentID()#')#">
+		<li><a href="##" class="delete" <cfif rc.isUndefined>disabled="disabled"</cfif>>
 			#rc.rb.getKey('sidebarPageopsDelete')#
 		</a></li>
 		<li><a href="##" class="redirect" accesskey="#rc.rb.getKey('sidebarPageopsRedirectAccessKey')#">
 			#rc.rb.getKey('sidebarPageopsRedirect')#
 		</a></li>
-		<li><a href="#buildURL(action='frontend:edit.touch', querystring='contentid=#$.content().getContentID()#')#" accesskey="#rc.rb.getKey('sidebarPageopsTouchAccessKey')#">
-			#ReReplaceNoCase(rc.rb.getKey('sidebarPageopsTouch'), '(#rc.rb.getKey('sidebarPageopsTouchAccessKey')#)', '<span class="uline">\1</span>')#
+		<li><a
+			href="#buildURL(action='frontend:edit.touch', querystring='contentid=#rc.wikiPage.getContentID()#')#"
+			<cfif !rc.isUndefined>accesskey="#rc.rb.getKey('sidebarPageopsTouchAccessKey')#"</cfif>
+			<cfif rc.isUndefined>disabled="disabled"</cfif>
+		>
+			<cfif rc.isUndefined>
+				#rc.rb.getKey('sidebarPageopsTouch')#
+			<cfelse>
+				#ReReplaceNoCase(rc.rb.getKey('sidebarPageopsTouch'), '(#rc.rb.getKey('sidebarPageopsTouchAccessKey')#)', '<span class="uline">\1</span>')#
+			</cfif>
 		</a></li>
 	</ul>
 </div>

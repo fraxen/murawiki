@@ -13,6 +13,16 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		return;
 	}
 
+	public void function delete() {
+		rc.wiki = getWikiManagerService().getWiki(rc.parentid);
+		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=rc.SiteID);
+		rc.wikiPage.delete();
+		$.redirect(
+			location = $.createHREF(filename='#rc.wiki.getFilename()#/#rc.wikiPage.getLabel()#')
+			, statusCode = '302'
+		)
+	}
+
 	public void function redirectRemoveSubmit() {
 		param rc.parentid = $.content().getParentID();
 		rc.wiki = getWikiManagerService().getWiki(rc.parentid);
@@ -34,6 +44,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 
 	public void function redirectSubmit() {
 		param rc.parentid = $.content().getParentID();
+		param rc.title = rc.fromLabel;
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=rc.SiteID);
 		rc.wiki = getWikiManagerService().getWiki(rc.parentid);
 		rc.rb = new mura.resourceBundle.resourceBundleFactory(
@@ -42,7 +53,13 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			locale = rc.wiki.getLanguage()
 		);
 		rc.wikiPage.set({
+			type="Page",
+			subtype="WikiPage",
+			label=rc.fromLabel,
+			siteid=rc.wiki.getSiteID(),
 			redirect=rc.redirectlabel,
+			parentid=rc.parentid,
+			title=rc.fromlabel,
 			notes= rc.rb.getKey('redirectNote')
 		}).save();
 		$.redirect(

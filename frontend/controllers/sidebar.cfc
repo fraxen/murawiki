@@ -38,6 +38,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function pageoperations() {
+		rc.wikiPage = $.content();
+		rc.isundefined = structKeyExists(rc.wikiPage, 'isundefined');
 		rc.rb = new mura.resourceBundle.resourceBundleFactory(
 			parentFactory = $.siteConfig('rbFactory'),
 			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
