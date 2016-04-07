@@ -80,6 +80,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			locale = rc.wiki.getLanguage()
 		);
 		param rc.tags = '';
+		if (rc.notes == '') {
+			rc.delete('notes');
+		}
 		param rc.notes = rc.wikiPage.getIsNew() ? rc.rb.getKey('NoteCreate') : rc.rb.getKey('NoteEdit');
 		rc.wikiPage.setParentID(rc.parentid);
 		body = getWikiManagerService().renderHTML(rc.wikiPage);
@@ -131,6 +134,10 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			return;
 		}
 		rc.wikiPage = $.content();
+		if ( StructKeyExists(rc, 'history') ) {
+			framework.setView('main.history');
+			return;
+		}
 		if (StructKeyExists(rc.wikiPage, 'isUndefined')) {
 			rc.history = ListToArray(history);
 			rc.wikiPage = $.getBean('content').set({

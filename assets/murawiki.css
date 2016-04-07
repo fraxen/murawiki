@@ -53,3 +53,20 @@ a[disabled] {
 	POINTER-EVENTS: none;
 	COLOR: Gray;
 }
+#wikiPageHistory {
+	WIDTH: 100%;
+}
+#wikiPageHistory tr, #wikiPageHistory td {
+	BORDER: None;
+}
+#wikiPageHistory tr.time td {
+	COLOR: #777;
+	BORDER-BOTTOM: 1px solid #777 !important;
+	PADDING-BOTTOM: 0;
+}
+#wikiPageHistory tr:not(.time) {
+	CURSOR: Pointer;
+}
+#wikiPageHistory tr:not(.time):hover {
+	BACKGROUND: #eee;
+}

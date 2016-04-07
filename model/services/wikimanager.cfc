@@ -433,26 +433,51 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		// HERE IS WHERE THE IMPORT FROM THE NOTES WIKI STARTS
 		// TODO: Import history, attachments, redirects, set LAST UPDATE
+		var imported = {};
 		queryExecute(
 			"
 				SELECT
-					*
+					Label, TimeUpdated, ChangeLog, Editor, TimeCreated, Blurb, Status
 				FROM
-					wiki_tblWiki
-				WHERE
-					AppName = 'giswiki'
-					AND
-					Status IN (1,2)
+					(
+					SELECT
+						wiki_tblWiki.Label, wiki_tblWiki.TimeUpdated, ChangeLog, wiki_tblWiki.Editor, TimeCreated, Blurb, Status
+					FROM
+						wiki_tblWiki
+					WHERE
+						wiki_tblWiki.AppName = 'giswiki'
+					UNION
+					SELECT
+						wiki_tblWiki_version.Label, wiki_tblWiki_version.TimeUpdated, ChangeLog, wiki_tblWiki_version.Editor, TimeCreated, Blurb, Status
+					FROM
+						wiki_tblWiki_version
+					WHERE
+						wiki_tblWiki_version.AppName = 'giswiki'
+					) qselVersion
 				ORDER BY
-					Label;
+					Label, TimeUpdated DESC
+				;
 		", [], {datasource='wiki'})
 		.each( function(w) {
+			var c = '';
+			if (ArrayContains(StructKeyArray(imported), w.label)) {
+				c = getBean('content').loadBy(siteid='projects', contentid=imported[w.label]);
+				if (w.status == -1) {
+					c.delete();
+					imported.delete(w.label);
+					return;
+				}
+			} else {
+				c = getBean('content').set({
+					siteid = wiki.getSiteID(),
+					type = 'Page',
+					subType = 'WikiPage',
+					parentid = wiki.getContentID()
+				});
+			}
 			body = engine.renderHTML( w.blurb, rb.getKey('tagsLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 			body = body.blurb;
-			getBean('content').set({
-				siteid = wiki.getSiteID(),
-				type = 'Page',
-				subType = 'WikiPage',
+			c.set({
 				title = w.Label,
 				label = w.Label,
 				created = w.TimeCreated,
@@ -461,8 +486,23 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				Notes = w.ChangeLog,
 				Redirect = w.status == 2 ? w.blurb : '',
 				Tags = '',
-				parentid = wiki.getContentID()
 			}).save();
+			queryExecute(
+				'
+					UPDATE
+						tContent
+					SET
+						lastupdate = :tupdate,
+						created = :tcreate,
+						lastupdateby = "#w.Editor#"
+					WHERE
+						contenthistid = "#c.getContentHistID()#"
+					;
+			',{
+				tupdate: { value:w.TimeUpdated, cfsqltype:'cf_sql_timestamp' },
+				tcreate: { value:w.TimeCreated, cfsqltype:'cf_sql_timestamp' }
+			});
+			imported[w.Label] = c.getContentID();
 			writeoutput('<li>Added #w.Label#</li>');
 		});
 

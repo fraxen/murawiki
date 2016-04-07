@@ -17,7 +17,7 @@
 			</cfif>
 		</a></li>
 		<li><a
-			href="#buildURL(action='frontend:main.history', querystring='contentid=#rc.wikiPage.getContentID()#')#"
+			href="#$.createHREF(filename=rc.wikiPage.getFilename(), querystring='history')#"
 			<cfif !rc.isUndefined>accesskey="#rc.rb.getKey('sidebarPageopsHistoryAccessKey')#"</cfif>
 			<cfif rc.isUndefined>disabled="disabled"</cfif>
 		>
