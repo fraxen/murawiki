@@ -36,6 +36,14 @@
 	");
 </cfscript>
 <cfoutput>
+<cfif structKeyExists(rc, 'version') AND rc.wikiPage.getIsActive() != 1>
+	<div class="message" id="version">
+		#ReReplace(rc.rb.getKey('versionNote'), '{versiondate}', '#DateFormat(rc.wikiPage.getLastUpdate(), 'yyyy-mm-dd')# #TimeFormat(rc.wikiPage.getLastUpdate(), 'HH:mm')#')#<br>
+		<a href="#$.createHREF(filename=rc.wikiPage.getFilename())#">#rc.rb.getKey('versionNoteLink')#</a><br/>
+		<strong><a href="#BuildURL(action='frontend:main.revertsubmit', querystring='version=#rc.version#')#">#rc.rb.getKey('versionNoteRevert')#</a></strong>
+		<p><em>#rc.wikiPage.getNotes()# (#rc.wikiPage.getLastUpdateBy()#)</em></p>
+	</div>
+</cfif>
 <cfif structKeyExists(rc, 'redirectfrom')>
 	<div class="message" id="redirectfrom">
 		#rc.rb.getKey('redirectStatus')# <strong><a href="##">#rc.redirectfrom#</a></strong>

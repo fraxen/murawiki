@@ -3,6 +3,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 	property type='any' name='beanFactory';
 	property type='struct' name='wikis';
 	property type='struct' name='engines';
+	property name='NotifyService';
 
 	setWikis({});
 	setEngines({});
@@ -73,6 +74,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			return carry;
 		}, {})
 		.reduce( function(carry, ContentID, p) {
+			param p.OutgoingLinks = '';
 			carry[p.Label] = ListToArray(p.OutgoingLinks);
 			return carry;
 		}, {});
@@ -150,6 +152,10 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 	}
 
 	public any function getWiki(required string ContentID='') {
+		if (ArrayLen(StructKeyArray(getWikis())) == 0) {
+			// Lazy load of all wikis
+			loadWikis();
+		}
 		if (StructKeyExists(getWikis(), ARGUMENTS.ContentID) ) {
 			return getWikis()[ARGUMENTS.ContentID];
 		} else {
@@ -209,6 +215,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 	public any function Initialize(required any wiki, required any rb) {
 		// 'Formats' the wiki - adds display objects + creates default pages. Only meant to be run one per wiki
+		setting requesttimeout='28800';
 		var wiki = ARGUMENTS.wiki;
 		var page = {};
 		var dspO = getDisplayObjects();
@@ -430,81 +437,6 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				)
 				.save();
 		}
-
-		// HERE IS WHERE THE IMPORT FROM THE NOTES WIKI STARTS
-		// TODO: Import history, attachments, redirects, set LAST UPDATE
-		var imported = {};
-		queryExecute(
-			"
-				SELECT
-					Label, TimeUpdated, ChangeLog, Editor, TimeCreated, Blurb, Status
-				FROM
-					(
-					SELECT
-						wiki_tblWiki.Label, wiki_tblWiki.TimeUpdated, ChangeLog, wiki_tblWiki.Editor, TimeCreated, Blurb, Status
-					FROM
-						wiki_tblWiki
-					WHERE
-						wiki_tblWiki.AppName = 'giswiki'
-					UNION
-					SELECT
-						wiki_tblWiki_version.Label, wiki_tblWiki_version.TimeUpdated, ChangeLog, wiki_tblWiki_version.Editor, TimeCreated, Blurb, Status
-					FROM
-						wiki_tblWiki_version
-					WHERE
-						wiki_tblWiki_version.AppName = 'giswiki'
-					) qselVersion
-				ORDER BY
-					Label, TimeUpdated DESC
-				;
-		", [], {datasource='wiki'})
-		.each( function(w) {
-			var c = '';
-			if (ArrayContains(StructKeyArray(imported), w.label)) {
-				c = getBean('content').loadBy(siteid='projects', contentid=imported[w.label]);
-				if (w.status == -1) {
-					c.delete();
-					imported.delete(w.label);
-					return;
-				}
-			} else {
-				c = getBean('content').set({
-					siteid = wiki.getSiteID(),
-					type = 'Page',
-					subType = 'WikiPage',
-					parentid = wiki.getContentID()
-				});
-			}
-			body = engine.renderHTML( w.blurb, rb.getKey('tagsLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
-			body = body.blurb;
-			c.set({
-				title = w.Label,
-				label = w.Label,
-				created = w.TimeCreated,
-				lastupdate = w.TimeUpdated,
-				Blurb = w.blurb,
-				Notes = w.ChangeLog,
-				Redirect = w.status == 2 ? w.blurb : '',
-				Tags = '',
-			}).save();
-			queryExecute(
-				'
-					UPDATE
-						tContent
-					SET
-						lastupdate = :tupdate,
-						created = :tcreate,
-						lastupdateby = "#w.Editor#"
-					WHERE
-						contenthistid = "#c.getContentHistID()#"
-					;
-			',{
-				tupdate: { value:w.TimeUpdated, cfsqltype:'cf_sql_timestamp' },
-				tcreate: { value:w.TimeCreated, cfsqltype:'cf_sql_timestamp' }
-			});
-			imported[w.Label] = c.getContentID();
-			writeoutput('<li>Added #w.Label#</li>');
-		});
 
 		return wiki;
 	}

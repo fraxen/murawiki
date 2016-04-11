@@ -23,6 +23,24 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		)
 	}
 
+	public void function revertSubmit() {
+		rc.wikiPage = $.getBean('content').loadBy(contentHistID = rc.version);
+		rc.wiki = getWikiManagerService().getWiki(rc.wikiPage.getParentID());
+		rc.rb = new mura.resourceBundle.resourceBundleFactory(
+			parentFactory = $.siteConfig('rbFactory'),
+			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
+			locale = rc.wiki.getLanguage()
+		);
+		rc.wikiPage.set({
+			active=1,
+			notes= '#rc.rb.getKey('reverted')# #DateFormat(rc.wikiPage.getLastUpdate(), 'yyyy-mm-dd')# #TimeFormat(rc.wikiPage.getLastUpdate(), 'HH:mm')#'
+		}).save();
+		$.redirect(
+			location = $.createHREF(filename=rc.wikiPage.getFilename())
+			, statusCode = '302'
+		)
+	}
+
 	public void function redirectRemoveSubmit() {
 		param rc.parentid = $.content().getParentID();
 		rc.wiki = getWikiManagerService().getWiki(rc.parentid);
@@ -148,6 +166,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			});
 			rc.wikiPage.setIsNew(1);
 			framework.setView('main.undefined');
+		}
+		if (StructKeyExists(rc, 'version')) {
+			rc.wikiPage = $.getBean('content').loadBy(ContentHistID=rc.version);
 		}
 		rc.blurb = getWikiManagerService().renderHTML(rc.wikiPage);
 	}
