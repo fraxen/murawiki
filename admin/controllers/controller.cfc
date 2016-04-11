@@ -7,6 +7,7 @@ component persistent="false" accessors="true" output="false" extends="mura.cfobj
 	property name='WikimanagerService';
 
 	public any function before(required struct rc) {
+		setting requesttimeout='28800';
 		if ( StructKeyExists(rc, '$') ) {
 			var $ = rc.$;
 			set$(rc.$);
