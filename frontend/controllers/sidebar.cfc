@@ -54,6 +54,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
 			locale = rc.wiki.getLanguage()
 		)
+		rc.attachments = getWikiManagerService().getAttachments($.content());
 		return;
 	}
 

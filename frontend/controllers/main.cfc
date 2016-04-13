@@ -97,6 +97,37 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
 			locale = rc.wiki.getLanguage()
 		);
+
+		var i=1;
+		var attachments=[]
+		while(StructKeyExists(rc,'attachment#i#')) {
+			var thisFile = $.getBean('content').set({
+				type = 'File',
+				siteid = rc.wiki.getSiteID(),
+				title = GetPageContext().formScope().getUploadResource("attachment#i#").getName(),
+				menutitle = '',
+				urltitle = '',
+				htmltitle = '',
+				summary = GetPageContext().formScope().getUploadResource("attachment#i#").getName(),
+				filename = GetPageContext().formScope().getUploadResource("attachment#i#").getName(),
+				fileext = ListLast(GetPageContext().formScope().getUploadResource("attachment#i#").getName(), '.'),
+				parentid = rc.wikiPage.getContentID(),
+				approved=1,
+				display=1,
+				isNav = rc.wiki.getSiteNav(),
+				searchExclude = !rc.wiki.getSiteSearch()
+			});
+			var fb = $.getBean('file').set({
+				contentid = rc.wikiPage.getContentID(),
+				siteid = rc.wiki.getSiteID(),
+				parentid = rc.wikiPage.getContentID(),
+				newfile = rc['attachment#i#'],
+				filefield = 'attachment#i#',
+			}).save();
+			thisFile.setFileID(fb.getFileID());
+			thisFile.save();
+			i = i+1;
+		}
 		param rc.tags = '';
 		if (rc.notes == '') {
 			rc.delete('notes');

@@ -178,6 +178,22 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		return getWikis()[ARGUMENTS.ContentID];
 	}
 
+	public query function getAttachments(required object wikiPage) {
+		var wp = ARGUMENTS.wikiPage;
+		return getBean('feed')
+			.setMaxItems(0)
+			.setSiteID(wp.getSiteID())
+			.setShowNavOnly(0)
+			.setShowExcludeSearch(1)
+			.addParam(
+				field='parentid',
+				condition='EQUALS',
+				criteria=wp.getContentID(),
+				dataType='varchar'
+			)
+			.getQuery();
+	}
+
 	public any function getDisplayObjects() {
 		var do = {};
 		getBean('pluginManager')

@@ -84,7 +84,7 @@
 		<h4 class="modal-title">#rc.rb.getKey('wikiPageEditTitle')# <em>#rc.wikiPage.getLabel()#</em></h4>
 	</div>
 	<div class="modal-body">
-		<form id="editform" class="mura-form-builder" method="post" action="#BuildURL('frontend:main.pagesubmit')#" onsubmit="return validateForm(this);">
+		<form id="editform" class="mura-form-builder" method="post" enctype="multipart/form-data" action="#BuildURL('frontend:main.pagesubmit')#" onsubmit="return validateForm(this);">
 			<input type="hidden" name="ParentID" value="#rc.wiki.getContentID()#" />
 			<input type="hidden" name="ContentID" value="#rc.wikiPage.getContentID()#" />
 			<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />
@@ -106,10 +106,13 @@
 					data-required="false"
 					>#rc.wikiPage.getBlurb()#</textarea>
 			</div>
+			<div class="mura-form-textfield form-group control-group">
+				<label>#rc.rb.getKey('sidebarAttachmentTitle')#</label>
+				<input type="file" name="attachment1" class="form-control" />
+			</div>
 			<cfif rc.wiki.getUseTags()> 
 			<div class="mura-form-textfield form-group control-group">
 				<label for="tags">#rc.rb.getKey('tags')#</label>
-				</label>
 				<select name="tags" multiple="multiple" class="form-control s2" data-placeholder="#rc.rb.getKey('tagsPlaceholder')#" data-tags="tags">
 					<cfloop item="kw" array="#rc.wiki.tags#">
 						<option value="#kw#" <cfif ListFindNoCase(rc.wikiPage.getTags(), kw)>selected="selected"</cfif>>#kw#</option>
