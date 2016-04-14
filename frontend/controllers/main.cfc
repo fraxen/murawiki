@@ -88,6 +88,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 
 	public void function pagesubmit() {
 		var body = '';
+		var relSet = application.classExtensionManager
+			.getSubTypeByName(siteid='projects', type='Page', subtype='WikiPage')
+			.getRelatedContentSets()
+			.filter(function(rcs) {
+				return rcs.getAvailableSubTypes() == 'File/Default';
+			})[1].getRelatedContentSetID();
 		param rc.parentid = $.content().getParentID();
 		rc.title = rc.title == '' ? rc.label : rc.title;
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=rc.SiteID);
@@ -126,6 +132,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			}).save();
 			thisFile.setFileID(fb.getFileID());
 			thisFile.save();
+			ArrayAppend(attachments, thisFile.getContentID());
 			i = i+1;
 		}
 		param rc.tags = '';
@@ -145,7 +152,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			Notes = rc.Notes,
 			Tags = rc.tags,
 			parentid = rc.wiki.getContentID()
-		}).save();
+		})
+		rc.wikiPage.setRelatedContentID(ArrayToList(attachments), relSet);
+		rc.wikiPage.save();
 		$.redirect(
 			location = $.createHREF(filename=rc.wikiPage.getFilename())
 			, statusCode = '302'

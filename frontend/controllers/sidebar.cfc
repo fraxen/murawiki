@@ -49,12 +49,21 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function attachments() {
+		var relSet = application.classExtensionManager
+			.getSubTypeByName(siteid='projects', type='Page', subtype='WikiPage')
+			.getRelatedContentSets()
+			.filter(function(rcs) {
+				return rcs.getAvailableSubTypes() == 'File/Default';
+			})[1].getRelatedContentSetID();
 		rc.rb = new mura.resourceBundle.resourceBundleFactory(
 			parentFactory = $.siteConfig('rbFactory'),
 			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
 			locale = rc.wiki.getLanguage()
 		)
-		rc.attachments = getWikiManagerService().getAttachments($.content());
+		rc.attachments = $.content().getRelatedContentQuery()
+			.filter(function(a) {
+				return true;
+			});
 		return;
 	}
 
