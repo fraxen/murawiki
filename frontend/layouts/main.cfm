@@ -12,6 +12,10 @@
 	}
 	$.addToHTMLFootQueue(action='append', text="
 		<script type=""text/javascript"">
+			function removeAttachment(attach) {
+				$('##editform li[name=""' + attach + '""]').css('display', 'none');
+				$('##editform li[name=""' + attach + '""]').find('input').attr('value', '{}');
+			}
 			(function() {
 				$('a.pageedit').click(function() {
 					$('##editModal').modal('show');
@@ -106,9 +110,21 @@
 					data-required="false"
 					>#rc.wikiPage.getBlurb()#</textarea>
 			</div>
-			<div class="mura-form-textfield form-group control-group">
+			<div class="mura-form-textfield form-group control-group attachments">
 				<label>#rc.rb.getKey('sidebarAttachmentTitle')#</label>
-				<input type="file" name="attachment1" class="form-control" />
+				<cfset attachCount = 1 />
+				<cfif ArrayLen(StructKeyArray(rc.attachments))>
+					<ul>
+					<cfloop index="a" struct="#rc.attachments#">
+						<li name="attachment#attachCount#">
+							<input type="hidden" name="attachment#attachCount#" value='#SerializeJson({'#a#': rc.attachments[a]})#' />
+							#rc.attachments[a].title#<span><a href="javascript:removeAttachment('attachment#attachCount#');"><i class="fa fa-trash" aria-hidden="true"></i> remove</a>
+						</li>
+						<cfset attachCount = attachCount + 1 />
+					</cfloop>
+					</ul>
+				</cfif>
+				<input type="file" name="attachment#attachCount#" class="form-control" />
 			</div>
 			<cfif rc.wiki.getUseTags()> 
 			<div class="mura-form-textfield form-group control-group">
