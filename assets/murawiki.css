@@ -31,6 +31,7 @@ a .uline {TEXT-DECORATION: Underline;}
 
 #editform input[type='submit'] { MARGIN: 0 auto; WIDTH: 80%; DISPLAY: Block;}
 #editform textarea {HEIGHT: 20em;}
+#editform .attachments li span { DISPLAY: Inline-Block; FLOAT: Right;}
 
 div.undefined {
 	MARGIN: 4em;
