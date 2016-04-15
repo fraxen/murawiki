@@ -60,10 +60,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
 			locale = rc.wiki.getLanguage()
 		)
-		rc.attachments = $.content().getRelatedContentQuery()
-			.filter(function(a) {
-				return true;
-			});
+		rc.attachments = DeserializeJSON($.content().getAttachments());
 		return;
 	}
 

@@ -88,12 +88,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 
 	public void function pagesubmit() {
 		var body = '';
-		var relSet = application.classExtensionManager
-			.getSubTypeByName(siteid='projects', type='Page', subtype='WikiPage')
-			.getRelatedContentSets()
-			.filter(function(rcs) {
-				return rcs.getAvailableSubTypes() == 'File/Default';
-			})[1].getRelatedContentSetID();
 		param rc.parentid = $.content().getParentID();
 		rc.title = rc.title == '' ? rc.label : rc.title;
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=rc.SiteID);
@@ -105,7 +99,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		);
 
 		var i=1;
-		var attachments=[]
+		var attachments={};
 		while(StructKeyExists(rc,'attachment#i#')) {
 			var thisFile = $.getBean('content').set({
 				type = 'File',
@@ -132,7 +126,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			}).save();
 			thisFile.setFileID(fb.getFileID());
 			thisFile.save();
-			ArrayAppend(attachments, thisFile.getContentID());
+			attachments[thisFile.getContentID()].filename = thisFile.getFilename();
+			attachments[thisFile.getContentID()].title = thisFile.getTitle();
 			i = i+1;
 		}
 		param rc.tags = '';
@@ -151,9 +146,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			Blurb = rc.blurb,
 			Notes = rc.Notes,
 			Tags = rc.tags,
-			parentid = rc.wiki.getContentID()
+			parentid = rc.wiki.getContentID(),
+			attachments = SerializeJson(attachments)
 		})
-		rc.wikiPage.setRelatedContentID(ArrayToList(attachments), relSet);
 		rc.wikiPage.save();
 		$.redirect(
 			location = $.createHREF(filename=rc.wikiPage.getFilename())
