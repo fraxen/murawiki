@@ -15,6 +15,13 @@
 			function removeAttachment(attach) {
 				$('##editform li[name=""' + attach + '""]').css('display', 'none');
 				$('##editform li[name=""' + attach + '""]').find('input').attr('value', '{}');
+				return false;
+			}
+			function addAttachment() {
+				var lastAttach = $('##editform input[type=""file""]').last();
+				var i = +lastAttach.attr('name').replace('attachment', '') + 1;
+				lastAttach.clone().attr('name', 'attachment' + i).insertAfter(lastAttach);
+				return false;
 			}
 			(function() {
 				$('a.pageedit').click(function() {
@@ -125,6 +132,8 @@
 					</ul>
 				</cfif>
 				<input type="file" name="attachment#attachCount#" class="form-control" />
+				<br/>
+				<div class="center"><a href="javascript:addAttachment();">Add another attachment</a></div>
 			</div>
 			<cfif rc.wiki.getUseTags()> 
 			<div class="mura-form-textfield form-group control-group">
