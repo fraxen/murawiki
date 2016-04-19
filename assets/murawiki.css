@@ -71,3 +71,5 @@ a[disabled] {
 #wikiPageHistory tr:not(.time):hover {
 	BACKGROUND: #eee;
 }
+.content ul.tags {MARGIN-TOP: 2em;}
+.content ul.tags li { DISPLAY: Inline; BORDER: 1px solid #ccc; BORDER-RADIUS: 5px; PADDING: 3px; MARGIN: 3px; BACKGROUND: #ddd; }

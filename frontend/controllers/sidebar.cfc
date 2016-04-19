@@ -65,6 +65,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			rc.wikiPage = $.getBean('content').loadBy(ContentHistID=rc.version);
 		}
 		rc.attachments = DeserializeJSON(rc.wikiPage.getAttachments());
+		rc.attachments = isStruct(rc.attachments) ? rc.attachments : {};
 		return;
 	}
 

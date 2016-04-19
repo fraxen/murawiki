@@ -218,6 +218,11 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		}
 		rc.blurb = getWikiManagerService().renderHTML(rc.wikiPage);
 		rc.attachments = DeserializeJSON(rc.wikiPage.getAttachments());
+		rc.attachments = isStruct(rc.attachments) ? rc.attachments : {};
+		rc.tags = [];
+		if (rc.wiki.getUseTags()) {
+			rc.tags = ListToArray(rc.wikiPage.getTags());
+		}
 	}
 
 	public void function wikiFolder() {

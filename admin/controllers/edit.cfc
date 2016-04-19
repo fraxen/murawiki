@@ -17,41 +17,42 @@ component persistent="false" accessors="true" output="false" extends="controller
 		// TODO: Import history, attachments, redirects, set LAST UPDATE
 		// var imported = {};
 		var wiki = getWikiManagerService().getWikis()[StructKeyArray(getWikiManagerService().getWikis())[1]];
+		getBean('configBean').setAllowLocalFiles(true);
 		queryExecute(
 			"
-				SELECT
-					Label, TimeUpdated, ChangeLog, Editor, TimeCreated, Blurb, Status
-				FROM
-					(
-					SELECT
-						wiki_tblWiki.Label, wiki_tblWiki.TimeUpdated, ChangeLog, wiki_tblWiki.Editor, TimeCreated, Blurb, Status
-					FROM
-						wiki_tblWiki
-					WHERE
-						wiki_tblWiki.AppName = 'giswiki'
-						AND
-						TimeUpdated > '2014-08-17 02:45:32'
-						AND
-						Status > 0
-					/*
-					UNION
-					SELECT
-						wiki_tblWiki_version.Label, wiki_tblWiki_version.TimeUpdated, ChangeLog, wiki_tblWiki_version.Editor, TimeCreated, Blurb, Status
-					FROM
-						wiki_tblWiki_version
-					WHERE
-						wiki_tblWiki_version.AppName = 'giswiki'
-						AND
-						Label = 'PHC'
-						AND
-						TimeUpdated > '2014-08-17 02:45:32'
-					*/
-					) qselVersion
-				ORDER BY
-					Label, TimeUpdated DESC
+				SELECT wiki_tblWiki.Label,
+					   wiki_tblWiki.TimeUpdated,
+					   wiki_tblWiki.ChangeLog,
+					   wiki_tblWiki.Editor,
+					   wiki_tblWiki.TimeCreated,
+					   wiki_tblWiki.Blurb,
+					   wiki_tblWiki.Status,
+					   wiki_tblattachment.AttachmentID,
+					   wiki_tblattachment.FileName,
+					   wiki_tblattachment.Extension
+				  FROM (wiki.wiki_tlnkattachmentwiki wiki_tlnkattachmentwiki
+						LEFT OUTER JOIN wiki.wiki_tblattachment wiki_tblattachment
+						   ON (wiki_tlnkattachmentwiki.AttachmentID =
+								  wiki_tblattachment.AttachmentID))
+					   RIGHT OUTER JOIN wiki.wiki_tblWiki wiki_tblWiki
+						  ON (wiki_tlnkattachmentwiki.WikiID = wiki_tblWiki.WikiID)
+				 WHERE (    (    wiki_tblWiki.AppName = 'giswiki'
+							 AND wiki_tblWiki.TimeUpdated > '2014-08-17 02:45:32')
+						AND wiki_tblWiki.Status > 0)
+				ORDER BY wiki_tblWiki.Label ASC, wiki_tblWiki.TimeUpdated DESC
 				;
 		", [], {datasource='wiki'})
-		.each( function(w) {
+		.reduce( function(carry,w) {
+			if (!StructKeyExists(carry, w.label)) {
+				carry[w.label] = w;
+				carry[w.label].attachments = {};
+			}
+			if (Len(w.AttachmentID)) {
+				carry[w.label].attachments = carry[w.label].attachments.insert(w.AttachmentID, '#w.Filename#.#w.Extension#');
+			}
+			return carry;
+		}, {})
+		.each( function(Label, w) {
 			var c = getBean('content').set({
 				siteid = wiki.getSiteID(),
 				type = 'Page',
@@ -63,8 +64,41 @@ component persistent="false" accessors="true" output="false" extends="controller
 				Notes = w.ChangeLog,
 				Redirect = w.status == 2 ? w.blurb : '',
 				Tags = '',
-			}).save().getContentHistID();
-			Sleep(2);
+			}).save();
+			var attachments = {}
+			w.attachments.each( function(a) {
+				file action='copy' source='F:\temp\_files\attach\#a#' destination='F:\temp\_files\#w.attachments[a]#';
+				var fc = $.getBean('content').set({
+					type = 'File',
+					siteid = wiki.getSiteID(),
+					title = w.attachments[a],
+					summary = w.attachments[a],
+					filename = w.attachments[a],
+					fileext = ListLast(w.attachments[a], '.'),
+					menutitle = '',
+					urltitle = '',
+					htmltitle = '',
+					approved = 1,
+					isnav = 0,
+					display = 1,
+					searchExclude = 1,
+					parentid = c.getContentID()
+				});
+				var fb = $.getBean('file').set({
+					contentid = c.getContentID(),
+					siteid = wiki.getSiteID(),
+					parentid = wiki.getContentID(),
+					newFile = 'F:\temp\_files\#w.attachments[a]#'
+				}).save();
+				fc.setFileID(fb.getFileID());
+				fc.save();
+				attachments[fc.getContentID()].filename = fc.getFilename();
+				attachments[fc.getContentID()].title = fc.getTitle();
+			});
+			if (ArrayLen(StructKeyArray(attachments))) {
+				c.setAttachments(SerializeJson(attachments));
+				c.save();
+			}
 			queryExecute(
 				'
 					SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
@@ -75,7 +109,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 						created = :tcreate,
 						lastupdateby = "#w.Editor#"
 					WHERE
-						contenthistid = "#c#"
+						contenthistid = "#c.getContentHistID()#"
 					;
 					COMMIT;
 			',{
