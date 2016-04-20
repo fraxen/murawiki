@@ -42,13 +42,16 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		// If the current filename is under a wiki, load a content bean
 		var cf = $.event('currentfilename');
 		var bf = {}
-		try {
-			bf = getApplication().getSubSystemBeanFactory('frontend');
-		}
-		catch(e) {
-			bf = getApplication().getDefaultBeanFactory();
-		}
 		if (ListLen(cf, '/') > 1) {
+			try {
+				bf = getApplication().getSubSystemBeanFactory('frontend');
+			}
+			catch(e) {
+				bf = getApplication().getDefaultBeanFactory();
+			}
+			if (StructIsEmpty(bf.getBean('WikiManagerService').getWikis())) {
+				bf.getBean('WikiManagerService').loadWikis();
+			}
 			bf.getBean('WikiManagerService').getWikis()
 			.each( function(ContentID, w) {
 				if (w.getFilename() == ListDeleteAt($.event('currentfilename'), ListLen(cf, '/'), '/')) {
