@@ -2,6 +2,72 @@
 component displayname="frontend" persistent="false" accessors="true" output="false" extends="controller" {
 	property name='WikimanagerService';
 
+	private void function maintQuickOlder(required object wiki) {
+		// Redirects to one of the ten oldest pages
+		var wiki = ARGUMENTS.wiki;
+		var rb = new mura.resourceBundle.resourceBundleFactory(
+			parentFactory = $.siteConfig('rbFactory'),
+			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
+			locale = wiki.getLanguage()
+		);
+		var skipLabels = ArrayToList([
+			rb.getKey('instructionsLabel'),
+			rb.getKey('allpagesLabel'),
+			rb.getKey('mainthomeLabel'),
+			rb.getKey('maintoldLabel'),
+			rb.getKey('maintorphanLabel'),
+			rb.getKey('maintundefinedLabel'),
+			rb.getKey('tagsLabel')
+		]);
+		dump(
+		$.getBean('feed')
+			.setMaxItems(10)
+			.setSiteID( Wiki.getSiteID() )
+			.addParam(
+				field='parentid',
+				condition='EQUALS',
+				criteria=Wiki.getContentID(),
+				dataType='varchar'
+			)
+			.addParam(
+				field='subtype',
+				condition='EQUALS',
+				criteria='WikiPage',
+				dataType='varchar'
+			)
+			.addParam(
+				field='label',
+				condition='NOT IN',
+				criteria=skipLabels,
+				dataType='varchar'
+			)
+			.addParam(
+				field='redirect',
+				condition='EQUALS',
+				criteria='',
+				dataType='varchar'
+			)
+			.setSortBy('lastupdate')
+			.setSortDirection('desc')
+			.setShowNavOnly(0)
+			.setShowExcludeSearch(1)
+			.getQuery()
+			.reduce(function(carry, p) {
+				p.RandomSort = Rand()
+				carry[p.ContentID] = p;
+				return carry;
+			}, {})
+			.sort('numeric', 'asc', 'RandomSort')
+			.each( function(ContentID, p) {
+				$.redirect(
+					location = $.createHREF(filename='#Wiki.getFilename()#/#$.getBean('content').loadBy(ContentID=ContentID, SiteID = Wiki.getSiteID()).getLabel()#'),
+					statusCode = '302'
+				)
+			})
+		)
+		abort;
+	}
+
 	public void function default() {
 		framework.setView('main.blank');
 		return;
@@ -170,6 +236,18 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 
 	public void function wikiPage() {
 		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
+		switch ($.content().getLabel()) {
+			case 'MaintenanceOldQuick':
+				maintQuickOlder(rc.wiki);
+				return;
+				break;
+			case 'MaintenanceUndefinedQuick':
+				break;
+			case 'MaintenanceOrphanQuck':
+				break;
+			default:
+				break;
+		}
 		if( $.content().getRedirect() != '' ) {
 			$.redirect(
 				location = '#$.createHREF(filename=rc.wiki.getFilename())##$.content().getRedirect()#/?redirectfrom=#$.content().getLabel()#'
