@@ -2,6 +2,43 @@
 component displayname="frontend" persistent="false" accessors="true" output="false" extends="controller" {
 	property name='WikimanagerService';
 
+	private void function maintQuickOrphan(required object wiki) {
+		// Redirects to one of the ten oldest pages
+		var wiki = ARGUMENTS.wiki;
+		var rb = new mura.resourceBundle.resourceBundleFactory(
+			parentFactory = $.siteConfig('rbFactory'),
+			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
+			locale = wiki.getLanguage()
+		);
+		var allLinks = wiki.wikiList
+			.reduce(function(carry, label, links) {
+				return carry.append(links, true);
+			}, [])
+			.reduce(function(carry, l) {
+				carry[l] = l;
+				return carry;
+			}, {})
+			.reduce(function(carry, l) {
+				return carry.append(l);
+			}, []);
+		var orphans = StructKeyArray(wiki.wikilist)
+			.filter( function(l) {
+				return NOT ArrayContainsNoCase(allLinks, l);
+			})
+			.reduce(function(carry, l) {
+				carry[l].RandomSort = Rand();
+				return carry;
+			}, {})
+			.sort('numeric', 'asc', 'RandomSort')
+			.each( function(l) {
+				var wikipage = $.getBean('content').loadBy(SiteID=wiki.getSiteID(), filename='#Wiki.getFilename()#/#l#/');
+				$.redirect(
+					location = $.createHREF(filename='#wikipage.getFilename()#'),
+					statusCode = '302'
+				);
+			});
+	}
+
 	private void function maintQuickOlder(required object wiki) {
 		// Redirects to one of the ten oldest pages
 		var wiki = ARGUMENTS.wiki;
@@ -19,7 +56,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			rb.getKey('maintundefinedLabel'),
 			rb.getKey('tagsLabel')
 		]);
-		dump(
 		$.getBean('feed')
 			.setMaxItems(10)
 			.setSiteID( Wiki.getSiteID() )
@@ -63,9 +99,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 					location = $.createHREF(filename='#Wiki.getFilename()#/#$.getBean('content').loadBy(ContentID=ContentID, SiteID = Wiki.getSiteID()).getLabel()#'),
 					statusCode = '302'
 				)
-			})
-		)
-		abort;
+			});
 	}
 
 	public void function default() {
@@ -243,7 +277,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				break;
 			case 'MaintenanceUndefinedQuick':
 				break;
-			case 'MaintenanceOrphanQuck':
+			case 'MaintenanceOrphanQuick':
+				maintQuickOrphan(rc.wiki);
+				return;
 				break;
 			default:
 				break;
