@@ -2,8 +2,44 @@
 component displayname="frontend" persistent="false" accessors="true" output="false" extends="controller" {
 	property name='WikimanagerService';
 
+	private void function maintQuickUndefined(required object wiki) {
+		// Redirects to a random undefined page
+		var wiki = ARGUMENTS.wiki;
+		var rb = new mura.resourceBundle.resourceBundleFactory(
+			parentFactory = $.siteConfig('rbFactory'),
+			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
+			locale = wiki.getLanguage()
+		);
+		wiki.wikiList
+			.reduce(function(carry, label, links) {
+				return carry.append(links, true);
+			}, [])
+			.reduce(function(carry, l) {
+				carry[l] = l;
+				return carry;
+			}, {})
+			.reduce(function(carry, l) {
+				return carry.append(l);
+			}, [])
+			.filter( function(l) {
+				return NOT ArrayContainsNoCase(StructKeyArray(wiki.wikilist), l);
+			})
+			.reduce(function(carry, l) {
+				carry[l].RandomSort = Rand();
+				return carry;
+			}, {})
+			.sort('numeric', 'asc', 'RandomSort')
+			.each( function(l) {
+				$.redirect(
+					location = $.createHREF(filename='#wiki.getFilename()#/#l#/?undefined=1'),
+					statusCode = '302'
+				);
+				abort;
+			});
+	}
+
 	private void function maintQuickOrphan(required object wiki) {
-		// Redirects to one of the ten oldest pages
+		// Redirects to a random orphaned page
 		var wiki = ARGUMENTS.wiki;
 		var rb = new mura.resourceBundle.resourceBundleFactory(
 			parentFactory = $.siteConfig('rbFactory'),
@@ -21,7 +57,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			.reduce(function(carry, l) {
 				return carry.append(l);
 			}, []);
-		var orphans = StructKeyArray(wiki.wikilist)
+		StructKeyArray(wiki.wikilist)
 			.filter( function(l) {
 				return NOT ArrayContainsNoCase(allLinks, l);
 			})
@@ -33,7 +69,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			.each( function(l) {
 				var wikipage = $.getBean('content').loadBy(SiteID=wiki.getSiteID(), filename='#Wiki.getFilename()#/#l#/');
 				$.redirect(
-					location = $.createHREF(filename='#wikipage.getFilename()#'),
+					location = $.createHREF(filename='#wikipage.getFilename()#?orphan=1'),
 					statusCode = '302'
 				);
 			});
@@ -96,7 +132,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			.sort('numeric', 'asc', 'RandomSort')
 			.each( function(ContentID, p) {
 				$.redirect(
-					location = $.createHREF(filename='#Wiki.getFilename()#/#$.getBean('content').loadBy(ContentID=ContentID, SiteID = Wiki.getSiteID()).getLabel()#'),
+					location = $.createHREF(filename='#Wiki.getFilename()#/#$.getBean('content').loadBy(ContentID=ContentID, SiteID = Wiki.getSiteID()).getLabel()#?older=1'),
 					statusCode = '302'
 				)
 			});
@@ -276,6 +312,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				return;
 				break;
 			case 'MaintenanceUndefinedQuick':
+				maintQuickUndefined(rc.wiki);
+				return;
 				break;
 			case 'MaintenanceOrphanQuick':
 				maintQuickOrphan(rc.wiki);
