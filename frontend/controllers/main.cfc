@@ -46,10 +46,17 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
 			locale = wiki.getLanguage()
 		);
+		var skipLabels = [
+			rb.getKey('instructionsLabel'),
+			rb.getKey('mainthomeLabel')
+		];
 		var allLinks = wiki.wikiList
 			.reduce(function(carry, label, links) {
 				return carry.append(links, true);
 			}, [])
+			.filter(function(l) {
+				return NOT ArrayContains(skipLabels, l)
+			})
 			.reduce(function(carry, l) {
 				carry[l] = l;
 				return carry;
