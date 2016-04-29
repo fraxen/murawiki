@@ -8,6 +8,59 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 	setWikis({});
 	setEngines({});
 
+	public query function getAllPages(required object wiki, string sortfield='lastupdate', string sortorder='desc', array skipLabels=[], boolean includeRedirect=true) {
+		return queryExecute(
+			sql="
+				SELECT
+					tcontent.Title,
+					tcontent.Filename,
+					tcontent.ContentID,
+					tcontent.lastUpdate,
+					extendatt.attributeValue AS Label,
+					extendRedirect.redirectLabel AS RedirectLabel
+				FROM
+					(
+						SELECT
+							name,attributeValue,baseID
+						FROM
+							tclassextenddata
+						LEFT OUTER JOIN
+							tclassextendattributes
+						ON
+							(tclassextenddata.attributeID = tclassextendattributes.attributeID)
+						WHERE
+							name = 'Label' OR name IS NULL
+					) extendatt
+					RIGHT OUTER JOIN tcontent tcontent
+					ON (tcontent.ContentHistID = extendatt.baseID)
+					LEFT OUTER JOIN
+						(
+					SELECT
+						attributeValue AS RedirectLabel,baseID
+					FROM
+						tclassextenddata
+					LEFT OUTER JOIN
+						tclassextendattributes
+					ON (tclassextenddata.attributeID = tclassextendattributes.attributeID)
+							WHERE
+						name in ('Redirect')
+					) extendRedirect
+					ON (tcontent.ContentHistID = extendRedirect.baseID)
+				WHERE
+					tcontent.SiteID = '#ARGUMENTS.Wiki.getSiteID()#'
+					AND
+					tcontent.Active = 1
+					AND
+					tcontent.subType = 'WikiPage'
+					AND
+					tcontent.ParentID = '#ARGUMENTS.Wiki.getContentID()#'
+				ORDER BY #sortfield# #sortorder#
+		")
+		.filter( function(w) {
+			return includeRedirect ? true : !(Len(w.RedirectLabel));
+		});
+	}
+
 	public object function setWiki(required string ContentID, required object wiki) {
 		var w = getWikis();
 		w[ARGUMENTS.ContentID] = ARGUMENTS.wiki;
@@ -77,7 +130,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			param p.OutgoingLinks = '';
 			carry[p.Label] = ListToArray(p.OutgoingLinks);
 			return carry;
-		}, {});
+		}, {MaintenanceOldQuick: [], MaintenanceOrphanQuick: [], MaintenanceUndefinedQuick: []});
 	}
 
 	public array function loadTags(required any wiki) {
