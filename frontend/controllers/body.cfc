@@ -19,6 +19,26 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		return;
 	}
 
+	public void function orphan() {
+		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
+		rc.rb = new mura.resourceBundle.resourceBundleFactory(
+			parentFactory = $.siteConfig('rbFactory'),
+			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
+			locale = rc.wiki.getLanguage()
+		);
+		var skipLabels = [
+			rc.rb.getKey('instructionsLabel'),
+			rc.rb.getKey('mainthomeLabel')
+		];
+		rc.orphan = getWikiManagerService().getOrphan(rc.wiki, skipLabels);
+		rc.listingIterator = $.getBean('contentIterator')
+			.setQuery(
+				getWikiManagerService().getAllPages(rc.wiki, 'label', 'asc', skipLabels, true, rc.orphan)
+			)
+		framework.setLayout('listing');
+		return;
+	}
+
 	public void function old() {
 		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
 		rc.rb = new mura.resourceBundle.resourceBundleFactory(
@@ -37,10 +57,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		];
 		rc.listingIterator = $.getBean('contentIterator')
 			.setQuery(getWikiManagerService().getAllPages(rc.wiki, 'lastupdate', 'asc', skipLabels, false));
-		return;
-	}
-
-	public void function orphan() {
+		framework.setLayout('listing');
 		return;
 	}
 

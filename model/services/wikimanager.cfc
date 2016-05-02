@@ -8,7 +8,29 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 	setWikis({});
 	setEngines({});
 
-	public query function getAllPages(required object wiki, string sortfield='lastupdate', string sortorder='desc', array skipLabels=[], boolean includeRedirect=true) {
+	public array function getOrphan(required object wiki, array skipLabels=[]) {
+		var allLinks = ARGUMENTS.wiki.wikiList
+			.reduce(function(carry, label, links) {
+				return carry.append(links, true);
+			}, [])
+			.filter(function(l) {
+				return NOT ArrayFind(skipLabels, l)
+			})
+			.reduce(function(carry, l) {
+				carry[l] = l;
+				return carry;
+			}, {})
+			.reduce(function(carry, l) {
+				return carry.append(l);
+			}, []);
+		var orphan = StructKeyArray(ARGUMENTS.wiki.wikilist)
+			.filter( function(l) {
+				return NOT ArrayFindNoCase(allLinks, l);
+			})
+		return orphan;
+	}
+
+	public query function getAllPages(required object wiki, string sortfield='lastupdate', string sortorder='desc', array skipLabels=[], boolean includeRedirect=true, array limitLabels=[]) {
 		return queryExecute(
 			sql="
 				SELECT
@@ -57,7 +79,13 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				ORDER BY #sortfield# #sortorder#
 		")
 		.filter( function(w) {
+			return ArrayLen(skipLabels) == 0 ? true : Not ArrayFindNoCase(skipLabels, w.Label);
+		})
+		.filter( function(w) {
 			return includeRedirect ? true : !(Len(w.RedirectLabel));
+		})
+		.filter( function(w) {
+			return ArrayLen(limitLabels) == 0 ? true : ArrayFindNoCase(limitLabels, w.Label);
 		});
 	}
 
