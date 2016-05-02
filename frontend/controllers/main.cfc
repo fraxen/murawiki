@@ -22,7 +22,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				return carry.append(l);
 			}, [])
 			.filter( function(l) {
-				return NOT ArrayContainsNoCase(StructKeyArray(wiki.wikilist), l);
+				return NOT ArrayFindNoCase(StructKeyArray(wiki.wikilist), l);
 			})
 			.reduce(function(carry, l) {
 				carry[l].RandomSort = Rand();
@@ -55,7 +55,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				return carry.append(links, true);
 			}, [])
 			.filter(function(l) {
-				return NOT ArrayContains(skipLabels, l)
+				return NOT ArrayFind(skipLabels, l)
 			})
 			.reduce(function(carry, l) {
 				carry[l] = l;
@@ -66,7 +66,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			}, []);
 		StructKeyArray(wiki.wikilist)
 			.filter( function(l) {
-				return NOT ArrayContainsNoCase(allLinks, l);
+				return NOT ArrayFindNoCase(allLinks, l);
 			})
 			.reduce(function(carry, l) {
 				carry[l].RandomSort = Rand();

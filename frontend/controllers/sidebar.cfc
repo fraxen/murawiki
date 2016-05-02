@@ -27,7 +27,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		)
 		rc.backlinks = rc.wiki.wikiList
 			.filter( function(l) {
-				return ArrayContainsNoCase(rc.wiki.wikiList[l], label);
+				return ArrayFindNoCase(rc.wiki.wikiList[l], label);
 			})
 			.filter( function(l) {
 				return l!=label;
