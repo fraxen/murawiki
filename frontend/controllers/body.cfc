@@ -62,6 +62,27 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function undefined() {
+		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
+		rc.rb = new mura.resourceBundle.resourceBundleFactory(
+			parentFactory = $.siteConfig('rbFactory'),
+			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
+			locale = rc.wiki.getLanguage()
+		);
+		rc.undefined = rc.wiki.wikiList
+			.reduce(function(carry, label, links) {
+				return carry.append(links, true);
+			}, [])
+			.reduce(function(carry, l) {
+				carry[l] = l;
+				return carry;
+			}, {})
+			.reduce(function(carry, l) {
+				return carry.append(l);
+			}, [])
+			.filter( function(l) {
+				return NOT ArrayFindNoCase(StructKeyArray(rc.wiki.wikilist), l);
+			})
+			.sort('text', 'asc');
 		return;
 	}
 
