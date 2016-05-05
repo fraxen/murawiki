@@ -12,6 +12,27 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function allpages() {
+		param rc.sortby = 'label';
+		param rc.direction = 'asc';
+		param rc.includeredirect = 0;
+		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
+		rc.rb = new mura.resourceBundle.resourceBundleFactory(
+			parentFactory = $.siteConfig('rbFactory'),
+			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
+			locale = rc.wiki.getLanguage()
+		);
+		var skipLabels = [
+			rc.rb.getKey('instructionsLabel'),
+			rc.rb.getKey('allpagesLabel'),
+			rc.rb.getKey('mainthomeLabel'),
+			rc.rb.getKey('maintoldLabel'),
+			rc.rb.getKey('maintorphanLabel'),
+			rc.rb.getKey('maintundefinedLabel'),
+			rc.rb.getKey('tagsLabel')
+		];
+		rc.listingIterator = $.getBean('contentIterator')
+			.setQuery(getWikiManagerService().getAllPages(rc.wiki, rc.sortby, rc.direction, skipLabels, rc.includeredirect));
+		framework.setLayout('listing');
 		return;
 	}
 
@@ -20,6 +41,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function orphan() {
+		param rc.sortby = 'label';
+		param rc.direction = 'asc';
+		param rc.includeredirect = 1;
 		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
 		rc.rb = new mura.resourceBundle.resourceBundleFactory(
 			parentFactory = $.siteConfig('rbFactory'),
@@ -33,7 +57,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.orphan = getWikiManagerService().getOrphan(rc.wiki, skipLabels);
 		rc.listingIterator = $.getBean('contentIterator')
 			.setQuery(
-				getWikiManagerService().getAllPages(rc.wiki, 'label', 'asc', skipLabels, true, rc.orphan)
+				getWikiManagerService().getAllPages(rc.wiki, rc.sortby, rc.direction, skipLabels, rc.includeredirect, rc.orphan)
 			)
 		framework.setLayout('listing');
 		return;
