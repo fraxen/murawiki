@@ -343,8 +343,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
 			locale = rc.wiki.getLanguage()
 		)
-		if (ListContainsNoCase(history, label)) {
-			history = ListDeleteAt(history, ListContainsNoCase(history, label));
+		while(ListFindNoCase(history, label)) {
+			history = ListDeleteAt(history, ListFindNoCase(history, label));
 		}
 		while(ListLen(history) GT 9) {
 			history = ListDeleteAt(history, 10);
