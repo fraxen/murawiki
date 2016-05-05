@@ -30,7 +30,16 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		return orphan;
 	}
 
-	public query function getAllPages(required object wiki, string sortfield='lastupdate', string sortorder='desc', array skipLabels=[], boolean includeRedirect=true, array limitLabels=[]) {
+	public query function getAllPages(required object wiki, string sortfield='label', string sortorder='asc', array skipLabels=[], boolean includeRedirect=true, array limitLabels=[]) {
+		if (!ArrayFindNoCase(['title','label','lastupdate'], ARGUMENTS.sortfield)) {
+			ARGUMENTS.sortfield = 'label';
+		}
+		if (!ArrayFindNoCase(['asc','desc'], ARGUMENTS.sortorder)) {
+			ARGUMENTS.sortorder = 'asc';
+		}
+		if (!ArrayFindNoCase([1,0], ARGUMENTS.includeRedirect)) {
+			ARGUMENTS.sortorder = 1;
+		}
 		return queryExecute(
 			sql="
 				SELECT
