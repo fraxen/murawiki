@@ -77,10 +77,14 @@ a[disabled] {
 .wikiBodyInc {MARGIN-TOP: 4em;}
 .wikilisting tr:hover  {CURSOR: Pointer;}
 .wikilisting table {WIDTH: 100% !important;}
-.wikilisting table tr td:nth-child(3n+3), .wikilisting table tr th:nth-child(3n+3) {
-	WIDTH: 15%;
-}
-.wikilisting table tr td:nth-child(4n+4), .wikilisting table tr th:nth-child(4n+4) {
+.wikilisting table tr td:last-child, .wikilisting table tr th:last-child {
 	TEXT-ALIGN: Center;
+}
+div.moreResults {
+	MARGIN: 0.5em 0 0.5em 0;
+	PADDING: 0 0.5em 0 0.5em;
+	TEXT-ALIGN: Right;
+	HEIGHT: 100% !important;
+	LINE-HEIGHT: 2em;
 }
 
