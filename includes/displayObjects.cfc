@@ -11,6 +11,10 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 
 	// ========================== Configured Display Object(s) ================
 
+	public any function dspSearchResults($) {
+		return getApplication().doAction('frontend:body.search');
+	}
+
 	public any function dspAllTags($) {
 		return getApplication().doAction('frontend:body.alltags');
 	}

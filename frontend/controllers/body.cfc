@@ -7,6 +7,25 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		return;
 	}
 
+	public void function search() {
+		param rc.q = '';
+		var searchResults = {}
+		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
+		if (rc.q != '') {
+			searchResults = getWikiManagerService().search(rc.wiki, rc.q);
+			searchResults.searchResults = searchResults.searchResults
+				.map (function (p) {
+					p.Filename = $.CreateHREF(filename='#rc.wiki.getFilename()#/#p.Label#/');
+					return p;
+				});
+			rc.searchStatus = searchResults.searchStatus;
+			rc.listingIterator = $.getBean('contentIterator')
+				.setQuery(searchResults.searchResults);
+			framework.setLayout('listing');
+		}
+		return;
+	}
+
 	public void function alltags() {
 		return;
 	}

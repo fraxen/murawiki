@@ -27,14 +27,20 @@
 	this.liCurrentClass = 'active';
 	this.aCurrentClass = 'active';
 
+	useLastUpdate = ArrayLen(QueryColumnData(variables.iterator.getquery(), 'lastupdate').filter(function(f){ return len(f);}));
+	useSummary = ListFindNoCase(variables.iterator.getQuery().columnlist, 'summary')
+
 	qrystr = REReplace(CGI.query_string, 'startRow=\d+($|\&)', '');
 </cfscript>
 </cfsilent>
 
+
 <cfoutput>
-<div id="maintenanceOld" class="wikiBodyInc wikilisting">
+#body#
+<div class="wikiBodyInc wikilisting">
+	<cfif variables.iterator.getRecordCount()>
 	<div class="moreResults">
-		<cfif ListLast(rc.action, '.') NEQ 'old'>
+		<cfif !ArrayFindNoCase(['old', 'search'], ListLast(rc.action, '.'))>
 			<form name="listingopts" method="get" action="#$.createHREF(filename=$.content('filename'))#">
 			Sort by: <select name="sortby">
 				<option value="label" <cfif rc.sortby EQ 'label'>selected="selected"</cfif>>Label</option>
@@ -54,14 +60,23 @@
 		<a href="#xmlFormat('?#(variables.nextN.recordsPerPage gt 1 ? 'startRow' : 'pageNum')#=#variables.nextN.next#')#&#qrystr#" class="navNext">Next</a>
 		</cfif>
 	</div>
+	<cfelse>
+		<em>#rc.rb.getKey('listingNone')#</em>
+	</cfif>
 
+	<cfif variables.iterator.getRecordCount()>
 	<table class="table-striped table-hover table-condensed">
 		<thead>
 			<tr>
 				<th></th>
 				<th>Label/Title</th>
 				<cfif rc.includeredirect><th>Redirect&nbsp;to</th></cfif>
-				<th>Last update</th>
+				<cfif useLastUpdate>
+					<th class="center">Last update</th>
+				</cfif>
+				<cfif useSummary>
+					<th>Summary</th>
+				</cfif>
 			</tr>
 		</thead>
 		<tbody>
@@ -85,16 +100,25 @@
 					</a>
 				</td>
 				</cfif>
-				<td>
+				<cfif useLastUpdate>
+				<td class="center">
 					#DateFormat(item.getValue('Lastupdate'), 'yyyy-mm-dd')# #TimeFormat(item.getValue('Lastupdate'), 'HH:mm')#
 				</td>
+				</cfif>
+				<cfif useSummary>
+				<td>
+					#HTMLEditFormat(item.getValue('Summary'))#
+				</td>
+				</cfif>
 			</tr>
 		</cfloop>
 		</tbody>
 	</table>
+	</cfif>
 </div>
 </cfoutput>
 
+<cfif variables.nextn.numberofpages gt 1>
 <cfsilent>
 	<cfparam name="request.sortBy" default=""/>
 	<cfparam name="request.sortDirection" default=""/>
@@ -104,9 +128,9 @@
 	<cfparam name="request.filterBy" default=""/>
 	<cfparam name="request.currentNextNID" default=""/>
 	<cfif variables.nextN.recordsPerPage gt 1>
-		<cfset variables.paginationKey="startRow">
+		<cfset variables.paginationKey="startRow" />
 	<cfelse>
-		<cfset variables.paginationKey="pageNum">
+		<cfset variables.paginationKey="pageNum" />
 	</cfif>
 </cfsilent>
 
@@ -155,6 +179,7 @@
 			</ul>
 	</div>
 </cfoutput>
+</cfif>
 <script type="text/javascript">
 	$(function() {
 		$('.wikilisting tbody tr').click( function() {

@@ -8,6 +8,48 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 	setWikis({});
 	setEngines({});
 
+	public struct function search(required object wiki, required string q) {
+		var searchResults = {};
+		var searchStatus = {};
+
+		if (ARGUMENTS.wiki.getUseIndex()) {
+			search collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' suggestions='Always' criteria='#ARGUMENTS.q#' name='searchResults' status='searchStatus';
+			queryAddColumn(searchResults, 'Label');
+			queryAddColumn(searchResults, 'Filename');
+			queryAddColumn(searchResults, 'LastUpdate');
+			searchResults = searchResults
+				.map (function (p) {
+					p.Label = p.Key;
+					p.Filename = '';
+					p.Lastupdate = '';
+					return p;
+				});
+			return {searchResults = searchResults, searchStatus = searchStatus};
+		} else {
+			searchResults = getAllPages(ARGUMENTS.Wiki, 'lastupdate', 'desc', [], false, [], true);
+			queryAddColumn(searchResults, 'Rank');
+			queryAddColumn(searchResults, 'Summary');
+			searchResults = searchResults
+				.map(function(p) {
+					p.rank = 0;
+					['title', 'label', 'blurb'].each( function(c) {
+						p.rank = p.rank + ( Len(p[c]) - Len(ReplaceNoCase(p[c], q, '', 'all'))) / Len(q);
+					});
+					p.summary = Left(stripHTML(p.Body), 200);
+					return p;
+				})
+				.filter(function(p) {
+					return p.rank;
+				})
+				.sort('rank,lastupdate', 'desc,desc')
+				.map(function(p) {
+					p.lastupdate = '';
+					return p;
+				});
+			return {searchResults = searchResults, searchStatus = {}};
+		}
+	}
+
 	public array function getOrphan(required object wiki, array skipLabels=[]) {
 		var allLinks = ARGUMENTS.wiki.wikiList
 			.reduce(function(carry, label, links) {
@@ -378,6 +420,32 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				objectID = dspO['TagCloud'].ObjectID
 			).save();
 		}
+
+		// Create search results
+		getBean('content').set({
+			siteid = wiki.getSiteID(),
+			type = 'Page',
+			subType = 'WikiPage',
+			title = rb.getKey('searchResultsTitle'),
+			body = '',
+			blurb = '',
+			summary = 'Search results',
+			active=1,
+			approved=1,
+			display=1,
+			label = 'Search Results',
+			isNav = wiki.getSiteNav(),
+			Notes = 'Initialized',
+			searchExclude = !wiki.getSiteSearch(),
+			parentid = wiki.getContentID()
+		})
+			.addDisplayObject(
+				regionid = wiki.getRegionMain(),
+				object = 'plugin',
+				name = dspO['Search Results'].name,
+				objectID = dspO['Search Results'].ObjectID
+			)
+			.save();
 
 		// Create Instructions
 		blurb = Replace(rb.getKey('instructionsBody'), '\r', Chr(13), 'ALL');
