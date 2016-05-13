@@ -338,7 +338,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 	}
 
 	public string function stripHTML(required string html) {
-		return ReReplace(ARGUMENTS.html, '<[^>]*(?:>|$)', 'ALL');
+		return ReReplace(ARGUMENTS.html, '<[^>]*(?:>|$)', ' ', 'ALL');
 	}
 
 	public string function outGoingLinks(required any wikiPage) {
