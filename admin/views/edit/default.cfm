@@ -46,7 +46,7 @@
 		<dl class="dl-horizontal">
 		<dt><label for="usetags">Use tags?</label></dt>
 		<dd>
-		<input type="checkbox" name="usetags" value="1" <cfif rc.wikiedit.getUseTags()>checked="checked"</cfif> />
+		<input type="checkbox" id="usetags" name="usetags" value="1" <cfif rc.wikiedit.getUseTags()>checked="checked"</cfif> />
 		</dd>
 		</dl>
 	</div>
@@ -54,7 +54,7 @@
 		<dl class="dl-horizontal">
 		<dt><label for="sitenav">Include in site nav?<cfif rc.wikiedit.getIsInit()><br/><em>Only applies to new content</em></cfif></label></dt>
 		<dd>
-		<input type="checkbox" name="sitenav" value="1" <cfif rc.wikiedit.getSiteNav()>checked="checked"</cfif> />
+		<input type="checkbox" id="sitenav" name="sitenav" value="1" <cfif rc.wikiedit.getSiteNav()>checked="checked"</cfif> />
 		</dd>
 		</dl>
 	</div>
@@ -62,7 +62,7 @@
 		<dl class="dl-horizontal">
 		<dt><label for="sitesearch">Include in site search?<cfif rc.wikiedit.getIsInit()><br/><em>Only applies to new content</em></cfif></label></dt>
 		<dd>
-		<input type="checkbox" name="sitesearch" value="1" <cfif rc.wikiedit.getSiteSearch()>checked="checked"</cfif> />
+		<input type="checkbox" id="sitesearch" name="sitesearch" value="1" <cfif rc.wikiedit.getSiteSearch()>checked="checked"</cfif> />
 		</dd>
 		</dl>
 	</div>
