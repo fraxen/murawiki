@@ -82,7 +82,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		return orphan;
 	}
 
-	public query function getAllPages(required object wiki, string sortfield='label', string sortorder='asc', array skipLabels=[], boolean includeRedirect=true, array limitLabels=[]) {
+	public query function getAllPages(required object wiki, string sortfield='label', string sortorder='asc', array skipLabels=[], boolean includeRedirect=true, array limitLabels=[], boolean includeBlurb=false) {
 		if (!ArrayFindNoCase(['title','label','lastupdate'], ARGUMENTS.sortfield)) {
 			ARGUMENTS.sortfield = 'label';
 		}
@@ -99,8 +99,10 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 					tcontent.Filename,
 					tcontent.ContentID,
 					tcontent.lastUpdate,
+					tcontent.Body,
 					extendatt.attributeValue AS Label,
-					extendRedirect.redirectLabel AS RedirectLabel
+					extendRedirect.redirectLabel AS RedirectLabel,
+					extendBlurb.blurb as Blurb
 				FROM
 					(
 						SELECT
@@ -129,6 +131,19 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 						name in ('Redirect')
 					) extendRedirect
 					ON (tcontent.ContentHistID = extendRedirect.baseID)
+					LEFT OUTER JOIN
+						(
+					SELECT
+						attributeValue AS Blurb, baseID
+					FROM
+						tclassextenddata
+					LEFT OUTER JOIN
+						tclassextendattributes
+					ON (tclassextenddata.attributeID = tclassextendattributes.attributeID)
+							WHERE
+						name in ('Blurb')
+					) extendBlurb
+					ON (tcontent.ContentHistID = extendBlurb.baseID)
 				WHERE
 					tcontent.SiteID = '#ARGUMENTS.Wiki.getSiteID()#'
 					AND
@@ -288,6 +303,17 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				)
 				wikis[w.ContentID].wikiList = loadWikiList(wikis[w.ContentID]);
 				wikis[w.ContentID].tags = loadTags(wikis[w.ContentID]);
+				if (wikis[w.ContentID].getUseIndex() == 1) {
+					var allPages = getAllPages(wikis[w.ContentID], 'Label', 'Asc', [], false, [], true)
+						.map( function(p) {
+							if (p.Title != p.Label) {
+								p.Title = '#p.Title# (#p.Label#)';
+							}
+							p.Body = stripHTML(p.Body);
+							return p;
+						});
+					index collection='Murawiki_#w.ContentID#' action='refresh' query='allPages' key='Label' title='Title' body='Body';
+				}
 			});
 		setWikis(wikis);
 		return wikis;
