@@ -393,12 +393,6 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				criteria=Wiki.getContentID(),
 				dataType='varchar'
 			)
-			.addParam(
-				field='subtype',
-				condition='EQUALS',
-				criteria='WikiPage',
-				dataType='varchar'
-			)
 			.setSortBy('filename')
 			.setShowNavOnly(0)
 			.setShowExcludeSearch(1)
