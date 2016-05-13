@@ -200,6 +200,12 @@
 				displaymethod="dspAllTags"
 				persist="0"
 			/>
+			<displayobject
+				name="Search results"
+				component="includes.displayObjects"
+				displaymethod="dspSearchResults"
+				persist="0"
+			/>
 		</displayobjects>
 
 		<!-- 
@@ -223,6 +229,8 @@
 					<attribute adminonly="1" defaultvalue="3" label="Region for sidebar" name="regionside" orderno="9" required="1" type="Numeric" />
 					<attribute adminonly="1" defaultvalue="" label="Stylesheet" name="stylesheet" orderno="10" required="1" type="TextBox" />
 					<attribute adminonly="1" defaultvalue="0" label="Allow Mura tags" name="stylesheet" orderno="11" required="RadioGroup" type="1^0" />
+					<attribute adminonly="1" defaultvalue="1" label="Use cfindex" name="UseIndex" orderno="12" required="0" type="RadioGroup" optionlist="1^0" />
+					<attribute adminonly="1" defaultvalue="" label="CollectionPath" name="CollectionPath" orderno="13" required="0" type="TextBox" />
 				</attributeset>
 			</extension>
 			<extension adminonly="0" basekeyfield="contentHistID" basetable="tcontent" datatable="tclassextenddata" description="Wiki page (using MuraWiki plugin)" hasassocfile="1" hasbody="0" hasconfigurator="0" hassummary="0" iconclass="icon-file-text-alt" subtype="WikiPage" type="Page">

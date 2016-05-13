@@ -135,8 +135,22 @@ component persistent="false" accessors="true" output="false" extends="controller
 		param rc.UseTags=0;
 		param rc.SiteNav=0;
 		param rc.SiteSearch=0;
+		param rc.useIndex=0;
+		param rc.collectionpath='';
 
 		rc.Home = LCase(rc.Home);
+
+		if (rc.useIndex) {
+			try {
+				rc.useIndex = getWikiManagerService().initCollection(wiki, rc.collectionpath) ? 1 : 0;
+			}
+			catch(e) {
+				rc.useIndex = 0;
+			}
+			if (!rc.useIndex) {
+				rc.collectionpath = '';
+			}
+		}
 
 		wiki.set({
 			  Title      = rc.title
@@ -150,6 +164,8 @@ component persistent="false" accessors="true" output="false" extends="controller
 			, UseTags    = rc.UseTags
 			, SiteNav    = rc.SiteNav
 			, SiteSearch = rc.SiteSearch
+			, useIndex   = rc.UseIndex
+			, collectionpath = rc.CollectionPath
 		}).save();
 
 		wiki.setIsInit(False);
@@ -161,6 +177,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 				.setIsInit(True);
 		} 
 		wiki.save();
+		import();
 		framework.redirect(action='admin:edit', querystring='wiki=#rc.ContentID#');
 	}
 

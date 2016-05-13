@@ -104,6 +104,20 @@
 			</cfloop>
 		</select>
 	</div>
+	<div class="mura-form-checkbox form-group">
+		<dl class="dl-horizontal">
+		<dt><label for="useindex">Use cfindex/cfsearch for search</label></dt>
+		<dd>
+		<input type="checkbox" id="useindex" name="useindex" value="1" <cfif rc.wikiedit.getUseIndex() EQ 1>checked="checked"</cfif> />
+		</dd>
+		</dl>
+	</div>
+	<div class="mura-form-textfield form-group control-group">
+		<label for="collectionpath">
+			Absolute path for collection (required if option above is checked)
+		</label>
+		<input type="text" id="collectionpath" name="collectionpath" value="#rc.wikiEdit.getCollectionPath()#" class="form-control" placeholder="Absolute path for collection"/>
+	</div>
 	<div >
 		<br/><input type="submit" class="btn btn-default" value="<cfif rc.wikiedit.getIsInit()>Update<cfelse>Initialize</cfif>" accesskey="s" style="WIDTH: 100%;" />
 	</div>
