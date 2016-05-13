@@ -50,6 +50,16 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		}
 	}
 
+	public boolean function initCollection(required object wiki, required string collPath='') {
+		var collectionExists = '';
+		collection action='list' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' name='collectionExists';
+		if (collectionExists.RecordCount) {
+			collection action='delete' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#';
+		}
+		collection action='create' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' path='#ARGUMENTS.collPath#';
+		return true;
+	}
+
 	public array function getOrphan(required object wiki, array skipLabels=[]) {
 		var allLinks = ARGUMENTS.wiki.wikiList
 			.reduce(function(carry, label, links) {
