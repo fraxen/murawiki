@@ -463,7 +463,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			active=1,
 			approved=1,
 			display=1,
-			label = 'Search Results',
+			label = rb.getKey('searchResultsLabel'),
 			isNav = wiki.getSiteNav(),
 			Notes = 'Initialized',
 			searchExclude = !wiki.getSiteSearch(),
