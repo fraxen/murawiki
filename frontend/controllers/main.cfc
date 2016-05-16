@@ -336,21 +336,23 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			);
 			return;
 		}
-		var history = StructKeyExists(COOKIE, '#rc.wiki.getContentID()#history') ? Cookie['#rc.wiki.getContentID()#history'] : '';
-		var label = $.content().getLabel();
 		rc.rb = new mura.resourceBundle.resourceBundleFactory(
 			parentFactory = $.siteConfig('rbFactory'),
 			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
 			locale = rc.wiki.getLanguage()
 		)
-		while(ListFindNoCase(history, label)) {
-			history = ListDeleteAt(history, ListFindNoCase(history, label));
+		var history = StructKeyExists(COOKIE, '#rc.wiki.getContentID()#history') ? Cookie['#rc.wiki.getContentID()#history'] : '';
+		var label = $.content().getLabel();
+		if (!ArrayFindNoCase([rc.rb.getKey('SearchResultsLabel')], label)) {
+			while(ListFindNoCase(history, label)) {
+				history = ListDeleteAt(history, ListFindNoCase(history, label));
+			}
+			while(ListLen(history) GT 9) {
+				history = ListDeleteAt(history, 10);
+			}
+			history = '#label#,#history#';
+			Cookie['#rc.wiki.getContentID()#history'] = history;
 		}
-		while(ListLen(history) GT 9) {
-			history = ListDeleteAt(history, 10);
-		}
-		history = '#label#,#history#';
-		Cookie['#rc.wiki.getContentID()#history'] = history;
 
 		if (!isObject(rc.wiki)) {
 			framework.setView('main.plainpage');
