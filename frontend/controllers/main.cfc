@@ -150,6 +150,16 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		return;
 	}
 
+	public void function touch() {
+		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=$.event('siteID'));
+		rc.wiki = getWikiManagerService().getWiki(rc.wikiPage.getParentID());
+		rc.wikiPage.save();
+		$.redirect(
+			location = $.createHREF(filename='#rc.wiki.getFilename()#/#rc.wikiPage.getLabel()#?touched=1')
+			, statusCode = '302'
+		)
+	}
+
 	public void function loadWikis() {
 		getWikiManagerService().loadWikis();
 		framework.setView('main.blank');

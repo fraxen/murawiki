@@ -57,6 +57,11 @@
 		<p>#rc.rb.getKey('oldMessage')#</p>
 	</div>
 </cfif>
+<cfif structKeyExists(rc, 'touched')>
+	<div class="message" id="touched">
+		<p>#rc.rb.getKey('touchedMessage')#</p>
+	</div>
+</cfif>
 <cfif structKeyExists(rc, 'orphan')>
 	<div class="message" id="orphan">
 		<p>#rc.rb.getKey('orphanMessage')#</p>
