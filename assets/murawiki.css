@@ -85,4 +85,10 @@ div.moreResults {
 	HEIGHT: 100% !important;
 	LINE-HEIGHT: 2em;
 }
-
+#timestamp {
+	FONT-STYLE: Italic;
+	FLOAT: Right;
+	PADDING: 0 0 1em 1em;
+	BORDER-BOTTOM: 1px solid #ccc;
+	BORDER-LEFT: 1px solid #ccc;
+}
