@@ -41,7 +41,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	public void function onsite404 (required struct $) {
 		// If the current filename is under a wiki, load a content bean
 		var cf = $.event('currentfilename');
-		var bf = {}
+		var bf = {};
 		if (ListLen(cf, '/') > 1) {
 			try {
 				bf = getApplication().getSubSystemBeanFactory('frontend');
