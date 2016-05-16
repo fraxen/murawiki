@@ -34,7 +34,7 @@
 			#rc.rb.getKey('sidebarPageopsRedirect')#
 		</a></li>
 		<li><a
-			href="#buildURL(action='frontend:main.touch', querystring='contentid=#rc.wikiPage.getContentID()#')#"
+			href="#buildURL(action='frontend:ops.touch', querystring='contentid=#rc.wikiPage.getContentID()#')#"
 			<cfif !rc.isUndefined>accesskey="#rc.rb.getKey('sidebarPageopsTouchAccessKey')#"</cfif>
 			<cfif rc.isUndefined>disabled="disabled"</cfif>
 		>

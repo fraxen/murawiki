@@ -1,6 +1,5 @@
 ﻿<cfscript>
 component displayname="frontend" persistent="false" accessors="true" output="false" extends="controller" {
-	property name='WikimanagerService';
 
 	public void function default() {
 		framework.setView('main.blank');

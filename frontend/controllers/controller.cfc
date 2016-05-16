@@ -8,16 +8,22 @@ https://github.com/stevewithington/MuraFW1
 
 */
 component persistent="false" accessors="true" output="false" extends="mura.cfobject" {
-		property name='$';
-		property name='beanfactory';
-		property name='framework';
+	property name='$';
+	property name='beanfactory';
+	property name='framework';
+	property name='WikimanagerService';
 
-		public any function before(required struct rc) {
-			if ( StructKeyExists(rc, '$') ) {
-				var $ = rc.$;
-				set$(rc.$);
-			}
+	public any function before(required struct rc) {
+		if ( StructKeyExists(rc, '$') ) {
+			var $ = rc.$;
+			set$(rc.$);
 		}
+	}
 
+	public void function loadWikis() {
+		getWikiManagerService().loadWikis();
+		framework.setView('main.blank');
+		return;
+	}
 }
 </cfscript>

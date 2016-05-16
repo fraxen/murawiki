@@ -71,7 +71,7 @@
 	<div class="message" id="version">
 		#ReReplace(rc.rb.getKey('versionNote'), '{versiondate}', '#DateFormat(rc.wikiPage.getLastUpdate(), 'yyyy-mm-dd')# #TimeFormat(rc.wikiPage.getLastUpdate(), 'HH:mm')#')#<br>
 		<a href="#$.createHREF(filename=rc.wikiPage.getFilename())#">#rc.rb.getKey('versionNoteLink')#</a><br/>
-		<strong><a href="#BuildURL(action='frontend:main.revertsubmit', querystring='version=#rc.version#')#">#rc.rb.getKey('versionNoteRevert')#</a></strong>
+		<strong><a href="#BuildURL(action='frontend:ops.revert', querystring='version=#rc.version#')#">#rc.rb.getKey('versionNoteRevert')#</a></strong>
 		<p><em>#rc.wikiPage.getNotes()# (#rc.wikiPage.getLastUpdateBy()#)</em></p>
 	</div>
 </cfif>
@@ -85,12 +85,12 @@
 			<h4 class="modal-title">#rc.rb.getKey('redirectRemove')# <em>#rc.redirectfrom#</em></h4>
 		</div>
 		<div class="modal-body">
-			<form id="editform" class="mura-form-builder" method="post" action="#BuildURL('frontend:main.redirectremovesubmit')#" onsubmit="return validateForm(this);">
+			<form id="editform" class="mura-form-builder" method="post" action="#BuildURL('frontend:ops.redirectremove')#" onsubmit="return validateForm(this);">
 				<input type="hidden" name="ParentID" value="#rc.wiki.getContentID()#" />
 				<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />
 				<input type="hidden" name="labelfrom" value="#rc.redirectfrom#" />
 				<div >
-					<br/><input type="submit" class="btn btn-default" value="#rc.rb.getKey('redirectSubmit')#" /><br/>
+					<br/><input type="submit" class="btn btn-default" value="#rc.rb.getKey('submit')#" /><br/>
 				</div>
 			</form>
 		</div>
@@ -115,7 +115,7 @@
 		<h4 class="modal-title">#rc.rb.getKey('wikiPageEditTitle')# <em>#rc.wikiPage.getLabel()#</em></h4>
 	</div>
 	<div class="modal-body">
-		<form id="editform" class="mura-form-builder" method="post" enctype="multipart/form-data" action="#BuildURL('frontend:main.pagesubmit')#" onsubmit="return validateForm(this);">
+		<form id="editform" class="mura-form-builder" method="post" enctype="multipart/form-data" action="#BuildURL('frontend:ops.page')#" onsubmit="return validateForm(this);">
 			<input type="hidden" name="ParentID" value="#rc.wiki.getContentID()#" />
 			<input type="hidden" name="ContentID" value="#rc.wikiPage.getContentID()#" />
 			<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />
@@ -184,7 +184,7 @@
 		<h4 class="modal-title">#rc.rb.getKey('redirect')# <em>#rc.wikiPage.getLabel()#</em></h4>
 	</div>
 	<div class="modal-body">
-		<form id="editform" class="mura-form-builder" method="post" action="#BuildURL('frontend:main.redirectsubmit')#" onsubmit="return validateForm(this);">
+		<form id="editform" class="mura-form-builder" method="post" action="#BuildURL('frontend:ops.redirect')#" onsubmit="return validateForm(this);">
 			<input type="hidden" name="ParentID" value="#rc.wiki.getContentID()#" />
 			<input type="hidden" name="ContentID" value="#rc.wikiPage.getContentID()#" />
 			<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />
@@ -217,7 +217,7 @@
 		<h4 class="modal-title">#rc.rb.getKey('delete')# <em>#rc.wikiPage.getLabel()#</em>?</h4>
 	</div>
 	<div class="modal-body">
-		<form id="editform" class="mura-form-builder" method="post" action="#BuildURL('frontend:main.delete')#" onsubmit="return validateForm(this);">
+		<form id="editform" class="mura-form-builder" method="post" action="#BuildURL('frontend:ops.delete')#" onsubmit="return validateForm(this);">
 			<input type="hidden" name="ParentID" value="#rc.wiki.getContentID()#" />
 			<input type="hidden" name="ContentID" value="#rc.wikiPage.getContentID()#" />
 			<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />
