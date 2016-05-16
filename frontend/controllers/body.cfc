@@ -47,6 +47,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			rc.rb.getKey('maintoldLabel'),
 			rc.rb.getKey('maintorphanLabel'),
 			rc.rb.getKey('maintundefinedLabel'),
+			rc.rb.getKey('SearchResultsLabel'),
 			rc.rb.getKey('tagsLabel')
 		];
 		rc.listingIterator = $.getBean('contentIterator')
@@ -71,6 +72,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		);
 		var skipLabels = [
 			rc.rb.getKey('instructionsLabel'),
+			rc.rb.getKey('SearchResultsLabel'),
 			rc.rb.getKey('mainthomeLabel')
 		];
 		rc.orphan = getWikiManagerService().getOrphan(rc.wiki, skipLabels);
@@ -96,6 +98,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			rc.rb.getKey('maintoldLabel'),
 			rc.rb.getKey('maintorphanLabel'),
 			rc.rb.getKey('maintundefinedLabel'),
+			rc.rb.getKey('SearchResultsLabel'),
 			rc.rb.getKey('tagsLabel')
 		];
 		rc.listingIterator = $.getBean('contentIterator')
