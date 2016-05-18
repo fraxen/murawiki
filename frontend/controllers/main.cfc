@@ -30,7 +30,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			.sort('numeric', 'asc', 'RandomSort')
 			.each( function(l) {
 				$.redirect(
-					location = $.createHREF(filename='#wiki.getFilename()#/#l#/?undefined=1'),
+					location = $.createHREF(filename='#wiki.getFilename()#/#l#/', querystring='undefined=1'),
 					statusCode = '302'
 				);
 				abort;
@@ -76,7 +76,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			.each( function(l) {
 				var wikipage = $.getBean('content').loadBy(SiteID=wiki.getSiteID(), filename='#Wiki.getFilename()#/#l#/');
 				$.redirect(
-					location = $.createHREF(filename='#wikipage.getFilename()#?orphan=1'),
+					location = $.createHREF(filename='#wikipage.getFilename()#', querystring='orphan=1'),
 					statusCode = '302'
 				);
 			});
@@ -140,7 +140,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			.sort('numeric', 'asc', 'RandomSort')
 			.each( function(ContentID, p) {
 				$.redirect(
-					location = $.createHREF(filename='#Wiki.getFilename()#/#$.getBean('content').loadBy(ContentID=ContentID, SiteID = Wiki.getSiteID()).getLabel()#?older=1'),
+					location = $.createHREF(filename='#Wiki.getFilename()#/#$.getBean('content').loadBy(ContentID=ContentID, SiteID = Wiki.getSiteID()).getLabel()#', querystring='older=1'),
 					statusCode = '302'
 				)
 			});
@@ -171,7 +171,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		}
 		if( $.content().getRedirect() != '' ) {
 			$.redirect(
-				location = '#$.createHREF(filename=rc.wiki.getFilename())##$.content().getRedirect()#/?redirectfrom=#$.content().getLabel()#'
+				location = '#$.createHREF(filename=rc.wiki.getFilename())##$.content().getRedirect()#/', querstrying='redirectfrom=#$.content().getLabel()#'
 				, statusCode = '301'
 			);
 			return;
@@ -235,7 +235,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		} else {
 			// Redirect to admin for initialization
 			$.redirect(
-				location = '#application.configBean.getContext()#/plugins/#framework.getPackage()#/?#framework.getPackage()#action=admin:edit&wiki=#$.content().getContentID()#'
+				location = '#application.configBean.getContext()#/plugins/#framework.getPackage()#/?#framework.getPackage()#', querystring='action=admin:edit&wiki=#$.content().getContentID()#'
 				, statusCode = '302'
 			)
 		}

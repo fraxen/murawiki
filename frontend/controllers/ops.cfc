@@ -6,7 +6,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.wiki = getWikiManagerService().getWiki(rc.wikiPage.getParentID());
 		rc.wikiPage.save();
 		$.redirect(
-			location = $.createHREF(filename='#rc.wiki.getFilename()#/#rc.wikiPage.getLabel()#?touched=1')
+			location = $.createHREF(filename='#rc.wiki.getFilename()#/#rc.wikiPage.getLabel()#', querystring='touched=1')
 			, statusCode = '302'
 		)
 	}
