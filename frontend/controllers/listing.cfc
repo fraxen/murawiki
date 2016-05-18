@@ -3,6 +3,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 
 	public void function default() {
 		framework.setView('main.blank');
+		framework.setLayout('default');
 		return;
 	}
 
@@ -20,7 +21,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			rc.searchStatus = searchResults.searchStatus;
 			rc.listingIterator = $.getBean('contentIterator')
 				.setQuery(searchResults.searchResults);
-			framework.setLayout('listing');
 		}
 		return;
 	}
@@ -51,7 +51,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		];
 		rc.listingIterator = $.getBean('contentIterator')
 			.setQuery(getWikiManagerService().getAllPages(rc.wiki, rc.sortby, rc.direction, skipLabels, rc.includeredirect));
-		framework.setLayout('listing');
 		return;
 	}
 
@@ -79,7 +78,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			.setQuery(
 				getWikiManagerService().getAllPages(rc.wiki, rc.sortby, rc.direction, skipLabels, rc.includeredirect, rc.orphan)
 			)
-		framework.setLayout('listing');
 		return;
 	}
 
@@ -102,7 +100,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		];
 		rc.listingIterator = $.getBean('contentIterator')
 			.setQuery(getWikiManagerService().getAllPages(rc.wiki, 'lastupdate', 'asc', skipLabels, false));
-		framework.setLayout('listing');
 		return;
 	}
 
@@ -128,6 +125,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				return NOT ArrayFindNoCase(StructKeyArray(rc.wiki.wikilist), l);
 			})
 			.sort('text', 'asc');
+		framework.setLayout('default');
 		return;
 	}
 

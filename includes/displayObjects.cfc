@@ -12,19 +12,19 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	// ========================== Configured Display Object(s) ================
 
 	public any function dspSearchResults($) {
-		return getApplication().doAction('frontend:body.search');
+		return getApplication().doAction('frontend:listing.search');
 	}
 
 	public any function dspAllTags($) {
-		return getApplication().doAction('frontend:body.alltags');
+		return getApplication().doAction('frontend:listing.alltags');
 	}
 
 	public any function dspAllPages($) {
-		return getApplication().doAction('frontend:body.allpages');
+		return getApplication().doAction('frontend:listing.allpages');
 	}
 
 	public any function dspTagCloud($) {
-		return getApplication().doAction('frontend:body.tagcloud');
+		return getApplication().doAction('frontend:listing.tagcloud');
 	}
 
 	public any function dspShortcutPanel($) {
@@ -56,15 +56,15 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	}
 
 	public any function dspMaintenanceOld($) {
-		return getApplication().doAction('frontend:body.old');
+		return getApplication().doAction('frontend:listing.old');
 	}
 
 	public any function dspMaintenanceOrphan($) {
-		return getApplication().doAction('frontend:body.orphan');
+		return getApplication().doAction('frontend:listing.orphan');
 	}
 
 	public any function dspMaintenanceUndefined($) {
-		return getApplication().doAction('frontend:body.undefined');
+		return getApplication().doAction('frontend:listing.undefined');
 	}
 
 
