@@ -47,7 +47,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		);
 		var skipLabels = [
 			rb.getKey('instructionsLabel'),
-			rc.getKey('searchResultsLabel'),
+			rb.getKey('searchResultsLabel'),
 			rb.getKey('mainthomeLabel')
 		];
 		var allLinks = wiki.wikiList
