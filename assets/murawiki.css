@@ -92,3 +92,9 @@ div.moreResults {
 	BORDER-BOTTOM: 1px solid #ccc;
 	BORDER-LEFT: 1px solid #ccc;
 }
+.wikilisting .hiddenRow {
+    padding: 0 !important;
+}
+.wikilisting .deleted {
+	TEXT-DECORATION: line-through;
+}

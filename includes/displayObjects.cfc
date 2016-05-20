@@ -15,6 +15,10 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		return getApplication().doAction('frontend:listing.search');
 	}
 
+	public any function dspHistory($) {
+		return getApplication().doAction('frontend:listing.history');
+	}
+
 	public any function dspAllTags($) {
 		return getApplication().doAction('frontend:listing.alltags');
 	}

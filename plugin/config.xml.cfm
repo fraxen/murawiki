@@ -206,6 +206,12 @@
 				displaymethod="dspSearchResults"
 				persist="0"
 			/>
+			<displayobject
+				name="History"
+				component="includes.displayObjects"
+				displaymethod="dspHistory"
+				persist="0"
+			/>
 		</displayobjects>
 
 		<!-- 

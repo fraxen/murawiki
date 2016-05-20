@@ -7,6 +7,18 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		return;
 	}
 
+	public void function history() {
+		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
+		rc.rb = new mura.resourceBundle.resourceBundleFactory(
+			parentFactory = $.siteConfig('rbFactory'),
+			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
+			locale = rc.wiki.getLanguage()
+		);
+		rc.history = getWikiManagerService().history(rc.wiki, rc.rb);
+		framework.setLayout('default');
+		return;
+	}
+
 	public void function search() {
 		param rc.q = '';
 		var searchResults = {}

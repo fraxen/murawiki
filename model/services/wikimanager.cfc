@@ -8,6 +8,120 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 	setWikis({});
 	setEngines({});
 
+	public query function history(required object wiki, required object rb) {
+		var sortLabel = {};
+		var history = queryExecute(
+			sql="
+				SELECT
+					tcontent.Title,
+					tcontent.Filename,
+					tcontent.ContentID,
+					tcontent.ContentHistID,
+					tcontent.lastUpdate,
+					tcontent.Active,
+					tcontent.Notes,
+					'Live' AS Status,
+					tcontent.lastUpdateBy AS Username,
+					extendatt.attributeValue AS Label,
+					extendRedirect.redirectLabel AS RedirectLabel,
+					Null AS Packet,
+					lastUpdate AS LatestUpdate,
+					0 AS NumChanges
+				FROM
+					(
+						SELECT
+							name,attributeValue,baseID
+						FROM
+							tclassextenddata
+						LEFT OUTER JOIN
+							tclassextendattributes
+						ON
+							(tclassextenddata.attributeID = tclassextendattributes.attributeID)
+						WHERE
+							name = 'Label' OR name IS NULL
+					) extendatt
+					RIGHT OUTER JOIN tcontent tcontent
+					ON (tcontent.ContentHistID = extendatt.baseID)
+					LEFT OUTER JOIN
+						(
+					SELECT
+						attributeValue AS RedirectLabel,baseID
+					FROM
+						tclassextenddata
+					LEFT OUTER JOIN
+						tclassextendattributes
+					ON (tclassextenddata.attributeID = tclassextendattributes.attributeID)
+							WHERE
+						name in ('Redirect')
+					) extendRedirect
+					ON (tcontent.ContentHistID = extendRedirect.baseID)
+				WHERE
+					tcontent.SiteID = '#ARGUMENTS.Wiki.getSiteID()#'
+					AND
+					tcontent.subType = 'WikiPage'
+					AND
+					tcontent.ParentID = '#ARGUMENTS.Wiki.getContentID()#'
+					AND
+					tcontent.lastupdate > #CreateODBCDateTime(Now()-createTimeSpan(30,0,0,0))#
+				UNION
+				SELECT
+					'' AS Title,
+					'' AS Filename,
+					'' AS ContentID,
+					'' AS ContentHistID,
+					deletedDate as lastUpdate,
+					0 AS Active,
+					'#rb.getKey('historyDeleted')#' AS Notes,
+					'Deleted' AS Status,
+					deletedBy AS Username,
+					'' AS Label,
+					'' AS RedirectLabel,
+					objectstring as packet,
+					deletedDate AS LatestUpdate,
+					0 AS NumChanges
+				FROM
+					ttrash
+				WHERE 
+					SiteID = 'projects' 
+					AND 
+					objectSubType = 'WikiPage' 
+					AND 
+					ParentID = '1025F4FC-CE88-4F1F-8AF589550BBF2D44' 
+					AND 
+					deletedDate > {ts '2016-04-19 12:31:29'} 
+		")
+			.map(function(c) {
+				if (isWddx(c.packet)) {
+					var props = {};
+					wddx output='props' input=c.packet action='wddx2cfml';
+					['Title', 'Filename', 'ContentID', 'ContentHistID', 'Label', 'RedirectLabel'].each(function(prop) {
+						if (StructKeyExists(props, prop)) {
+							c[prop] = props[prop];
+						}
+					});
+					c.packet = '';
+				}
+				if (!StructKeyExists(sortLabel, c.Label)) {
+					sortLabel[c.Label] = {
+						latestUpdate = c.lastupdate,
+						numChanges = 0
+					};
+				}
+				sortLabel[c.Label].numChanges++;
+				if (c.lastUpdate > sortLabel[c.Label].latestUpdate) {
+					sortLabel[c.Label].latestUpdate = c.lastUpdate;
+				}
+				return c;
+			})
+			.map(function(c) {
+				c.latestUpdate = sortLabel[c.Label].latestUpdate;
+				c.numChanges = sortLabel[c.Label].numChanges;
+				return c;
+			})
+			.sort('latestUpdate, lastupdate, Label', 'desc, desc, asc');
+		return history;
+	}
+
 	public struct function search(required object wiki, required string q) {
 		var searchResults = {};
 		var searchStatus = {};
@@ -451,22 +565,37 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			).save();
 		}
 
+		// Create history
+		blurb = Replace(rb.getKey('maintHistoryBody'), '\r', Chr(13), 'ALL');
+		body = engine.renderHTML( blurb, rb.getKey('maintHistoryLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
+		body = body.blurb;
+		getBean('content').set({
+			siteid = wiki.getSiteID(),
+			type = 'Page',
+			subType = 'WikiPage',
+			title = rb.getKey('maintHistoryTitle'),
+			blurb = blurb,
+			label = rb.getKey('maintHistoryLabel'),
+			Notes = 'Initialized',
+			parentid = wiki.getContentID()
+		})
+			.addDisplayObject(
+				regionid = wiki.getRegionMain(),
+				object = 'plugin',
+				name = dspO['History'].name,
+				objectID = dspO['History'].ObjectID
+			)
+			.save();
+
 		// Create search results
 		getBean('content').set({
 			siteid = wiki.getSiteID(),
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('searchResultsTitle'),
-			body = '',
 			blurb = '',
-			summary = 'Search results',
-			active=1,
-			approved=1,
-			display=1,
 			label = rb.getKey('searchResultsLabel'),
-			isNav = wiki.getSiteNav(),
 			Notes = 'Initialized',
-			searchExclude = !wiki.getSiteSearch(),
 			parentid = wiki.getContentID()
 		})
 			.addDisplayObject(

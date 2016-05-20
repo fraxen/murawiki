@@ -18,6 +18,7 @@
 		</script>
 	");
 </cfscript>
+
 <cfoutput>
 	<h2>#rc.rb.getKey('historyTitle')# <em><a href="#$.CreateHref(filename=rc.wikiPage.getFileName())#">#rc.wikiPage.getLabel()#</a></em></h2>
 	<table id="wikiPageHistory" class="table-condensed"><tbody>
