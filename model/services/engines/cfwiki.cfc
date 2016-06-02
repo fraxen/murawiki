@@ -65,6 +65,12 @@ component persistent="false" accessors="false" output="false" {
 			thisBlurb = temp.Blurb;
 			// }}}
 
+			// {{{ Deal with [] links
+			temp = tuckAway (thisBlurb = thisBlurb, token= '<bracketlink>', blockStart= '[[', blockEnd=']]', include=true);
+			tuckedawayStrings.links = temp.formattedStrings;
+			thisBlurb = temp.Blurb;
+			// }}}
+
 			// {{{ Tuck code in <img> tags away so URL's with CamelCase aren't wiki formatted
 			thisBlurb=ReReplaceNoCase(thisBlurb,"(http://[^[:space:]]+.((gif)|(jpe?g)|(png)))", '<img class="wiki" src="\1" alt="Image: \1" />',"ALL")
 			temp = tuckAway (thisBlurb = thisBlurb, token= '<itok>', blockStart= '<img', blockEnd='>', include= 'yes')
@@ -171,6 +177,23 @@ component persistent="false" accessors="false" output="false" {
 			// put <a></a> back in
 			tuckedawayStrings.ahr.each( function(s) {
 				thisBlurb = replace(thisBlurb, '<atok>', s, 'ONE');
+			});
+
+			// Deal with bracket links
+			tuckedawayStrings.links.each( function(s) {
+				var linkName = '';
+				var link = '';
+				ARGUMENTS.s = ReReplace(ARGUMENTS.s, '\[\[(.*?)\]\]', '\1');
+				linkName = ListLast(ARGUMENTS.s, '|');
+				link = ReReplace(ListFirst(ARGUMENTS.s , '|'), ' ', '_', 'ALL');
+				cssClass = '';
+				if (ReFind('^([A-Z]|[a-z]|[0-9]|_)*$', link, 1, False)) {
+					// this is an internal wiki link
+					outgoingLinks.append(link);
+					cssClass = !StructKeyExists(wikiList, link) ? ' class="undefined"' : '';
+					link = ContentRenderer.CreateHREF(filename='#parentpath#/#LCase(link)#');
+				};
+				thisBlurb = Replace(thisBlurb, '<bracketlink>', '<a href="#link#"#cssClass#>#linkName#</a>', 'ONE');
 			});
 		// }}}
 
