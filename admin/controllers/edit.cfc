@@ -67,7 +67,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 			}).save();
 			var attachments = {}
 			w.attachments.each( function(a) {
-				file action='copy' source='F:\temp\_files\attach\#a#' destination='F:\temp\_files\#w.attachments[a]#';
+				file action='copy' source='/var/www/vpn.nordpil.com/notes/attachment/#LCase(a)#' destination='/tmp/attach/#w.attachments[a]#';
 				var fc = $.getBean('content').set({
 					type = 'File',
 					siteid = wiki.getSiteID(),
@@ -88,7 +88,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 					contentid = c.getContentID(),
 					siteid = wiki.getSiteID(),
 					parentid = wiki.getContentID(),
-					newFile = 'F:\temp\_files\#w.attachments[a]#'
+					newFile = '/tmp/attach/#w.attachments[a]#'
 				}).save();
 				fc.setFileID(fb.getFileID());
 				fc.save();
