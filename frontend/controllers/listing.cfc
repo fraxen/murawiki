@@ -68,6 +68,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function tagcloud() {
+		framework.setLayout('default');
 		return;
 	}
 
