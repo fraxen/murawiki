@@ -396,6 +396,8 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		var wikis = {};
 		getBean('feed')
 			.setMaxItems(0)
+			.setShowNavOnly(0)
+			.setShowExcludeSearch(1)
 			.setSiteID(
 				ValueList(
 					getBean('pluginManager')
@@ -417,7 +419,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				)
 				wikis[w.ContentID].wikiList = loadWikiList(wikis[w.ContentID]);
 				wikis[w.ContentID].tags = loadTags(wikis[w.ContentID]);
-				if (wikis[w.ContentID].getUseIndex() == 1) {
+				if (wikis[w.ContentID].getUseIndex() == 1 && wikis[w.ContentID].getIsInit() == 1) {
 					var allPages = getAllPages(wikis[w.ContentID], 'Label', 'Asc', [], false, [], true)
 						.map( function(p) {
 							if (p.Title != p.Label) {

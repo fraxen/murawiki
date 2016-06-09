@@ -241,6 +241,7 @@
 			</extension>
 			<extension adminonly="0" basekeyfield="contentHistID" basetable="tcontent" datatable="tclassextenddata" description="Wiki page (using MuraWiki plugin)" hasassocfile="1" hasbody="0" hasconfigurator="0" hassummary="0" iconclass="icon-file-text-alt" subtype="WikiPage" type="Page">
 				<relatedcontentset name="Wiki" availableSubTypes="Folder/Wiki" />
+				<relatedcontentset name="Attachment" availableSubTypes="File/Default" />
 				<attributeset categoryid="" container="Advanced" name="Properties" orderno="1">
 					<attribute adminonly="1" defaultvalue="" label="Outgoing wiki links" name="OutgoingLinks" orderno="1" required="0" type="TextBox" />
 					<attribute adminonly="1" defaultvalue="" label="Blurb" name="Blurb" orderno="2" required="0" type="TextBox" />
