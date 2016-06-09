@@ -50,7 +50,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 
 	public void function attachments() {
 		var relSet = application.classExtensionManager
-			.getSubTypeByName(siteid='projects', type='Page', subtype='WikiPage')
+			.getSubTypeByName(siteid=$.event('siteid'), type='Page', subtype='WikiPage')
 			.getRelatedContentSets()
 			.filter(function(rcs) {
 				return rcs.getAvailableSubTypes() == 'File/Default';

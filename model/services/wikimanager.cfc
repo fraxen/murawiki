@@ -82,7 +82,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				FROM
 					ttrash
 				WHERE 
-					SiteID = 'projects' 
+					SiteID = '#ARGUMENTS.Wiki.getSiteID()#'
 					AND 
 					objectSubType = 'WikiPage' 
 					AND 

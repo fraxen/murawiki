@@ -58,7 +58,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 					$.setContentBean(
 						$.getBean('contentBean').set({
 							ContentID = ContentID,
-							siteid = 'projects',
+							siteid = $.event('siteid'),
 							type = 'Page',
 							subType = 'WikiPage',
 							label = ListLast(cf, '/'),
