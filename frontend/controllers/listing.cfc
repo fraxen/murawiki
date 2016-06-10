@@ -38,6 +38,21 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function alltags() {
+		param rc.tag = '';
+		if (rc.tag == '') {
+			framework.doAction('listing.tagcloud');
+			framework.setView('listing.tagcloud');
+			framework.setLayout('default');
+		} else {
+			rc.rb = new mura.resourceBundle.resourceBundleFactory(
+				parentFactory = $.siteConfig('rbFactory'),
+				resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
+				locale = rc.wiki.getLanguage()
+			);
+			rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
+			rc.listingIterator = $.getBean('contentIterator')
+				.setQuery(getWikiManagerService().getPagesByTag(rc.wiki, ListToArray(rc.tag)));
+		}
 		return;
 	}
 
@@ -68,6 +83,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function tagcloud() {
+		rc.getTagCloud = function() { return getWikiManagerService().getTagCloud(rc.wiki)};
 		framework.setLayout('default');
 		return;
 	}

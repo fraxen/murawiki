@@ -8,6 +8,41 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 	setWikis({});
 	setEngines({});
 
+	public query function getPagesByTag(required object wiki, array tags=['gis', 'arcgis']) {
+		return getAllPages(ARGUMENTS.wiki, 'label', 'asc', [], false)
+			.filter(function(w) {
+				return w.tags != '';
+			})
+			.filter(function(w) {
+				return ArrayLen(tags.filter(function(t) {
+					return ListFindNoCase(w.tags, t);
+				}));
+			});
+	}
+
+	public query function getTagCloud(required object wiki) {
+		return queryExecute(
+			sql="
+				SELECT
+					tag, Count(tag) as tagCount 
+				FROM
+					tcontenttags 
+					INNER JOIN
+						tcontent on (tcontenttags.contenthistID=tcontent.contenthistID) 
+						WHERE
+							tcontent.siteID = '#ARGUMENTS.Wiki.getSiteID()#'
+							AND tcontent.Approved = 1 
+							AND tcontent.active = 1 
+							AND tcontent.parentID ='#ARGUMENTS.Wiki.getContentID()#' 
+							AND tcontent.SubType = 'WikiPage'
+							AND tcontenttags.taggroup is null 
+					GROUP BY
+						tag 
+					ORDER BY
+						tag 			
+			");
+	}
+
 	public query function history(required object wiki, required object rb) {
 		var sortLabel = {};
 		var history = queryExecute(
@@ -214,6 +249,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 					tcontent.ContentID,
 					tcontent.lastUpdate,
 					tcontent.Body,
+					tcontent.tags,
 					extendatt.attributeValue AS Label,
 					extendRedirect.redirectLabel AS RedirectLabel,
 					extendBlurb.blurb as Blurb

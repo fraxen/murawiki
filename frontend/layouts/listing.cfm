@@ -40,7 +40,7 @@
 <div class="wikiBodyInc wikilisting">
 	<cfif variables.iterator.getRecordCount()>
 	<div class="moreResults">
-		<cfif !ArrayFindNoCase(['old', 'search'], ListLast(rc.action, '.'))>
+		<cfif !ArrayFindNoCase(['old', 'search', 'alltags'], ListLast(rc.action, '.'))>
 			<form name="listingopts" method="get" action="#$.createHREF(filename=$.content('filename'))#">
 			Sort by: <select name="sortby">
 				<option value="label" <cfif rc.sortby EQ 'label'>selected="selected"</cfif>>Label</option>
