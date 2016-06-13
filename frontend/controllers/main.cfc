@@ -152,7 +152,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function wikiPage() {
-		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
 		switch ($.content().getLabel()) {
 			case 'MaintenanceOldQuick':
 				maintQuickOlder(rc.wiki);
@@ -176,11 +175,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			);
 			return;
 		}
-		rc.rb = new mura.resourceBundle.resourceBundleFactory(
-			parentFactory = $.siteConfig('rbFactory'),
-			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
-			locale = rc.wiki.getLanguage()
-		)
 		var history = StructKeyExists(COOKIE, '#rc.wiki.getContentID()#history') ? Cookie['#rc.wiki.getContentID()#history'] : '';
 		var label = $.content().getLabel();
 		if (!ArrayFindNoCase([rc.rb.getKey('SearchResultsLabel')], label)) {

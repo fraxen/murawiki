@@ -455,6 +455,11 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				)
 				wikis[w.ContentID].wikiList = loadWikiList(wikis[w.ContentID]);
 				wikis[w.ContentID].tags = loadTags(wikis[w.ContentID]);
+				wikis[w.ContentID].rb = new mura.resourceBundle.resourceBundleFactory(
+					parentFactory = APPLICATION.settingsManager.getSite(w.SiteID).getRbFactory(),
+					resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
+					locale = wikis[w.ContentID].getLanguage()
+				);
 				if (wikis[w.ContentID].getUseIndex() == 1 && wikis[w.ContentID].getIsInit() == 1) {
 					var allPages = getAllPages(wikis[w.ContentID], 'Label', 'Asc', [], false, [], true)
 						.map( function(p) {

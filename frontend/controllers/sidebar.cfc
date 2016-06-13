@@ -8,23 +8,11 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function shortcutpanel() {
-		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
-		rc.rb = new mura.resourceBundle.resourceBundleFactory(
-			parentFactory = $.siteConfig('rbFactory'),
-			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
-			locale = rc.wiki.getLanguage()
-		)
 		return;
 	}
 
 	public void function backlinks() {
 		var label = $.content().getLabel();
-		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
-		rc.rb = new mura.resourceBundle.resourceBundleFactory(
-			parentFactory = $.siteConfig('rbFactory'),
-			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
-			locale = rc.wiki.getLanguage()
-		)
 		rc.backlinks = rc.wiki.wikiList
 			.filter( function(l) {
 				return ArrayFindNoCase(rc.wiki.wikiList[l], label);
@@ -40,11 +28,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	public void function pageoperations() {
 		rc.wikiPage = $.content();
 		rc.isundefined = structKeyExists(rc.wikiPage, 'isundefined');
-		rc.rb = new mura.resourceBundle.resourceBundleFactory(
-			parentFactory = $.siteConfig('rbFactory'),
-			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
-			locale = rc.wiki.getLanguage()
-		)
 		return;
 	}
 
@@ -55,11 +38,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			.filter(function(rcs) {
 				return rcs.getAvailableSubTypes() == 'File/Default';
 			})[1].getRelatedContentSetID();
-		rc.rb = new mura.resourceBundle.resourceBundleFactory(
-			parentFactory = $.siteConfig('rbFactory'),
-			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
-			locale = rc.wiki.getLanguage()
-		)
 		rc.wikiPage = $.content();
 		if (structKeyExists(rc, 'version')) {
 			rc.wikiPage = $.getBean('content').loadBy(ContentHistID=rc.version);
@@ -70,12 +48,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function recents() {
-		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
-		rc.rb = new mura.resourceBundle.resourceBundleFactory(
-			parentFactory = $.siteConfig('rbFactory'),
-			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
-			locale = rc.wiki.getLanguage()
-		)
 		rc.backlinks = [];
 		if (StructKeyExists(COOKIE, '#rc.wiki.getContentID()#history')) {
 			rc.backlinks = ListToArray(Cookie['#rc.wiki.getContentID()#history']).filter(function(l) { return l!=$.content().getLabel();});
@@ -84,11 +56,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function latestupdates() {
-		rc.rb = new mura.resourceBundle.resourceBundleFactory(
-			parentFactory = $.siteConfig('rbFactory'),
-			resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
-			locale = rc.wiki.getLanguage()
-		)
 		return;
 	}
 }
