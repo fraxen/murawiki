@@ -19,7 +19,9 @@ component persistent="false" accessors="true" output="false" extends="mura.cfobj
 			set$(rc.$);
 		}
 		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
-		rc.rb = rc.wiki.rb;
+		if (isObject(rc.wiki)) {
+			rc.rb = rc.wiki.rb;
+		}
 	}
 
 	public void function loadWikis() {
