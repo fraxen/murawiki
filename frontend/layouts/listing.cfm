@@ -1,5 +1,6 @@
 <cfsilent>
 <cfscript>
+	$.setShowAdminToolBar(false);
 	param rc.sortby = 'label';
 	param rc.direction = 'asc';
 	param rc.includeredirect = 0;

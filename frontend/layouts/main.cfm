@@ -1,4 +1,5 @@
 <cfscript>
+	$.setShowAdminToolBar(false);
 	pluginPath = '#rc.$.globalConfig('context')#/plugins/#rc.pluginConfig.getPackage()#';
 	if (rc.wiki.getStyleSheet() != '') {
 		$.addToHTMLHeadQueue(action='append', text='
