@@ -3,7 +3,6 @@ component persistent="false" accessors="true" output="false" extends="controller
 
 	public void function default() {
 		rc.wikiEdit = getWikiManagerService().getWiki(rc.wiki);
-		rc.wikiEdit.setIsInit(False);
 		rc.stylesheets = QueryColumnData(directoryList('#ExpandPath('')#/assets', true, 'query', '*.css', 'name asc'), 'name');
 		rc.language = QueryColumnData(directoryList('#ExpandPath('')#/resourceBundles', true, 'query', '*.properties', 'name asc'), 'name')
 			.map( function(l) { return listFirst(l, '.');});
@@ -54,16 +53,12 @@ component persistent="false" accessors="true" output="false" extends="controller
 			, collectionpath = rc.CollectionPath
 		}).save();
 
-		wiki.setIsInit(False);
-
 		if (!wiki.getIsInit()) {
 			// Initalize the wiki
 			getWikiManagerService()
-				.Initialize(wiki, rb)
-				.setIsInit(True);
+				.Initialize(wiki, rb, framework);
 		} 
-		wiki.save();
-		import();
+		wiki.setIsInit(True).save();
 		framework.redirect(action='admin:edit', querystring='wiki=#rc.ContentID#');
 	}
 
