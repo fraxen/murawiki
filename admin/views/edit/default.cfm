@@ -44,7 +44,7 @@
 	</div>
 	<div class="mura-form-checkbox form-group">
 		<dl class="dl-horizontal">
-		<dt><label for="usetags">Use tags?</label></dt>
+		<dt><label for="usetags">Use tags?<cfif rc.wikiedit.getIsInit()><br/><em>Only applies to new content</em></cfif></label></dt>
 		<dd>
 		<input type="checkbox" id="usetags" name="usetags" value="1" <cfif rc.wikiedit.getUseTags()>checked="checked"</cfif> />
 		</dd>
@@ -68,7 +68,7 @@
 	</div>
 	<div class="mura-form-dropdown form-group">
 		<label for="regionmain">Region for main content</label>
-		<select id="regionmain" name="regionmain" class="form-control" data-placeholder="Select language" data-allow-clear="false">
+		<select id="regionmain" name="regionmain" class="form-control" data-placeholder="Select language" data-allow-clear="false" <cfif rc.wikiedit.getIsInit()>disabled="disabled"</cfif>>
 			<cfloop from="1" to="#APPLICATION.settingsManager.getSite(rc.siteid).getcolumnCount()#" index="r">
 				<option value="#r#"
 					<cfif
@@ -85,7 +85,7 @@
 	</div>
 	<div class="mura-form-dropdown form-group">
 		<label for="regionside">Region for sidebar</label>
-		<select id="regionside" name="regionside" class="form-control" data-placeholder="Select language" data-allow-clear="false">
+		<select id="regionside" name="regionside" class="form-control" data-placeholder="Select region" data-allow-clear="false" <cfif rc.wikiedit.getIsInit()>disabled="disabled"</cfif>>
 			<cfloop from="1" to="#APPLICATION.settingsManager.getSite(rc.siteid).getcolumnCount()#" index="r">
 				<option value="#r#"
 					<cfif rc.wikiedit.getRegionSide() == r>selected="selected"</cfif>
