@@ -18,7 +18,11 @@ component persistent="false" accessors="true" output="false" extends="mura.cfobj
 			var $ = rc.$;
 			set$(rc.$);
 		}
-		rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
+		if ($.content().getSubType() == 'Wiki') {
+			rc.wiki = getWikiManagerService().getWiki($.content().getContentID());
+		} else {
+			rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
+		}
 		if (isObject(rc.wiki)) {
 			rc.rb = rc.wiki.rb;
 		}
