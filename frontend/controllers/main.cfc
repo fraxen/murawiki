@@ -170,7 +170,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		}
 		if( $.content().getRedirect() != '' ) {
 			$.redirect(
-				location = '#$.createHREF(filename=rc.wiki.getFilename())##$.content().getRedirect()#/', querstrying='redirectfrom=#$.content().getLabel()#'
+				location = "#$.createHREF(filename='#rc.wiki.getFilename()#/#$.content().getRedirect()#/', querystring='redirectfrom=#$.content().getLabel()#')#"
 				, statusCode = '301'
 			);
 			return;
