@@ -77,9 +77,11 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			rc.rb.getKey('instructionsLabel'),
 			rc.rb.getKey('SearchResultsLabel'),
 			rc.rb.getKey('maintHistoryLabel'),
-			rc.rb.getKey('mainthomeLabel')
+			rc.rb.getKey('mainthomeLabel'),
+			rc.wiki.getHome()
 		];
 		rc.orphan = getWikiManagerService().getOrphan(rc.wiki, skipLabels);
+		ArrayAppend(rc.orphan, CreateUUID());
 		rc.listingIterator = $.getBean('contentIterator')
 			.setQuery(
 				getWikiManagerService().getAllPages(rc.wiki, rc.sortby, rc.direction, skipLabels, rc.includeredirect, rc.orphan)
@@ -89,7 +91,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 
 	public void function old() {
 		var skipLabels = [
-			rc.rb.getKey('instructionsLabel'),
 			rc.rb.getKey('allpagesLabel'),
 			rc.rb.getKey('mainthomeLabel'),
 			rc.rb.getKey('maintoldLabel'),
