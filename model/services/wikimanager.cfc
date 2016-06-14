@@ -214,9 +214,6 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			.reduce(function(carry, label, links) {
 				return carry.append(links, true);
 			}, [])
-			.filter(function(l) {
-				return NOT ArrayFind(skipLabels, l)
-			})
 			.reduce(function(carry, l) {
 				carry[l] = l;
 				return carry;
@@ -226,8 +223,11 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			}, []);
 		var orphan = StructKeyArray(ARGUMENTS.wiki.wikilist)
 			.filter( function(l) {
-				return NOT ArrayFindNoCase(allLinks, l);
+				return NOT ArrayFindNoCase(skipLabels, l);
 			})
+			.filter( function(l) {
+				return NOT ArrayFindNoCase(allLinks, l);
+			});
 		return orphan;
 	}
 
@@ -384,7 +384,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			param p.OutgoingLinks = '';
 			carry[p.Label] = ListToArray(p.OutgoingLinks);
 			return carry;
-		}, {MaintenanceOldQuick: [], MaintenanceOrphanQuick: [], MaintenanceUndefinedQuick: []});
+		}, {});
 	}
 
 	public array function loadTags(required any wiki) {
@@ -538,7 +538,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		return engine.renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') ).blurb;
 	}
 
-	public any function Initialize(required any wiki, required any rb) {
+	public any function Initialize(required any wiki, required any rb, required any framework) {
 		// 'Formats' the wiki - adds display objects + creates default pages. Only meant to be run one per wiki
 		setting requesttimeout='28800';
 		var wiki = ARGUMENTS.wiki;
@@ -597,6 +597,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			Blurb = blurb,
 			Notes = 'Initialized',
 			Tags = rb.getKey('homeTags'),
+			redirect = '',
 			parentid = wiki.getContentID()
 		}).save();
 		if (wiki.getUseTags()) {
@@ -620,6 +621,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			blurb = blurb,
 			label = rb.getKey('maintHistoryLabel'),
 			Notes = 'Initialized',
+			redirect = '',
 			parentid = wiki.getContentID()
 		})
 			.addDisplayObject(
@@ -639,6 +641,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			blurb = '',
 			label = rb.getKey('searchResultsLabel'),
 			Notes = 'Initialized',
+			redirect = '',
 			parentid = wiki.getContentID()
 		})
 			.addDisplayObject(
@@ -661,6 +664,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			label = rb.getKey('instructionsTitle'),
 			Blurb = blurb,
 			Notes = 'Initialized',
+			redirect = '',
 			Tags = rb.getKey('instructionsTags'),
 			parentid = wiki.getContentID()
 		}).save();
@@ -690,6 +694,9 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		// Create Maintenance home
 		blurb = Replace(rb.getKey('mainthomeBody'), '\r', Chr(13), 'ALL');
+		blurb = Replace(blurb, 'FrontendQuickOlder', ARGUMENTS.framework.buildURL(action='frontend:quick.older', path=ARGUMENTS.Wiki.getUrl(complete='true')));
+		blurb = Replace(blurb, 'FrontendQuickUndefined', ARGUMENTS.framework.buildURL(action='frontend:quick.undefined', path=ARGUMENTS.Wiki.getUrl(complete='true')));
+		blurb = Replace(blurb, 'FrontendQuickOrphan', ARGUMENTS.framework.buildURL(action='frontend:quick.orphan', path=ARGUMENTS.Wiki.getUrl(complete='true')));
 		body = engine.renderHTML( blurb, rb.getKey('mainthomeLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		body = body.blurb;
 		getBean('content').set({
@@ -699,6 +706,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			title = rb.getKey('mainthomeTitle'),
 			label = rb.getKey('mainthomeLabel'),
 			Blurb = blurb,
+			redirect = '',
 			Notes = 'Initialized',
 			Tags = rb.getKey('mainthomeTags'),
 			parentid = wiki.getContentID()
@@ -716,6 +724,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			label = rb.getKey('maintundefinedLabel'),
 			Blurb = blurb,
 			Notes = 'Initialized',
+			redirect = '',
 			Tags = rb.getKey('maintundefinedTags'),
 			parentid = wiki.getContentID()
 		})
@@ -739,6 +748,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			label = rb.getKey('maintorphanLabel'),
 			Blurb = blurb,
 			Notes = 'Initialized',
+			redirect = '',
 			Tags = rb.getKey('maintorphanTags'),
 			parentid = wiki.getContentID()
 		})
@@ -762,6 +772,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			label = rb.getKey('maintoldLabel'),
 			Blurb = blurb,
 			Notes = 'Initialized',
+			redirect = '',
 			Tags = rb.getKey('maintoldTags'),
 			parentid = wiki.getContentID()
 		})
@@ -786,6 +797,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				label = rb.getKey('tagsLabel'),
 				Blurb = blurb,
 				Notes = 'Initialized',
+				redirect = '',
 				Tags = rb.getKey('tagsTags'),
 				parentid = wiki.getContentID()
 			})
