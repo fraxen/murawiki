@@ -109,10 +109,9 @@ component persistent="false" accessors="false" output="false" {
 					// make sure it is not already in the list
 					if (NOT ListFind(sTemp.labelList, sTemp.findLabel, ",")) {
 						sTemp.labelList = listappend(sTemp.labelList, sTemp.findLabel, ",");
-					} else {
-						// move beyond the wiki name and keep checking
-						sTemp.startPos = sTemp.labelLoc.pos[1] + sTemp.labelLoc.len[1] + 13;
 					}
+					// move beyond the wiki name and keep checking
+					sTemp.startPos = sTemp.labelLoc.pos[1] + sTemp.labelLoc.len[1] + 13;
 				} else {
 					// if no wikinames are left quit loop
 					sTemp.stillChecking = 0;
