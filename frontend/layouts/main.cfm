@@ -11,41 +11,6 @@
 			}</style>
 		')
 	}
-	$.addToHTMLFootQueue(action='append', text="
-		<script type=""text/javascript"">
-			function removeAttachment(attach) {
-				$('##editform li[name=""' + attach + '""]').css('display', 'none');
-				$('##editform li[name=""' + attach + '""]').find('input').attr('value', '{}');
-				return false;
-			}
-			function addAttachment() {
-				var lastAttach = $('##editform input[type=""file""]').last();
-				var i = +lastAttach.attr('name').replace('attachment', '') + 1;
-				lastAttach.clone().attr('name', 'attachment' + i).insertAfter(lastAttach);
-				return false;
-			}
-			(function() {
-				$('a.pageedit').click(function() {
-					$('##editModal').modal('show');
-					return false;
-				});
-				$('##editModal').on('shown.bs.modal', function() {
-					$('##editModal select.s2').select2();
-				});
-				$('a.redirect').click(function() {
-					$('##redirectModal').modal('show');
-					return false;
-				});
-				$('##redirectModal').on('shown.bs.modal', function() {
-					$('##redirectModal select.s2').select2();
-				});
-				$('a.delete').click(function() {
-					$('##deleteModal').modal('show');
-					return false;
-				});
-			})();
-		</script>
-	");
 </cfscript>
 <cfoutput>
 <cfif structKeyExists(rc, 'undefined')>
@@ -229,3 +194,40 @@
 	</div>
 </div></div></div>
 </cfoutput>
+<script type="text/javascript">
+	(function() {
+	function removeAttachment(attach) {
+		$('#editform li[name=""' + attach + '""]').css('display', 'none');
+		$('#editform li[name=""' + attach + '""]').find('input').attr('value', '{}');
+		return false;
+	}
+	function addAttachment() {
+		var lastAttach = $('#editform input[type=""file""]').last();
+		var i = +lastAttach.attr('name').replace('attachment', '') + 1;
+		lastAttach.clone().attr('name', 'attachment' + i).insertAfter(lastAttach);
+		return false;
+	}
+	$(document).ready(function() {
+		console.log($('a.pageedit'));
+		$('a.pageedit').click(function() {
+			$('#editModal').modal('show');
+			return false;
+		});
+		$('#editModal').on('shown.bs.modal', function() {
+			$('#editModal select.s2').select2();
+		});
+		$('a.redirect').click(function() {
+			$('#redirectModal').modal('show');
+			return false;
+		});
+		$('#redirectModal').on('shown.bs.modal', function() {
+			$('#redirectModal select.s2').select2();
+		});
+		$('a.delete').click(function() {
+			$('#deleteModal').modal('show');
+			return false;
+		});
+	});
+	})();
+</script>
+
