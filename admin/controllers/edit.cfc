@@ -22,6 +22,9 @@ component persistent="false" accessors="true" output="false" extends="controller
 		param rc.SiteSearch=0;
 		param rc.useIndex=0;
 		param rc.collectionpath='';
+		param rc.WikiEngine = wiki.getWikiEngine();
+		param rc.regionmain = wiki.getRegionmain();
+		param rc.regionside = wiki.getRegionside();
 
 		rc.Home = LCase(rc.Home);
 
