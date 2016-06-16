@@ -1,5 +1,7 @@
 <cfscript>
-component persistent="false" accessors="false" output="false" {
+component persistent="false" accessors="true" output="false" {
+	property type='struct' name='options';
+	property type='any' name='resource';
 	/*
 		This code is modified from the original CfWiki by Brian Shearer and many others
 	*/
@@ -43,7 +45,6 @@ component persistent="false" accessors="false" output="false" {
 
 		return returnVar;
 	}
-	
 
 	public object function renderHTML(required string blurb, required string label, required struct wikiList, required string parentpath, required any ContentRenderer) {
 		var thisBlurb = '#ARGUMENTS.blurb##Chr(10)#';

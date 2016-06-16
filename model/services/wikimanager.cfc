@@ -2,11 +2,9 @@
 component displayname='WikiManager' name='wikiManager' accessors='true' extends="mura.cfobject" {
 	property type='any' name='beanFactory';
 	property type='struct' name='wikis';
-	property type='struct' name='engines';
 	property name='NotifyService';
 
 	setWikis({});
-	setEngines({});
 
 	public query function getPagesByTag(required object wiki, array tags=['gis', 'arcgis']) {
 		return getAllPages(ARGUMENTS.wiki, 'label', 'asc', [], false)
@@ -449,12 +447,23 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			)
 			.getQuery()
 			.each( function(w) {
+				var engineopts = {};
 				wikis[w.ContentID] = getBean('content').loadBy(
 					ContentId=w.ContentId,
 					SiteID=w.SiteID
 				)
+				engineopts = isJSON(wikis[w.ContentID].getEngineOpts()) ? DeserializeJSON(wikis[w.ContentID].getEngineOpts()) : {};
 				wikis[w.ContentID].wikiList = loadWikiList(wikis[w.ContentID]);
 				wikis[w.ContentID].tags = loadTags(wikis[w.ContentID]);
+				wikis[w.ContentID].engine = beanFactory.getBean(wikis[w.ContentID].getWikiEngine())
+					.setOptions(engineopts)
+					.setResource(
+						new mura.resourceBundle.resourceBundleFactory(
+						parentFactory = APPLICATION.settingsManager.getSite(w.SiteID).getRbFactory(),
+						resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/model/services/engines/rb_#wikis[w.ContentID].getWikiEngine()#/',
+						locale = wikis[w.ContentID].getLanguage()
+					))
+				;
 				wikis[w.ContentID].rb = new mura.resourceBundle.resourceBundleFactory(
 					parentFactory = APPLICATION.settingsManager.getSite(w.SiteID).getRbFactory(),
 					resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
@@ -488,21 +497,6 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		}
 	}
 
-	public void function setEngine(required string enginename, required any engine) {
-		setEngines( getEngines().insert(ARGUMENTS.enginename, ARGUMENTS.engine) );
-	}
-
-	public any function getEngine(required string enginename) {
-		// Lazy load the engine
-		if (StructKeyExists(getEngines(), ARGUMENTS.enginename)) {
-			return getEngines()[ARGUMENTS.enginename];
-		} else {
-			setEngine(ARGUMENTS.enginename, beanFactory.getBean('cfwiki') );
-			return getEngines()[ARGUMENTS.enginename];
-		}
-		return getWikis()[ARGUMENTS.ContentID];
-	}
-
 	public any function getDisplayObjects() {
 		var do = {};
 		getBean('pluginManager')
@@ -526,26 +520,24 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 	public string function outGoingLinks(required any wikiPage) {
 		var wiki = getWiki(ARGUMENTS.wikiPage.getParentID());
-		var engine = getEngine(wiki.getEngine());
 		return ArrayToList(
-			engine.renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') ).OutgoingLinks
+			wiki.engine.renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') ).OutgoingLinks
 		);
 	}
 
 	public string function renderHTML(required any wikiPage) {
 		var wiki = getWiki(ARGUMENTS.wikiPage.getParentID());
-		var engine = getEngine(wiki.getEngine());
-		return engine.renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') ).blurb;
+		return wiki.engine.renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') ).blurb;
 	}
 
-	public any function Initialize(required any wiki, required any rb, required any framework) {
+	public any function Initialize(required any wiki, required any rb, required any framework, required string rootPath) {
 		// 'Formats' the wiki - adds display objects + creates default pages. Only meant to be run one per wiki
 		setting requesttimeout='28800';
 		var wiki = ARGUMENTS.wiki;
 		var page = {};
 		var dspO = getDisplayObjects();
 		var rb = ARGUMENTS.rb;
-		var engine = getEngine(wiki.getEngine());
+		var engine = wiki.engine
 		var blurb = '';
 		var body = {};
 
@@ -585,7 +577,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			}, true, 8);
 
 		// Create home
-		blurb = Replace(rb.getKey('homeBody'), '\r', Chr(13), 'ALL');
+		blurb = Replace(engine.getResource().getKey('homeBody'), '\r', Chr(13), 'ALL');
 		body = engine.renderHTML( blurb, wiki.getHome(), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		body = body.blurb;
 		blurb = getBean('content').set({
@@ -610,7 +602,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		}
 
 		// Create history
-		blurb = Replace(rb.getKey('maintHistoryBody'), '\r', Chr(13), 'ALL');
+		blurb = Replace(engine.getResource().getKey('maintHistoryBody'), '\r', Chr(13), 'ALL');
 		body = engine.renderHTML( blurb, rb.getKey('maintHistoryLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		body = body.blurb;
 		getBean('content').set({
@@ -653,7 +645,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			.save();
 
 		// Create Instructions
-		blurb = Replace(rb.getKey('instructionsBody'), '\r', Chr(13), 'ALL');
+		blurb = Replace(engine.getResource().getKey('instructionsBody'), '\r', Chr(13), 'ALL');
 		body = engine.renderHTML( blurb, rb.getKey('instructionsLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		body = body.blurb;
 		getBean('content').set({
@@ -670,7 +662,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		}).save();
 
 		// Create AllPages
-		blurb = Replace(rb.getKey('allpagesBody'), '\r', Chr(13), 'ALL');
+		blurb = Replace(engine.getResource().getKey('allpagesBody'), '\r', Chr(13), 'ALL');
 		body = engine.renderHTML( blurb, rb.getKey('allpagesLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		body = body.blurb;
 		getBean('content').set({
@@ -693,10 +685,10 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			.save();
 
 		// Create Maintenance home
-		blurb = Replace(rb.getKey('mainthomeBody'), '\r', Chr(13), 'ALL');
-		blurb = Replace(blurb, 'FrontendQuickOlder', ARGUMENTS.framework.buildURL(action='frontend:quick.older', path=ARGUMENTS.Wiki.getUrl(complete='true')));
-		blurb = Replace(blurb, 'FrontendQuickUndefined', ARGUMENTS.framework.buildURL(action='frontend:quick.undefined', path=ARGUMENTS.Wiki.getUrl(complete='true')));
-		blurb = Replace(blurb, 'FrontendQuickOrphan', ARGUMENTS.framework.buildURL(action='frontend:quick.orphan', path=ARGUMENTS.Wiki.getUrl(complete='true')));
+		blurb = Replace(engine.getResource().getKey('mainthomeBody'), '\r', Chr(13), 'ALL');
+		blurb = Replace(blurb, 'FrontendQuickOlder', ARGUMENTS.framework.buildURL(action='frontend:quick.older', path=ARGUMENTS.rootPath));
+		blurb = Replace(blurb, 'FrontendQuickUndefined', ARGUMENTS.framework.buildURL(action='frontend:quick.undefined', path=ARGUMENTS.rootPath));
+		blurb = Replace(blurb, 'FrontendQuickOrphan', ARGUMENTS.framework.buildURL(action='frontend:quick.orphan', path=ARGUMENTS.rootPath));
 		body = engine.renderHTML( blurb, rb.getKey('mainthomeLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		body = body.blurb;
 		getBean('content').set({
@@ -713,7 +705,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		}).save();
 
 		// Create Maintenance Undefined
-		blurb = Replace(rb.getKey('maintundefinedBody'), '\r', Chr(13), 'ALL');
+		blurb = Replace(engine.getResource().getKey('maintundefinedBody'), '\r', Chr(13), 'ALL');
 		body = engine.renderHTML( blurb, rb.getKey('maintundefinedLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		body = body.blurb;
 		getBean('content').set({
@@ -737,7 +729,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			.save();
 
 		// Create Maintenance Orphan
-		blurb = Replace(rb.getKey('maintorphanBody'), '\r', Chr(13), 'ALL');
+		blurb = Replace(engine.getResource().getKey('maintorphanBody'), '\r', Chr(13), 'ALL');
 		body = engine.renderHTML( blurb, rb.getKey('maintorphanLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		body = body.blurb;
 		getBean('content').set({
@@ -761,7 +753,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			.save();
 
 		// Create Maintenance Old
-		blurb = Replace(rb.getKey('maintoldBody'), '\r', Chr(13), 'ALL');
+		blurb = Replace(engine.getResource().getKey('maintoldBody'), '\r', Chr(13), 'ALL');
 		body = engine.renderHTML( blurb, rb.getKey('maintoldLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		body = body.blurb;
 		getBean('content').set({
@@ -786,7 +778,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		// Create Tag
 		if (wiki.getUseTags()) {
-			blurb = Replace(rb.getKey('tagsBody'), '\r', Chr(13), 'ALL');
+			blurb = Replace(engine.getResource().getKey('tagsBody'), '\r', Chr(13), 'ALL');
 			body = engine.renderHTML( blurb, rb.getKey('tagsLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 			body = body.blurb;
 			getBean('content').set({

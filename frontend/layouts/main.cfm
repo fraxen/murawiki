@@ -139,7 +139,7 @@
 				<br/><input type="submit" class="btn btn-default" value="#rc.rb.getKey('submit')#" /><br/>
 			</div>
 			<div>
-				#rc.rb.getKey('editInstructions')#
+				#rc.wiki.engine.getResource().getKey('editInstructions')#
 			</div>
 		</form>
 	</div>
