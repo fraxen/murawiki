@@ -66,7 +66,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 							approved = 1,
 							display = 1,
 							isnew = 0,
-							template = w.getTemplate(),
+							template = w.getChildTemplate() != '' ? w.getChildTemplate() : w.getTemplate(),
 							parentid = ContentID
 						})
 					);
