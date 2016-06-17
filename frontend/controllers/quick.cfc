@@ -1,5 +1,6 @@
 ﻿<cfscript>
 component displayname="quick" persistent="false" accessors="true" output="false" extends="controller" {
+
 	public void function Undefined() {
 		// Redirects to a random undefined page
 		var undef = rc.wiki.wikiList
@@ -111,7 +112,7 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 				dataType='varchar'
 			)
 			.setSortBy('lastupdate')
-			.setSortDirection('desc')
+			.setSortDirection('asc')
 			.setShowNavOnly(0)
 			.setShowExcludeSearch(1)
 			.getQuery()
