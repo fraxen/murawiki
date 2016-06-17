@@ -118,6 +118,14 @@
 		</label>
 		<input type="text" id="collectionpath" name="collectionpath" value="#rc.wikiEdit.getCollectionPath()#" class="form-control" placeholder="Absolute path for collection"/>
 	</div>
+	<div class="mura-form-checkbox form-group">
+		<dl class="dl-horizontal">
+		<dt><label for="editlinksanon">Display edit links for anonymous (not logged in users)</label><em>Only applies if view of access to the wiki is not restricted</em></dt>
+		<dd>
+		<input type="checkbox" id="editlinksanon" name="editlinksanon" value="1" <cfif rc.wikiedit.getUseEditLinksAnon() EQ 1>checked="checked"</cfif> />
+		</dd>
+		</dl>
+	</div>
 	<div >
 		<br/><input type="submit" class="btn btn-default" value="<cfif rc.wikiedit.getIsInit()>Update<cfelse>Initialize</cfif>" accesskey="s" style="WIDTH: 100%;" />
 	</div>

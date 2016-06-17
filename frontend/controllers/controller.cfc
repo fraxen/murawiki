@@ -26,6 +26,7 @@ component persistent="false" accessors="true" output="false" extends="mura.cfobj
 		if (isObject(rc.wiki)) {
 			rc.rb = rc.wiki.rb;
 		}
+		rc.dispEditLinks = $.CurrentUser().getIsLoggedIn() || rc.wiki.getEditLinksAnon() == 1;
 	}
 
 	public void function loadWikis() {

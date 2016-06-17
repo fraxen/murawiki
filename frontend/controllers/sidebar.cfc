@@ -26,6 +26,10 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function pageoperations() {
+		if (!rc.dispEditLinks) {
+			framework.setView('main.blank');
+			return;
+		}
 		rc.wikiPage = $.content();
 		rc.isundefined = structKeyExists(rc.wikiPage, 'isundefined');
 		return;
