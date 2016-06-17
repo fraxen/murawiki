@@ -17,16 +17,16 @@ div.panel {
 }
 div.panel a {DISPLAY: Block;}
 div.panel a:hover {BACKGROUND: #BEC6EE; COLOR: Navy;}
-#panelRecents li.history10 a { OPACITY: 0.31; }
-#panelRecents li.history9 a { OPACITY: 0.39; }
-#panelRecents li.history8 a { OPACITY: 0.47; }
-#panelRecents li.history7 a { OPACITY: 0.55; }
-#panelRecents li.history6 a { OPACITY: 0.63; }
-#panelRecents li.history5 a { OPACITY: 0.71; }
-#panelRecents li.history4 a { OPACITY: 0.79; }
-#panelRecents li.history3 a { OPACITY: 0.87; }
-#panelRecents li.history2 a { OPACITY: 0.95; }
-#panelRecents li a:hover {OPACITY: 1 !important;}
+#panelLatestUpdates li.history10 a, #panelRecents li.history10 a { OPACITY: 0.31; }
+#panelLatestUpdates li.history9 a, #panelRecents li.history9 a { OPACITY: 0.39; }
+#panelLatestUpdates li.history8 a, #panelRecents li.history8 a { OPACITY: 0.47; }
+#panelLatestUpdates li.history7 a, #panelRecents li.history7 a { OPACITY: 0.55; }
+#panelLatestUpdates li.history6 a, #panelRecents li.history6 a { OPACITY: 0.63; }
+#panelLatestUpdates li.history5 a, #panelRecents li.history5 a { OPACITY: 0.71; }
+#panelLatestUpdates li.history4 a, #panelRecents li.history4 a { OPACITY: 0.79; }
+#panelLatestUpdates li.history3 a, #panelRecents li.history3 a { OPACITY: 0.87; }
+#panelLatestUpdates li.history2 a, #panelRecents li.history2 a { OPACITY: 0.95; }
+#panelLatestUpdates li a:hover, #panelRecents li a:hover {OPACITY: 1 !important;}
 a .uline {TEXT-DECORATION: Underline;}
 
 #editform input[type='submit'] { MARGIN: 0 auto; WIDTH: 80%; DISPLAY: Block;}

@@ -60,6 +60,17 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function latestupdates() {
+		rc.latest = getWikiManagerService().history(rc.wiki, rc.rb)
+			.filter(function(w) {
+				return w.Active == 1 && w.Status == 'Live';
+			})
+			.reduce(function(carry, w) {
+				ArrayAppend(carry, w.Label);
+				return carry;
+			}, [])
+			.filter(function(l, i) {
+				return i < 11;
+			});
 		return;
 	}
 }
