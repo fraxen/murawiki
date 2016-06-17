@@ -1,6 +1,10 @@
 <cfoutput>
 <div id="panelLatestUpdates" class="panel">
-	<h3>#rc.rb.getKey('sidebarLatestTitle')#</h3>
+	<h3>
+		<cfif rc.dispEditLinks><a href="#$.createHREF(filename='#rc.wiki.getFilename()#/#rc.rb.getKey('maintHistoryLabel')#')#"></cfif>
+			#rc.rb.getKey('sidebarLatestTitle')#
+		<cfif rc.dispEditLinks></a></cfif>
+	</h3>
 	<ul>
 		<cfif ArrayLen(rc.latest)>
 			<cfloop index="i" from="1" TO="#ArrayLen(rc.latest)#">
