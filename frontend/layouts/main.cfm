@@ -208,7 +208,6 @@
 		return false;
 	}
 	$(document).ready(function() {
-		console.log($('a.pageedit'));
 		$('a.pageedit').click(function() {
 			$('#editModal').modal('show');
 			return false;
