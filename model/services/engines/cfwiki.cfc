@@ -73,7 +73,7 @@ component persistent="false" accessors="true" output="false" {
 			// }}}
 
 			// {{{ Tuck code in <img> tags away so URL's with CamelCase aren't wiki formatted
-			thisBlurb=ReReplaceNoCase(thisBlurb,"(http://[^[:space:]]+.((gif)|(jpe?g)|(png)))", '<img class="wiki" src="\1" alt="Image: \1" />',"ALL")
+			thisBlurb=ReReplaceNoCase(thisBlurb,"((http|https|file|ftp)://[^[:space:]]+.((gif)|(jpe?g)|(png)))", '<img class="wiki" src="\1" alt="Image: \1" />',"ALL")
 			temp = tuckAway (thisBlurb = thisBlurb, token= '<itok>', blockStart= '<img', blockEnd='>', include= 'yes')
 			tuckedawayStrings.img = temp.FormattedStrings
 			thisBlurb = temp.Blurb
