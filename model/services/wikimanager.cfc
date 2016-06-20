@@ -475,7 +475,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 							if (p.Title != p.Label) {
 								p.Title = '#p.Title# (#p.Label#)';
 							}
-							p.Body = stripHTML(p.Body);
+							p.Body = '#stripHTML(p.Body)# #p.tags# #p.title#';
 							return p;
 						});
 					index collection='Murawiki_#w.ContentID#' action='refresh' query='allPages' key='Label' title='Title' body='Body';
