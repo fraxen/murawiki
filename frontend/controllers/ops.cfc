@@ -135,6 +135,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rc.Title,
+			menutitle = rc.Title,
+			htmltitle = rc.Title,
 			label = rc.Label,
 			Blurb = rc.blurb,
 			Notes = rc.Notes,
