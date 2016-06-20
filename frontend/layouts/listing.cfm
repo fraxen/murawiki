@@ -90,7 +90,11 @@
 						<cfif item.getValue('Label') EQ item.getValue('title')>
 							#HTMLEditFormat(item.getValue('Label'))#
 						<cfelse>
-							#HTMLEditFormat(item.getValue('Title'))# (#HTMLEditFormat(item.getValue('Label'))#)
+							<cfif rc.action == 'frontend:listing.search'>
+								#HTMLEditFormat(item.getValue('Title'))#
+							<cfelse>
+								#HTMLEditFormat(item.getValue('Title'))# (#HTMLEditFormat(item.getValue('Label'))#)
+							</cfif>
 						</cfif>
 					</a>
 				</td>
