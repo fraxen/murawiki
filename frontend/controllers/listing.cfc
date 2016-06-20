@@ -1,6 +1,15 @@
 ﻿<cfscript>
 component displayname="frontend" persistent="false" accessors="true" output="false" extends="controller" {
 
+	public any function before(required struct rc) {
+		SUPER.before(rc);
+		if ( StructKeyExists(rc, 'history') ) {
+			framework.setView('main.blank');
+			framework.setLayout('default');
+			return;
+		}
+	}
+
 	public void function default() {
 		framework.setView('main.blank');
 		framework.setLayout('default');
