@@ -26,6 +26,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			rc.searchStatus = searchResults.searchStatus;
 			rc.listingIterator = $.getBean('contentIterator')
 				.setQuery(searchResults.searchResults);
+		} else {
+			rc.listingIterator = $.getBean('contentIterator').setQuery(QueryNew(['Label', 'Title', 'lastupdate'])) ;
 		}
 		return;
 	}
