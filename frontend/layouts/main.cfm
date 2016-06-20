@@ -43,7 +43,7 @@
 </cfif>
 <cfif structKeyExists(rc, 'redirectfrom')>
 	<div class="message" id="redirectfrom">
-		#rc.rb.getKey('redirectStatus')# <strong><a href="##">#rc.redirectfrom#</a></strong>
+		#rc.rb.getKey('redirectStatus')# <strong><cfif rc.dispEditLinks><a href="##"></cfif>#rc.redirectfrom#<cfif rc.dispEditLinks></a></cfif></strong>
 	</div>
 	<div id="removeredirectModal" class="modal fade" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content">
 		<div class="modal-header">
@@ -61,18 +61,6 @@
 			</form>
 		</div>
 	</div></div></div>
-	<cfscript>
-	$.addToHTMLFootQueue(action='append', text="
-		<script type=""text/javascript"">
-			(function() {
-				$('##redirectfrom a').click(function() {
-					$('##removeredirectModal').modal('show');
-					return false;
-				});
-			})();
-		</script>
-	");
-	</cfscript>
 </cfif>
 #body#
 <div id="editModal" class="modal fade" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content">
@@ -101,7 +89,7 @@
 					name="blurb"
 					class="form-control"
 					data-required="false"
-					>#rc.wikiPage.getBlurb()#</textarea>
+					>#REReplace(rc.wikiPage.getBlurb(),'(#Chr(13)##Chr(10)#|#Chr(10)#|#Chr(13)#)', '#Chr(22)#', 'all')#</textarea>
 			</div>
 			<div class="mura-form-textfield form-group control-group attachments">
 				<label>#rc.rb.getKey('sidebarAttachmentTitle')#</label>
@@ -208,24 +196,61 @@
 		return false;
 	}
 	$(document).ready(function() {
-		$('a.pageedit').click(function() {
-			$('#editModal').modal('show');
-			return false;
-		});
-		$('#editModal').on('shown.bs.modal', function() {
-			$('#editModal select.s2').select2();
-		});
-		$('a.redirect').click(function() {
-			$('#redirectModal').modal('show');
-			return false;
-		});
-		$('#redirectModal').on('shown.bs.modal', function() {
-			$('#redirectModal select.s2').select2();
-		});
-		$('a.delete').click(function() {
-			$('#deleteModal').modal('show');
-			return false;
-		});
+		$('#editform textarea').val(
+			$('#editform textarea').val().replace(new RegExp(String.fromCharCode(22), 'g'), String.fromCharCode(10))
+		);
+		<cfif $.currentUser().getIsLoggedIn()>
+			$('a.pageedit').click(function() {
+				if ($(this).attr('disabled') != 'disabled') {
+					$('#editModal').modal('show');
+				}
+				return false;
+			});
+			$('#editModal').on('shown.bs.modal', function() {
+				$('#editModal select.s2').select2();
+			});
+			$('a.redirect').click(function() {
+				if ($(this).attr('disabled') != 'disabled') {
+					$('#redirectModal').modal('show');
+				}
+				return false;
+			});
+			$('#redirectModal').on('shown.bs.modal', function() {
+				$('#redirectModal select.s2').select2();
+			});
+			$('a.delete').click(function() {
+				if ($(this).attr('disabled') != 'disabled') {
+					$('#deleteModal').modal('show');
+				}
+				return false;
+			});
+			$('#redirectfrom a').click(function() {
+				if ($(this).attr('disabled') != 'disabled') {
+					$('#removeredirectModal').modal('show');
+				}
+				return false;
+			});
+		<cfelse>
+			loginLink = document.location.href.split('?')[0] + '?display=login&returnURL=' + encodeURIComponent(document.location.href);
+			$('a.pageedit').click(function() {
+				document.location.href = loginLink;
+				return false;
+			});
+			$('#panelPageOperations a').click(function() {
+				document.location.href = loginLink;
+				return false;
+			});
+			$('#redirectfrom a').click(function() {
+				document.location.href = loginLink;
+				return false;
+			});
+			$('a').filter(function() { return $(this).attr('href').match('frontend:ops');}).each(function() {
+				$(this).click(function() {
+					document.location.href = loginLink;
+					return false;
+				});
+			})
+		</cfif>
 	});
 	})();
 </script>
