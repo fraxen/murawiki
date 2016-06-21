@@ -13,27 +13,27 @@
 	}
 </cfscript>
 <cfoutput>
-<cfif structKeyExists(rc, 'undefined')>
+<cfif structKeyExists(URL, 'undefined')>
 	<div class="message" id="undefined">
 		<p>#rc.rb.getKey('undefinedMessage')#</p>
 	</div>
 </cfif>
-<cfif structKeyExists(rc, 'older')>
+<cfif structKeyExists(URL, 'older')>
 	<div class="message" id="older">
 		<p>#rc.rb.getKey('oldMessage')#</p>
 	</div>
 </cfif>
-<cfif structKeyExists(rc, 'touched')>
+<cfif structKeyExists(URL, 'touched')>
 	<div class="message" id="touched">
 		<p>#rc.rb.getKey('touchedMessage')#</p>
 	</div>
 </cfif>
-<cfif structKeyExists(rc, 'orphan')>
+<cfif structKeyExists(URL, 'orphan')>
 	<div class="message" id="orphan">
 		<p>#rc.rb.getKey('orphanMessage')#</p>
 	</div>
 </cfif>
-<cfif structKeyExists(rc, 'version') AND rc.wikiPage.getIsActive() != 1>
+<cfif structKeyExists(URL, 'version') AND rc.wikiPage.getIsActive() != 1>
 	<div class="message" id="version">
 		#ReReplace(rc.rb.getKey('versionNote'), '{versiondate}', '#DateFormat(rc.wikiPage.getLastUpdate(), 'yyyy-mm-dd')# #TimeFormat(rc.wikiPage.getLastUpdate(), 'HH:mm')#')#<br>
 		<a href="#$.createHREF(filename=rc.wikiPage.getFilename())#">#rc.rb.getKey('versionNoteLink')#</a><br/>
@@ -41,7 +41,7 @@
 		<p><em>#rc.wikiPage.getNotes()# (#rc.wikiPage.getLastUpdateBy()#)</em></p>
 	</div>
 </cfif>
-<cfif structKeyExists(rc, 'redirectfrom')>
+<cfif structKeyExists(URL, 'redirectfrom')>
 	<div class="message" id="redirectfrom">
 		#rc.rb.getKey('redirectStatus')# <strong><cfif rc.dispEditLinks><a href="##"></cfif>#rc.redirectfrom#<cfif rc.dispEditLinks></a></cfif></strong>
 	</div>
