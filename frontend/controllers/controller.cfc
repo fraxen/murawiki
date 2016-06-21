@@ -28,6 +28,12 @@ component persistent="false" accessors="true" output="false" extends="mura.cfobj
 		}
 		rc.dispEditLinks = $.CurrentUser().getIsLoggedIn() || rc.wiki.getEditLinksAnon() == 1;
 		rc.authEdit = $.CurrentUser().isSuperUser() || ArrayFind(['editor', 'author'], $.getBean('permUtility').getNodePerm($.event('crumbData')));
+
+		if ( StructKeyExists(URL, 'display') && URL.display == 'login' ) {
+			framework.setView('main.blank');
+			framework.setLayout('default');
+			framework.abortController();
+		}
 	}
 
 	public void function loadWikis() {
