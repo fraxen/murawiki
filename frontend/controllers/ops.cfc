@@ -1,6 +1,16 @@
 <cfscript>
 component displayname="frontend" persistent="false" accessors="true" output="false" extends="controller" {
 
+	public any function before(required struct rc) {
+		SUPER.before(rc);
+		if (!rc.authEdit) {
+			$.redirect(
+				location = $.createHREF(filename='#rc.wiki.getFilename()#/#$.content().getLabel()#', querystring='notauth=1')
+				, statusCode = '302'
+			)
+		}
+	}
+
 	public void function touch() {
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=$.event('siteID'));
 		rc.wiki = getWikiManagerService().getWiki(rc.wikiPage.getParentID());

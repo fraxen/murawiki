@@ -181,6 +181,15 @@
 		</form>
 	</div>
 </div></div></div>
+<div id="notauthModal" class="modal fade" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h4 class="modal-title">#rc.rb.getKey('notauthTitle')#</h4>
+	</div>
+	<div class="modal-body center">
+		#rc.rb.getKey('notauthBody')#
+	</div>
+</div></div></div>
 </cfoutput>
 <script type="text/javascript">
 	(function() {
@@ -196,10 +205,13 @@
 		return false;
 	}
 	$(document).ready(function() {
+		if (window.location.search.match(/\?notauth=1/)) {
+			$('#notauthModal').modal('show');
+		}
 		$('#editform textarea').val(
 			$('#editform textarea').val().replace(new RegExp(String.fromCharCode(22), 'g'), String.fromCharCode(10))
 		);
-		<cfif $.currentUser().getIsLoggedIn()>
+		<cfif $.currentUser().getIsLoggedIn() && rc.authedit>
 			$('a.pageedit').click(function() {
 				if ($(this).attr('disabled') != 'disabled') {
 					$('#editModal').modal('show');
@@ -230,8 +242,29 @@
 				}
 				return false;
 			});
+		<cfelseif  $.currentUser().getIsLoggedIn() && !rc.authedit>
+			$('a.pageedit').click(function() {
+				$('#notauthModal').modal('show');
+				return false;
+			});
+			$('#panelPageOperations a').click(function() {
+				$('#notauthModal').modal('show');
+				return false;
+			});
+			$('#redirectfrom a').click(function() {
+				$('#notauthModal').modal('show');
+				return false;
+			});
+			$('a').filter(function() { return $(this).attr('href').match('frontend:ops');}).each(function() {
+				$(this).click(function() {
+					$('#notauthModal').modal('show');
+					return false;
+				})
+			})
 		<cfelse>
-			loginLink = document.location.href.split('?')[0] + '?display=login&returnURL=' + encodeURIComponent(document.location.href);
+			<cfoutput>
+			loginLink = '#$.createHREF(filename=rc.Wiki.getFilename())#/SpecialLogin/?display=login&returnURL=' + encodeURIComponent(document.location.href);
+			</cfoutput>
 			$('a.pageedit').click(function() {
 				document.location.href = loginLink;
 				return false;
