@@ -43,7 +43,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				return rcs.getAvailableSubTypes() == 'File/Default';
 			})[1].getRelatedContentSetID();
 		rc.wikiPage = $.content();
-		if (structKeyExists(rc, 'version')) {
+		if (structKeyExists(URL, 'version')) {
 			rc.wikiPage = $.getBean('content').loadBy(ContentHistID=rc.version);
 		}
 		rc.attachments = DeserializeJSON(rc.wikiPage.getAttachments());

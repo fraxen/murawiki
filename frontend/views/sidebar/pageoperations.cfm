@@ -4,7 +4,7 @@
 	<ul>
 		<li><a
 			id="pageedit" class="pageedit" href="##"
-			<cfif StructKeyExists(rc, 'version')>disabled="disabled"</cfif>
+			<cfif StructKeyExists(URL, 'version')>disabled="disabled"</cfif>
 			<cfif rc.isUndefined>
 				accesskey="#rc.rb.getKey('sidebarPageopsEditAccessKey')#"
 			<cfelse>
@@ -20,7 +20,7 @@
 		<li><a
 			href="#$.createHREF(filename=rc.wikiPage.getFilename(), querystring='history')#"
 			<cfif !rc.isUndefined>accesskey="#rc.rb.getKey('sidebarPageopsHistoryAccessKey')#"</cfif>
-			<cfif rc.isUndefined || StructKeyExists(rc, 'version')>disabled="disabled"</cfif>
+			<cfif rc.isUndefined || StructKeyExists(URL, 'version')>disabled="disabled"</cfif>
 		>
 			<cfif rc.isUndefined>
 				#rc.rb.getKey('sidebarPageopsHistory')#
@@ -28,7 +28,7 @@
 				#ReReplaceNoCase(rc.rb.getKey('sidebarPageopsHistory'), '(#rc.rb.getKey('sidebarPageopsHistoryAccessKey')#)', '<span class="uline">\1</span>')#
 			</cfif>
 		</a></li>
-		<li><a href="##" class="delete" <cfif rc.isUndefined || StructKeyExists(rc, 'version')>disabled="disabled"</cfif>>
+		<li><a href="##" class="delete" <cfif rc.isUndefined || StructKeyExists(URL, 'version')>disabled="disabled"</cfif>>
 			#rc.rb.getKey('sidebarPageopsDelete')#
 		</a></li>
 		<li><a href="##" class="redirect" accesskey="#rc.rb.getKey('sidebarPageopsRedirectAccessKey')#">
@@ -37,7 +37,7 @@
 		<li><a
 			href="#buildURL(action='frontend:ops.touch', querystring='contentid=#rc.wikiPage.getContentID()#')#"
 			<cfif !rc.isUndefined>accesskey="#rc.rb.getKey('sidebarPageopsTouchAccessKey')#"</cfif>
-			<cfif rc.isUndefined || StructKeyExists(rc, 'version')>disabled="disabled"</cfif>
+			<cfif rc.isUndefined || StructKeyExists(URL, 'version')>disabled="disabled"</cfif>
 		>
 			<cfif rc.isUndefined>
 				#rc.rb.getKey('sidebarPageopsTouch')#

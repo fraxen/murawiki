@@ -48,7 +48,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			rc.wikiPage.setIsNew(1);
 			framework.setView('main.undefined');
 		}
-		if (StructKeyExists(rc, 'version')) {
+		if (StructKeyExists(URL, 'version')) {
 			rc.wikiPage = $.getBean('content').loadBy(ContentHistID=rc.version);
 		}
 		rc.blurb = getWikiManagerService().renderHTML(rc.wikiPage);
