@@ -32,7 +32,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			return;
 		}
 		rc.wikiPage = $.content();
-		if ( StructKeyExists(rc, 'history') ) {
+		if ( StructKeyExists(URL, 'history') ) {
 			framework.setView('main.history');
 			return;
 		}

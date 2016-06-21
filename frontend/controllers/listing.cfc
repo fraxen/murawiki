@@ -3,7 +3,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 
 	public any function before(required struct rc) {
 		SUPER.before(rc);
-		if ( StructKeyExists(rc, 'history') ) {
+		if ( StructKeyExists(URL, 'history') ) {
 			framework.setView('main.blank');
 			framework.setLayout('default');
 			return;
