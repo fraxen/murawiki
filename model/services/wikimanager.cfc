@@ -340,7 +340,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		});
 
 		// Update outgoing links
-		wiki.wikiList[wp.getLabel()] = wp.getOutgoingLinks();
+		wiki.wikiList[wp.getLabel()] = ListToArray(wp.getOutgoingLinks());
 		setWiki(wiki.getContentID(), wiki);
 		return wp;
 	}
