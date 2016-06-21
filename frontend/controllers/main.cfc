@@ -3,6 +3,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 
 	public void function default() {
 		framework.setView('main.blank');
+		framework.setLayout('main.blank');
 		return;
 	}
 
