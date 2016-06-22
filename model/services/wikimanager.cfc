@@ -119,9 +119,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 					AND 
 					objectSubType = 'WikiPage' 
 					AND 
-					ParentID = '1025F4FC-CE88-4F1F-8AF589550BBF2D44' 
-					AND 
-					deletedDate > {ts '2016-04-19 12:31:29'} 
+					ParentID = '#ARGUMENTS.Wiki.getContentID()#' 
 		")
 			.map(function(c) {
 				if (isWddx(c.packet)) {
