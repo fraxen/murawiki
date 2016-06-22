@@ -12,6 +12,33 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	// framework variables
 	include 'fw1config.cfm';
 
+	public void function onSiteLoginPromptRender($) {
+		var cf = $.content().getFilename();
+		if (ListLen(cf, '/') > 1 && ListLast(cf, '/') != 'speciallogin') {
+			$.getBean('feed')
+				.setMaxItems(0)
+				.setShowNavOnly(0)
+				.setShowExcludeSearch(1)
+				.setSiteID($.event('siteid'))
+				.addParam(
+					field='subtype',
+					condition='EQUALS',
+					criteria='Wiki',
+					dataType='varchar'
+				)
+				.getQuery()
+				.each( function(w) {
+					if (w.filename == ListDeleteAt($.event('currentfilename'), ListLen(cf, '/'), '/')) {
+						$.redirect(
+							location = "#$.createHREF(filename='#w.filename#/SpecialLogin/', querystring='display=login&returnURL=#$.createHREF(filename=$.content().getFilename())#')#"
+							, statusCode = '301'
+						);
+						abort;
+					}
+				});
+		}
+	}
+
 	public void function onFolderWikiBodyRender($) {
 		getApplication().doAction('frontend:main.wikiFolder')
 	}
@@ -25,7 +52,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 
 	public void function onApplicationLoad(required struct $) {
 		// trigger FW/1 to reload
-		lock scope='application' type='exclusive' timeout=20 {
+		lock scope='application' type='exclusive' timeout=30 {
 			getApplication().setupApplicationWrapper(); // this ensures the appCache is cleared as well
 		};
 
@@ -41,39 +68,41 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	public void function onsite404 (required struct $) {
 		// If the current filename is under a wiki, load a content bean
 		var cf = $.event('currentfilename');
-		var bf = {};
 		if (ListLen(cf, '/') > 1) {
-			try {
-				bf = getApplication().getSubSystemBeanFactory('frontend');
-			}
-			catch(e) {
-				bf = getApplication().getDefaultBeanFactory();
-			}
-			if (StructIsEmpty(bf.getBean('WikiManagerService').getWikis())) {
-				bf.getBean('WikiManagerService').loadWikis();
-			}
-			bf.getBean('WikiManagerService').getWikis()
-			.each( function(ContentID, w) {
-				if (w.getFilename() == ListDeleteAt($.event('currentfilename'), ListLen(cf, '/'), '/')) {
-					$.setContentBean(
-						$.getBean('contentBean').set({
-							ContentID = ContentID,
-							siteid = $.event('siteid'),
-							type = 'Page',
-							subType = 'WikiPage',
-							label = ListLast(cf, '/'),
-							title = ListLast(cf, '/'),
-							approved = 1,
-							display = 1,
-							isnew = 0,
-							template = w.getChildTemplate() != '' ? w.getChildTemplate() : w.getTemplate(),
-							parentid = ContentID
-						})
-					);
-					$.content()['isUndefined'] = 1;
-					return;
-				}
-			});
+			$.getBean('feed')
+				.setMaxItems(0)
+				.setShowNavOnly(0)
+				.setShowExcludeSearch(1)
+				.setSiteID($.event('siteid'))
+				.addParam(
+					field='subtype',
+					condition='EQUALS',
+					criteria='Wiki',
+					dataType='varchar'
+				)
+				.getQuery()
+				.each( function(w) {
+					if (w.filename == ListDeleteAt($.event('currentfilename'), ListLen(cf, '/'), '/')) {
+						var wiki = $.getBean('content').loadBy(ContentID = w.ContentID, SiteID = w.SiteID);
+						$.setContentBean(
+							$.getBean('contentBean').set({
+								ContentID = w.ContentID,
+								siteid = $.event('siteid'),
+								type = 'Page',
+								subType = 'WikiPage',
+								label = ListLast(cf, '/'),
+								title = ListLast(cf, '/'),
+								approved = 1,
+								display = 1,
+								isnew = 0,
+								template = wiki.getChildTemplate() != '' ? wiki.getChildTemplate() : wiki.getTemplate(),
+								parentid = w.ContentID
+							})
+						);
+						$.content()['isUndefined'] = 1;
+						return;
+					}
+				});
 		}
 	}
 
