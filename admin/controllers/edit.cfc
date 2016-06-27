@@ -6,8 +6,12 @@ component persistent="false" accessors="true" output="false" extends="controller
 		rc.stylesheets = QueryColumnData(directoryList('#ExpandPath('')#/assets', true, 'query', '*.css', 'name asc'), 'name');
 		rc.language = QueryColumnData(directoryList('#ExpandPath('')#/resourceBundles', true, 'query', '*.properties', 'name asc'), 'name')
 			.map( function(l) { return listFirst(l, '.');});
-		rc.engines = QueryColumnData(directoryList('#ExpandPath('')#/model/services/engines', true, 'query', '*.cfc', 'name asc'), 'name')
-			.map( function(l) { return listFirst(l, '.');});
+		rc.engines = QueryColumnData(directoryList('#ExpandPath('')#/model/beans/engine', true, 'query', '*.cfc', 'name asc'), 'name')
+			.reduce( function(carry,l) {
+				var e = listFirst(l, '.');
+				return carry.insert(e, beanFactory.getBean(e).getEngineOpts());}, {}
+			);
+		rc.wikiEdit.setEngineOpts(rc.wikiEdit.getEngineOpts() == '' ? {} : DeserializeJSON(rc.wikiEdit.getEngineOpts()));
 	}
 
 	public void function submit() {
@@ -25,6 +29,15 @@ component persistent="false" accessors="true" output="false" extends="controller
 		param rc.WikiEngine = wiki.getWikiEngine();
 		param rc.regionmain = wiki.getRegionmain();
 		param rc.regionside = wiki.getRegionside();
+		param rc.engineopts = {};
+
+		StructKeyArray(rc)
+			.filter(function(p) {
+				return REFind('^engineopt_', p);
+			})
+			.each(function(p) {
+				rc.engineopts[ListLast(p, '_')] = rc[p];
+			});
 
 		rc.Home = LCase(rc.Home);
 
@@ -53,6 +66,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 			, SiteNav    = rc.SiteNav
 			, SiteSearch = rc.SiteSearch
 			, useIndex   = rc.UseIndex
+			, engineOpts = SerializeJson(rc.engineopts)
 			, collectionpath = rc.CollectionPath
 		}).save();
 

@@ -1,13 +1,21 @@
 <cfscript>
 component persistent="false" accessors="true" output="false" {
-	property type='struct' name='options';
-	property type='any' name='resource';
 	/*
 		This code is modified from the original CfWiki by Brian Shearer and many others
 	*/
+	property type='any' name='resource';
+	property type='struct' name='engineopts';
 
-	// wikiPattern = '([^[:space:]|[:punct:]]*(?:[A-Z]{2,}[a-z0-9]+|[a-z]+[A-Z]+){1,}[^[:space:]|^[:punct:]]*)';
-	wikiPattern = '([^[:space:]|[:punct:]]*[[:upper:]][^[:space:]]*[[:upper:]][^[:space:]|^[:punct:]]*)';
+	variables.engineopts = {
+		'usePattern': {
+			val: '1',
+			hint: 'Locate links using the defined regular expression pattern, e.g. CamelCase wiki links (1/0)'
+		},
+		'wikiPattern' : {
+			val: '([^[:space:]|[:punct:]]*[[:upper:]][^[:space:]]*[[:upper:]][^[:space:]|^[:punct:]]*)',
+			hint: 'Pattern for finding wiki links, e.g. CamelCase links (Regular Expression)'
+		}
+	};
 
 	private struct function tuckAway(required string thisBlurb, required string token, required string blockStart, required string blockEnd, boolean include="no") {
 		var returnVar={};
@@ -44,6 +52,15 @@ component persistent="false" accessors="true" output="false" {
 		returnVar.Blurb = ARGUMENTS.thisBlurb;
 
 		return returnVar;
+	}
+
+	public object function setEngineOptsFixed(required struct engineopts) {
+		var opts = getEngineOpts();
+		StructKeyArray(ARGUMENTS.engineopts)
+			.each(function(o) {
+				opts[o].val = engineopts[o];
+			})
+		return setEngineOpts(opts);
 	}
 
 	public object function renderHTML(required string blurb, required string label, required struct wikiList, required string parentpath, required any ContentRenderer) {
@@ -99,8 +116,8 @@ component persistent="false" accessors="true" output="false" {
 			sTemp.stillChecking = 1;
 			sTemp.labelList = '';
 			// loop through document looking for names
-			while (sTemp.stillChecking) {
-				sTemp.labelLoc = REFind(VARIABLES.wikiPattern, thisBlurb, sTemp.StartPos, TRUE);
+			while (sTemp.stillChecking && getEngineOpts().usePattern.val == 1) {
+				sTemp.labelLoc = REFind(getEngineOpts().wikiPattern.val, thisBlurb, sTemp.StartPos, TRUE);
 				// if a wikiname exsists...
 				if (sTemp.labelLoc.pos[1]) {
 					// stick it in a variable

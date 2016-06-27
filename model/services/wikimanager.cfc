@@ -453,12 +453,12 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				engineopts = isJSON(wikis[w.ContentID].getEngineOpts()) ? DeserializeJSON(wikis[w.ContentID].getEngineOpts()) : {};
 				wikis[w.ContentID].wikiList = loadWikiList(wikis[w.ContentID]);
 				wikis[w.ContentID].tags = loadTags(wikis[w.ContentID]);
-				wikis[w.ContentID].engine = beanFactory.getBean(wikis[w.ContentID].getWikiEngine())
-					.setOptions(engineopts)
+				wikis[w.ContentID].engine = beanFactory.getBean(wikis[w.ContentID].getWikiEngine() & 'engine')
+					.setEngineOptsFixed(engineopts)
 					.setResource(
 						new mura.resourceBundle.resourceBundleFactory(
 						parentFactory = APPLICATION.settingsManager.getSite(w.SiteID).getRbFactory(),
-						resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/model/services/engines/rb_#wikis[w.ContentID].getWikiEngine()#/',
+						resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/model/beans/engine/rb_#wikis[w.ContentID].getWikiEngine()#/',
 						locale = wikis[w.ContentID].getLanguage()
 					))
 				;

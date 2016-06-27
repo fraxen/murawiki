@@ -25,15 +25,6 @@
 		<input type="text" name="home" value="#rc.wikiEdit.getHome()#" data-required="true" id="home" class="form-control" placeholder="Label of home page"/>
 	</div>
 	<div class="mura-form-dropdown form-group">
-		<label for="wikiengine">Wiki engine</label>
-		<!--- TODO Dynamically select here... --->
-		<select id="wikiengine" name="wikiengine" class="form-control" data-placeholder="Select engine" data-allow-clear="false" <cfif rc.wikiedit.getIsInit()>disabled="disabled"</cfif>>
-			<cfloop index="e" array="#rc.engines#">
-				<option value="#e#" <cfif rc.wikiedit.getEngine() == e>selected="selected"</cfif>>#e#</option>
-			</cfloop>
-		</select>
-	</div>
-	<div class="mura-form-dropdown form-group">
 		<label for="language">Language for user interface (does not impact content)</label>
 		<!--- TODO Dynamically select here... --->
 		<select id="language" name="language" class="form-control" data-placeholder="Select language" data-allow-clear="false">
@@ -118,7 +109,7 @@
 		</label>
 		<input type="text" id="collectionpath" name="collectionpath" value="#rc.wikiEdit.getCollectionPath()#" class="form-control" placeholder="Absolute path for collection"/>
 	</div>
-	<div class="mura-form-checkbox form-group">
+	<div class="mura-form-checkbox form-group control-group">
 		<dl class="dl-horizontal">
 		<dt><label for="editlinksanon">Display edit links for anonymous (not logged in users)</label><em>Only applies if view of access to the wiki is not restricted</em></dt>
 		<dd>
@@ -126,6 +117,25 @@
 		</dd>
 		</dl>
 	</div>
+	<cfdump var="#rc.wikiedit.getEngineOpts()#" />
+	<div class="mura-form-dropdown form-group control-group">
+		<label for="wikiengine">Wiki engine</label>
+		<!--- TODO Dynamically select here... --->
+		<select id="wikiengine" name="wikiengine" class="form-control" data-placeholder="Select engine" data-allow-clear="false" <cfif rc.wikiedit.getIsInit()>disabled="disabled"</cfif>>
+			<cfloop index="e" array="#StructKeyArray(rc.engines)#">
+				<option value="#e#" <cfif rc.wikiedit.getEngine() == e>selected="selected"</cfif>>#e#</option>
+			</cfloop>
+		</select>
+	</div>
+	<cfloop index="e" array="#StructKeyArray(rc.engines)#">
+		<cfloop index="opt" array="#StructKeyArray(rc.engines[e])#">
+			<cfset thisOpt = StructKeyExists(rc.wikiedit.getEngineOpts(), opt) ? rc.wikiEdit.getEngineOpts()[opt] : rc.engines[e][opt].val />
+			<div class="mura-form-textfield form-group control-group">
+				<label for="engineopt_#opt#">#opt#<br/><em>#rc.engines[e][opt].hint#</em></label>
+				<input type="text" name="engineopt_#opt#" id="engineopt_#opt#" class="form-control" value="#thisOpt#"/>
+			</div>
+		</cfloop>
+	</cfloop>
 	<div >
 		<br/><input type="submit" class="btn btn-default" value="<cfif rc.wikiedit.getIsInit()>Update<cfelse>Initialize</cfif>" accesskey="s" style="WIDTH: 100%;" />
 	</div>
