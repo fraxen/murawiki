@@ -6,7 +6,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 		rc.stylesheets = QueryColumnData(directoryList('#ExpandPath('')#/assets', true, 'query', '*.css', 'name asc'), 'name');
 		rc.language = QueryColumnData(directoryList('#ExpandPath('')#/resourceBundles', true, 'query', '*.properties', 'name asc'), 'name')
 			.map( function(l) { return listFirst(l, '.');});
-		rc.engines = QueryColumnData(directoryList('#ExpandPath('')#/model/beans/engine', true, 'query', '*.cfc', 'name asc'), 'name')
+		rc.engines = QueryColumnData(directoryList('#ExpandPath('')#/model/beans/engine', false, 'query', '*.cfc', 'name asc'), 'name')
 			.reduce( function(carry,l) {
 				var e = listFirst(l, '.');
 				return carry.insert(e, beanFactory.getBean(e).getEngineOpts());}, {}

@@ -454,7 +454,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				wikis[w.ContentID].wikiList = loadWikiList(wikis[w.ContentID]);
 				wikis[w.ContentID].tags = loadTags(wikis[w.ContentID]);
 				wikis[w.ContentID].engine = beanFactory.getBean(wikis[w.ContentID].getWikiEngine() & 'engine')
-					.setEngineOptsFixed(engineopts)
+					.setup(engineopts)
 					.setResource(
 						new mura.resourceBundle.resourceBundleFactory(
 						parentFactory = APPLICATION.settingsManager.getSite(w.SiteID).getRbFactory(),

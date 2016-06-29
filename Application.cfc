@@ -112,11 +112,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 			'/#variables.framework.package#/model',
 			{
 				strict = true,
-				constants={
-					gntphost='roquefort.vpn',
-					gntppassword='AlGlut',
-					gntpicon='http://projects.amap.no/projects/includes/themes/amappd/images/amap.png',
-				}
+				transients = ['engine']
 			}
 		);
 

@@ -117,27 +117,48 @@
 		</dd>
 		</dl>
 	</div>
-	<cfdump var="#rc.wikiedit.getEngineOpts()#" />
 	<div class="mura-form-dropdown form-group control-group">
 		<label for="wikiengine">Wiki engine</label>
 		<!--- TODO Dynamically select here... --->
 		<select id="wikiengine" name="wikiengine" class="form-control" data-placeholder="Select engine" data-allow-clear="false" <cfif rc.wikiedit.getIsInit()>disabled="disabled"</cfif>>
 			<cfloop index="e" array="#StructKeyArray(rc.engines)#">
-				<option value="#e#" <cfif rc.wikiedit.getEngine() == e>selected="selected"</cfif>>#e#</option>
+				<option value="#e#" <cfif rc.wikiedit.getWikiEngine() == e>selected="selected"</cfif>>#e#</option>
 			</cfloop>
 		</select>
 	</div>
+	<div id="engineopts">
 	<cfloop index="e" array="#StructKeyArray(rc.engines)#">
+		<div class="#e#">
 		<cfloop index="opt" array="#StructKeyArray(rc.engines[e])#">
 			<cfset thisOpt = StructKeyExists(rc.wikiedit.getEngineOpts(), opt) ? rc.wikiEdit.getEngineOpts()[opt] : rc.engines[e][opt].val />
 			<div class="mura-form-textfield form-group control-group">
 				<label for="engineopt_#opt#">#opt#<br/><em>#rc.engines[e][opt].hint#</em></label>
-				<input type="text" name="engineopt_#opt#" id="engineopt_#opt#" class="form-control" value="#thisOpt#"/>
+				<input type="text" name="engineopt_#opt#" id="engineopt_#opt#" class="form-control" value="#thisOpt#" <cfif rc.wikiedit.getWikiEngine() != e>disabled="disabled"</cfif>/>
 			</div>
 		</cfloop>
+		</div>
 	</cfloop>
+	</div>
 	<div >
 		<br/><input type="submit" class="btn btn-default" value="<cfif rc.wikiedit.getIsInit()>Update<cfelse>Initialize</cfif>" accesskey="s" style="WIDTH: 100%;" />
 	</div>
 	</form>
 </cfoutput>
+<script type="text/javascript">
+	(function() {
+		$(document).ready(function() {
+			function updateOpts(eng) {
+				$('#engineopts div[class!="' + eng + '"]').not('#engineopts div div').hide();
+				$('#engineopts div[class!="' + eng + '"] input').attr('disabled', 'disabled');
+				$('#engineopts div[class="' + eng + '"]').not('#engineopts div div').show();
+				$('#engineopts div[class="' + eng + '"] input').attr('disabled', false);
+			}
+
+			$('#wikiengine').change(function() {
+				updateOpts($(this).val());
+			});
+
+			updateOpts($('#wikiengine').val());
+		});
+	})();
+</script>

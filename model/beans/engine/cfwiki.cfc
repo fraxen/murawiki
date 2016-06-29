@@ -54,6 +54,10 @@ component persistent="false" accessors="true" output="false" {
 		return returnVar;
 	}
 
+	public object function setup(required struct engineopts) {
+		return setEngineOptsFixed(ARGUMENTS.engineOpts);
+	}
+
 	public object function setEngineOptsFixed(required struct engineopts) {
 		var opts = getEngineOpts();
 		StructKeyArray(ARGUMENTS.engineopts)

@@ -226,7 +226,7 @@
 				<attributeset categoryid="" container="Advanced" name="Properties" orderno="1">
 					<attribute adminonly="1" defaultvalue="0" label="Is this Wiki initialized?" name="isInit" optionlist="1^0" orderno="1" required="1" type="RadioGroup" />
 					<attribute adminonly="1" defaultvalue="home" label="Label of home/index page" name="Home" orderno="2" required="1" type="TextBox" />
-					<attribute adminonly="1" defaultvalue="" label="Wiki engine" name="WikiEngine" orderno="3" required="0" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="canvas" label="Wiki engine" name="WikiEngine" orderno="3" required="0" type="TextBox" />
 					<attribute adminonly="1" defaultvalue="en" label="Language" name="Language" orderno="4" required="0" type="TextBox" />
 					<attribute adminonly="1" defaultvalue="0" label="Include in site nav" name="SiteNav" orderno="5" required="0" type="RadioGroup" optionlist="1^0" />
 					<attribute adminonly="1" defaultvalue="0" label="Include in site search" name="SiteSearch" orderno="6" required="0" type="RadioGroup" optionlist="1^0" />

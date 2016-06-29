@@ -99,3 +99,11 @@ div.moreResults {
 	TEXT-DECORATION: line-through;
 }
 .mura-editable-label {DISPLAY: None;}
+.code, .wiki_code{ 
+	white-space: pre; 
+	font-family: Consolas, 'Andale Mono', 'Monaco', monospace;
+	width: 70%;
+	border: 1px solid #3D8BD8;
+	padding: 5px;
+	background-color: #EEEEEE;
+}
