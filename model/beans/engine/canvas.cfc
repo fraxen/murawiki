@@ -41,9 +41,30 @@ component persistent="false" accessors="true" output="false" {
 
 	public object function renderHTML(required string blurb, required string label, required struct wikiList, required string parentpath, required any ContentRenderer) {
 		var page = new canvas.pagebean();
+		var outLinks = [];
 		page.setBody(blurb);
-		outHTML = getRenderer().renderbody_normal_mura(page, '/', ARGUMENTS.blurb);
-		return { blurb=outHTML, outgoingLinks=[] };
+		outHTML = getRenderer().renderbody_normal_mura(page, '#chr(9)#', ARGUMENTS.blurb);
+		outHTML = ListToArray(outHTML, 'href="#chr(9)#/', false, true)
+			.map(function(t) {
+				var label = '';
+				var link = '';
+				if (Left(t, 10) == 'index.cfm/') {
+					label = REReplace(t, '^index.cfm/([^"]*)".*', '\1', 'ONE');
+					ArrayAppend(outLinks, label)
+					if (StructKeyExists(wikiList, label)) {
+						link = ContentRenderer.createHREF(filename='#parentpath#/#LCase(label)#');
+					} else {
+						link = ContentRenderer.createHREF(filename='#parentpath#/#label#') & '" class="undefined';
+					}
+					return 'href="#REReplace(t, '^index.cfm/#label#', link, 'ONE')#';
+				} else {
+					return t;
+				}
+			})
+			.reduce(function(carry, t) {
+				return carry & t;
+			}, '');
+		return { blurb=outHTML, outgoingLinks=outLinks };
 	}
 
 	public array function outGoingLinks(required string blurb, required string label) {
