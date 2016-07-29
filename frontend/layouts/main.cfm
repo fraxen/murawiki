@@ -11,6 +11,14 @@
 			}</style>
 		')
 	}
+	thisTags = rc.wiki.tags;
+	ListToArray(rc.wikiPage.getTags()).each(function(t) {
+		if (ArrayFindNoCase(thisTags, t)) {
+			return;
+		}
+		ArrayAppend(thisTags, t);
+	});
+	thisTags.sort('text');
 </cfscript>
 <cfoutput>
 <cfif structKeyExists(URL, 'undefined')>
@@ -113,7 +121,7 @@
 			<div class="mura-form-textfield form-group control-group">
 				<label for="tags">#rc.rb.getKey('tags')#</label>
 				<select name="tags" multiple="multiple" class="form-control s2" data-placeholder="#rc.rb.getKey('tagsPlaceholder')#" data-tags="tags">
-					<cfloop item="kw" array="#rc.wiki.tags#">
+					<cfloop item="kw" array="#thisTags#">
 						<option value="#kw#" <cfif ListFindNoCase(rc.wikiPage.getTags(), kw)>selected="selected"</cfif>>#kw#</option>
 					</cfloop>
 				</select>
