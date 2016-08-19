@@ -12,6 +12,19 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	// framework variables
 	include 'fw1config.cfm';
 
+	public void function onSiteMonitor(required struct $) {
+		// Refresh the cached content every four hours
+		if ((hour(now()) MOD 4) == 0 && minute(now()) < 15) {
+			try {
+				var wm = getApplication().getSubSystemBeanFactory('frontend').getBean('WikiManagerService');
+				wm.setWikis({});
+			}
+			catch(e) {
+				pass;
+			}
+		}
+	}
+
 	public void function onSiteLoginPromptRender($) {
 		var cf = $.content().getFilename();
 		if (ListLen(cf, '/') > 1 && ListLast(cf, '/') != 'speciallogin') {
