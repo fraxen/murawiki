@@ -2,7 +2,7 @@
 <div id="panelShortcutpanel" class="panel">
 	<h3>#rc.rb.getKey('sidebarShortcutPanelTitle')#</h3>
 	<ul>
-		<li><a href="#$.createHREF(filename=rc.wiki.getFilename())#">#rc.wiki.getHome()#</a></li>
+		<li><a href="#$.createHREF(filename=rc.wiki.getFilename())#">#rc.wiki.getTitle()#</a></li>
 		<cfif rc.dispEditLinks>
 			<li><a href="#$.createHREF(filename='#rc.wiki.getFilename()#/#rc.rb.getKey('instructionsLabel')#')#">#rc.rb.getKey('sidebarShortcutPanelInstructions')#</a></li>
 			<li><a href="#$.createHREF(filename='#rc.wiki.getFilename()#/#rc.rb.getKey('maintHistoryLAbel')#')#">#rc.rb.getKey('sidebarShortcutPanelHistory')#</a></li>
