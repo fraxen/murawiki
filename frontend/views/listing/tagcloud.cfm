@@ -8,6 +8,7 @@
 	var rbFactory=$.getSite().getRbFactory();
 </cfscript>
 <cfoutput>
+	<br /><br />
 	<div id="svTagCloud" class="mura-tag-cloud">
 		<cfif tags.recordcount>
 			<ol>
@@ -35,7 +36,7 @@
 								#rbFactory.getResourceBundle().messageFormat($.rbKey('tagcloud.itemis'), args)#
 							</cfif>
 						</span>
-						<a href="#$.createHREF(filename='#rc.wiki.getFilename()#/tags/')#?tag=#urlEncodedFormat(tags.tag)#" class="tag">#HTMLEditFormat(tags.tag)#</a>
+						<a href="#$.createHREF(filename='#rc.wiki.getFilename()#/#rc.rb.getKey('tagsLabel')#/')#?tag=#urlEncodedFormat(tags.tag)#" class="tag">#HTMLEditFormat(tags.tag)#</a>
 					</li>
 				</cfloop>
 			</ol>
