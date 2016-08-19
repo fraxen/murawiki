@@ -13,6 +13,21 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 
 	public void function backlinks() {
 		var label = $.content().getLabel();
+		if (ArrayContains([
+			rc.wiki.getHome(),
+			rc.rb.getKey('instructionsLabel'),
+			rc.rb.getKey('allpagesLabel'),
+			rc.rb.getKey('mainthomeLabel'),
+			rc.rb.getKey('maintHistoryLabel'),
+			rc.rb.getKey('maintoldLabel'),
+			rc.rb.getKey('maintorphanLabel'),
+			rc.rb.getKey('maintundefinedLabel'),
+			rc.rb.getKey('SearchResultsLabel'),
+			rc.rb.getKey('tagsLabel')
+		], label)) {
+			framework.setView('main.blank');
+			return;
+		}
 		rc.backlinks = rc.wiki.wikiList
 			.filter( function(l) {
 				return ArrayFindNoCase(rc.wiki.wikiList[l], label);
