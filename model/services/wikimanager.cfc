@@ -576,6 +576,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		// Create home
 		blurb = Replace(engine.getResource().getKey('homeBody'), '\r', Chr(13), 'ALL');
+		blurb = Replace(blurb, 'SpecialInstructions', rb.getKey('instructionsLabel'));
 		body = engine.renderHTML( blurb, wiki.getHome(), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		body = body.blurb;
 		blurb = getBean('content').set({
@@ -687,6 +688,10 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		blurb = Replace(blurb, 'FrontendQuickOlder', ARGUMENTS.framework.buildURL(action='frontend:quick.older', path=ARGUMENTS.rootPath));
 		blurb = Replace(blurb, 'FrontendQuickUndefined', ARGUMENTS.framework.buildURL(action='frontend:quick.undefined', path=ARGUMENTS.rootPath));
 		blurb = Replace(blurb, 'FrontendQuickOrphan', ARGUMENTS.framework.buildURL(action='frontend:quick.orphan', path=ARGUMENTS.rootPath));
+		blurb = Replace(blurb, 'SpecialOld', rb.getKey('maintoldLabel'));
+		blurb = Replace(blurb, 'SpecialUndefined', rb.getKey('maintundefinedLabel'));
+		blurb = Replace(blurb, 'SpecialOrphan', rb.getKey('maintorphanLabel'));
+		blurb = Replace(blurb, 'SpecialAllpages', rb.getKey('allpagesLabel'));
 		body = engine.renderHTML( blurb, rb.getKey('mainthomeLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
 		body = body.blurb;
 		getBean('content').set({
