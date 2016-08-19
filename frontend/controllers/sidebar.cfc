@@ -48,6 +48,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		}
 		rc.attachments = DeserializeJSON(rc.wikiPage.getAttachments());
 		rc.attachments = isStruct(rc.attachments) ? rc.attachments : {};
+		if (Len(rc.attachments) == 0) {
+			framework.setView('main.blank');
+		}
 		return;
 	}
 
