@@ -70,6 +70,9 @@ component persistent="false" accessors="true" output="false" extends="controller
 			, collectionpath = rc.CollectionPath
 		}).save();
 
+		getWikiManagerService().loadWikis();
+		wiki = getWikiManagerService().getWiki(rc.ContentID);
+
 		if (!wiki.getIsInit()) {
 			// Initalize the wiki
 			getWikiManagerService()
