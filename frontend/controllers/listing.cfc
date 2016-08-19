@@ -85,10 +85,15 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		param rc.direction = 'asc';
 		param rc.includeredirect = 1;
 		var skipLabels = [
-			rc.rb.getKey('instructionsLabel'),
-			rc.rb.getKey('SearchResultsLabel'),
+			rc.rb.getKey('allpagesLabel'),
 			rc.rb.getKey('maintHistoryLabel'),
 			rc.rb.getKey('mainthomeLabel'),
+			rc.rb.getKey('maintoldLabel'),
+			rc.rb.getKey('maintorphanLabel'),
+			rc.rb.getKey('maintundefinedLabel'),
+			rc.rb.getKey('SearchResultsLabel'),
+			rc.rb.getKey('tagsLabel'),
+			rc.rb.getKey('instructionsLabel'),
 			rc.wiki.getHome()
 		];
 		rc.orphan = getWikiManagerService().getOrphan(rc.wiki, skipLabels);
