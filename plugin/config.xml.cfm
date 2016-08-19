@@ -231,11 +231,10 @@
 					<attribute adminonly="1" defaultvalue="0" label="Include in site nav" name="SiteNav" orderno="5" required="0" type="RadioGroup" optionlist="1^0" />
 					<attribute adminonly="1" defaultvalue="0" label="Include in site search" name="SiteSearch" orderno="6" required="0" type="RadioGroup" optionlist="1^0" />
 					<attribute adminonly="1" defaultvalue="0" label="Use tags" name="UseTags" orderno="7" required="0" type="RadioGroup" optionlist="1^0" />
-					<attribute adminonly="1" defaultvalue="2" label="Region for main content" name="regionmain" orderno="8" required="1" type="Numeric" />
-					<attribute adminonly="1" defaultvalue="3" label="Region for sidebar" name="regionside" orderno="9" required="1" type="Numeric" />
-					<attribute adminonly="1" defaultvalue="" label="Stylesheet" name="stylesheet" orderno="10" required="1" type="TextBox" />
-					<attribute adminonly="1" defaultvalue="0" label="Allow Mura tags" name="stylesheet" orderno="11" required="RadioGroup" type="1^0" />
-					<attribute adminonly="1" defaultvalue="1" label="Use cfindex" name="UseIndex" orderno="12" required="0" type="RadioGroup" optionlist="1^0" />
+					<attribute adminonly="1" defaultvalue="2" label="Region for main content" name="regionmain" orderno="8" required="0" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="3" label="Region for sidebar" name="regionside" orderno="9" required="0" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="murawiki.css" label="Stylesheet" name="stylesheet" orderno="10" required="0" type="TextBox" />
+					<attribute adminonly="1" defaultvalue="0" label="Use cfindex" name="UseIndex" orderno="12" required="1" type="RadioGroup" optionlist="1^0" />
 					<attribute adminonly="1" defaultvalue="" label="CollectionPath" name="CollectionPath" orderno="13" required="0" type="TextBox" />
 					<attribute adminonly="1" defaultvalue="{}" label="Options for wiki engine" name="EngineOpts" orderno="14" required="0" type="TextBox" />
 					<attribute adminonly="1" defaultvalue="0" label="Display edit links for anonymous users" name="EditLinksAnon" orderno="15" required="0" optionlist="1^0" type="RadioGroup" />
