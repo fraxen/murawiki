@@ -116,7 +116,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 						approved=1,
 						display=1,
 						isNav = rc.wiki.getSiteNav(),
-						searchExclude = !rc.wiki.getSiteSearch()
+						searchExclude = rc.wiki.getSiteSearch() ? 0 : 1
 					});
 					var fb = $.getBean('file').set({
 						contentid = rc.wikiPage.getContentID(),

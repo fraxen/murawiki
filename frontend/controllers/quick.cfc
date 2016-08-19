@@ -47,7 +47,7 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 			rc.rb.getKey('maintHistoryLabel'),
 			rc.rb.getKey('mainthomeLabel'),
 			rc.wiki.getHome(),
-			rc.rb.getKey('allTags')
+			rc.rb.getKey('tagsLabel')
 		];
 		var orphan = getWikiManagerService().getOrphan(rc.wiki, skipLabels);
 		if (ArrayLen(orphan)) {

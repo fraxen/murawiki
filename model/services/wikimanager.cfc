@@ -334,7 +334,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			metakeywords = wp.getTags(),
 			outgoingLinks = outgoingLinks(wp),
 			isNav = wiki.getSiteNav(),
-			searchExclude = !wiki.getSiteSearch()
+			searchExclude = wiki.getSiteSearch() ? 0 : 1
 		});
 
 		// Update outgoing links
@@ -651,7 +651,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('instructionsTitle'),
-			label = rb.getKey('instructionsTitle'),
+			label = rb.getKey('instructionsLabel'),
 			Blurb = blurb,
 			Notes = 'Initialized',
 			redirect = '',
