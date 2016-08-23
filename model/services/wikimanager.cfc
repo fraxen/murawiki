@@ -577,8 +577,6 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		// Create home
 		blurb = Replace(engine.getResource().getKey('homeBody'), '\r', Chr(13), 'ALL');
 		blurb = Replace(blurb, 'SpecialInstructions', rb.getKey('instructionsLabel'));
-		body = engine.renderHTML( blurb, wiki.getHome(), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
-		body = body.blurb;
 		blurb = getBean('content').set({
 			siteid = wiki.getSiteID(),
 			type = 'Page',
@@ -602,8 +600,6 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		// Create history
 		blurb = Replace(engine.getResource().getKey('maintHistoryBody'), '\r', Chr(13), 'ALL');
-		body = engine.renderHTML( blurb, rb.getKey('maintHistoryLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
-		body = body.blurb;
 		getBean('content').set({
 			siteid = wiki.getSiteID(),
 			type = 'Page',
@@ -646,8 +642,6 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		// Create Instructions
 		blurb = Replace(engine.getResource().getKey('instructionsBody'), '\r', Chr(13), 'ALL');
-		body = engine.renderHTML( blurb, rb.getKey('instructionsLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
-		body = body.blurb;
 		getBean('content').set({
 			siteid = wiki.getSiteID(),
 			type = 'Page',
@@ -663,8 +657,6 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		// Create AllPages
 		blurb = Replace(engine.getResource().getKey('allpagesBody'), '\r', Chr(13), 'ALL');
-		body = engine.renderHTML( blurb, rb.getKey('allpagesLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
-		body = body.blurb;
 		getBean('content').set({
 			siteid = wiki.getSiteID(),
 			type = 'Page',
@@ -693,8 +685,6 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		blurb = Replace(blurb, 'SpecialUndefined', rb.getKey('maintundefinedLabel'));
 		blurb = Replace(blurb, 'SpecialOrphan', rb.getKey('maintorphanLabel'));
 		blurb = Replace(blurb, 'SpecialAllpages', rb.getKey('allpagesLabel'));
-		body = engine.renderHTML( blurb, rb.getKey('mainthomeLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
-		body = body.blurb;
 		getBean('content').set({
 			siteid = wiki.getSiteID(),
 			type = 'Page',
@@ -710,8 +700,6 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		// Create Maintenance Undefined
 		blurb = Replace(engine.getResource().getKey('maintundefinedBody'), '\r', Chr(13), 'ALL');
-		body = engine.renderHTML( blurb, rb.getKey('maintundefinedLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
-		body = body.blurb;
 		getBean('content').set({
 			siteid = wiki.getSiteID(),
 			type = 'Page',
@@ -734,8 +722,6 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		// Create Maintenance Orphan
 		blurb = Replace(engine.getResource().getKey('maintorphanBody'), '\r', Chr(13), 'ALL');
-		body = engine.renderHTML( blurb, rb.getKey('maintorphanLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
-		body = body.blurb;
 		getBean('content').set({
 			siteid = wiki.getSiteID(),
 			type = 'Page',
@@ -758,8 +744,6 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		// Create Maintenance Old
 		blurb = Replace(engine.getResource().getKey('maintoldBody'), '\r', Chr(13), 'ALL');
-		body = engine.renderHTML( blurb, rb.getKey('maintoldLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
-		body = body.blurb;
 		getBean('content').set({
 			siteid = wiki.getSiteID(),
 			type = 'Page',
@@ -783,8 +767,6 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		// Create Tag
 		if (wiki.getUseTags()) {
 			blurb = Replace(engine.getResource().getKey('tagsBody'), '\r', Chr(13), 'ALL');
-			body = engine.renderHTML( blurb, rb.getKey('tagsLabel'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') );
-			body = body.blurb;
 			getBean('content').set({
 				siteid = wiki.getSiteID(),
 				type = 'Page',
