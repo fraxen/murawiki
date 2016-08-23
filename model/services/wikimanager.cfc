@@ -6,7 +6,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 	setWikis({});
 
-	public query function getPagesByTag(required object wiki, array tags=['gis', 'arcgis']) {
+	public query function getPagesByTag(required object wiki, array tags=['']) {
 		return getAllPages(ARGUMENTS.wiki, 'label', 'asc', [], false)
 			.filter(function(w) {
 				return w.tags != '';
@@ -34,7 +34,6 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 							AND tcontent.parentID ='#ARGUMENTS.Wiki.getContentID()#' 
 							AND tcontent.SubType = 'WikiPage'
 							AND tcontenttags.taggroup is null 
-							AND tcontenttags.tag != 'tagsTags_missing'
 					GROUP BY
 						tag 
 					ORDER BY
