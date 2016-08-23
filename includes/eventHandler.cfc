@@ -19,7 +19,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 				var wm = getApplication().getSubSystemBeanFactory('frontend').getBean('WikiManagerService');
 				wm.setWikis({});
 			}
-			catch(e) {
+			catch(any e) {
 				pass;
 			}
 		}
@@ -53,7 +53,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	}
 
 	public void function onFolderWikiBodyRender($) {
-		getApplication().doAction('frontend:main.wikiFolder')
+		getApplication().doAction('frontend:main.wikiFolder');
 	}
 
 	public void function onPageWikiPageBodyRender($) {
@@ -124,15 +124,15 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		try {
 			wm = getApplication().getSubSystemBeanFactory('frontend').getBean('WikiManagerService');
 		}
-		catch(e) {
+		catch(any e) {
 			try {
 				wm = getApplication().getSubSystemBeanFactory('admin').getBean('WikiManagerService');
 			}
-			catch(e) {
+			catch(any e) {
 			}
 		}
 		if (isObject(wm)) {
-			wm.BeforePageWikiPageSave($.content())
+			wm.BeforePageWikiPageSave($.content());
 		}
 	}
 

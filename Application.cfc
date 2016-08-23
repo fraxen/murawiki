@@ -303,7 +303,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		}
 
 		public string function getPackage() {
-			return variables.framework.package
+			return variables.framework.package;
 		}
 
 	// ========================== STATE ===========================================
