@@ -625,12 +625,13 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			.save();
 
 		// Create search results
+		blurb = Replace(engine.getResource().getKey('SpecialSearchBody'), '\r', Chr(13), 'ALL');
 		getBean('content').set({
 			siteid = wiki.getSiteID(),
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('searchResultsTitle'),
-			blurb = '',
+			blurb = blurb,
 			label = rb.getKey('searchResultsLabel'),
 			Notes = 'Initialized',
 			redirect = '',

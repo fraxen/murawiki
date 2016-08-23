@@ -16,7 +16,7 @@
 <cfset variables.categories = []>
 <cfset variables.WIKI_CODE_BLOCK_START="<div class=""wiki_code"">">
 <cfset variables.WIKI_CODE_BLOCK_END="</div>">
-<cfset variables.WIKI_NEW_LINE=chr(10)>
+<cfset variables.WIKI_NEW_LINE=chr(13)>
 <cfset variables.WIKI_TOC_MIN_ITEMS_DEFAULT=4>
 <cfset variables.WIKI_SPECIAL_WORD_NOTOC="__NOTOC__">
 <cfset variables.WIKI_SPECIAL_WORD_FORCETOC="__FORCETOC__">
