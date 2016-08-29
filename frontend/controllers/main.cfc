@@ -51,9 +51,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		if (StructKeyExists(URL, 'version')) {
 			rc.wikiPage = $.getBean('content').loadBy(ContentHistID=rc.version);
 		}
-		rc.blurb = getWikiManagerService().renderHTML(rc.wikiPage);
-		rc.attachments = DeserializeJSON(rc.wikiPage.getAttachments());
-		rc.attachments = isStruct(rc.attachments) ? rc.attachments : {};
+		rc.blurb = getWikiManagerService().renderHTML(rc.wikiPage, $.getContentRenderer());
+		rc.attachments = isJson(rc.wikiPage.getAttachments()) ? DeserializeJSON(rc.wikiPage.getAttachments()): {};
 		rc.tags = [];
 		if (rc.wiki.getUseTags()) {
 			rc.tags = ListToArray(rc.wikiPage.getTags());

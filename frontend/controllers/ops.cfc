@@ -150,7 +150,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		}
 		param rc.notes = rc.wikiPage.getIsNew() ? rc.rb.getKey('NoteCreate') : rc.rb.getKey('NoteEdit');
 		rc.wikiPage.setParentID(rc.parentid);
-		body = getWikiManagerService().renderHTML(rc.wikiPage);
+		body = getWikiManagerService().renderHTML(rc.wikiPage, $.getContentRenderer());
 		rc.wikiPage.set({
 			siteid = rc.wiki.getSiteID(),
 			type = 'Page',

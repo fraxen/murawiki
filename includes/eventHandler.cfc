@@ -131,7 +131,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 			}
 		}
 		if (isObject(wm)) {
-			wm.BeforePageWikiPageSave($.content());
+			wm.BeforePageWikiPageSave($.content(), $.getContentRenderer());
 		}
 	}
 

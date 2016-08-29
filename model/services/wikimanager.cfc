@@ -340,7 +340,7 @@
 		return ARGUMENTS.wiki;
 	}
 
-	public object function BeforePageWikiPageSave(required object wikiPage) {
+	public any function BeforePageWikiPageSave(required any wikiPage, required any ContRend) {
 		// Triggered from event handler
 		var wp = ARGUMENTS.wikiPage;
 		var wiki = getWiki(wp.getParentID());
@@ -350,11 +350,11 @@
 			active=1,
 			approved=1,
 			display=1,
-			summary = renderHTML(wp),
-			body = renderHTML(wp),
-			metadesc = stripHTML( renderHTML(wp) ),
+			summary = renderHTML(wp, ContRend),
+			body = renderHTML(wp, ContRend),
+			metadesc = stripHTML( renderHTML(wp, ContRend) ),
 			metakeywords = wp.getTags(),
-			outgoingLinks = outgoingLinks(wp),
+			outgoingLinks = outgoingLinks(wp, ContRend),
 			isNav = wiki.getSiteNav(),
 			searchExclude = wiki.getSiteSearch() ? 0 : 1
 		});
@@ -534,16 +534,16 @@
 		return ReReplace(ARGUMENTS.html, '<[^>]*(?:>|$)', ' ', 'ALL');
 	}
 
-	public string function outGoingLinks(required any wikiPage) {
+	public string function outGoingLinks(required any wikiPage, required any ContRend) {
 		var wiki = getWiki(ARGUMENTS.wikiPage.getParentID());
 		return ArrayToList(
-			wiki.engine.renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') ).OutgoingLinks
+			wiki.engine.renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), wiki.wikiList, wiki.getFileName(), ContRend ).OutgoingLinks
 		);
 	}
 
-	public string function renderHTML(required any wikiPage) {
+	public string function renderHTML(required any wikiPage, required any ContRend) {
 		var wiki = getWiki(ARGUMENTS.wikiPage.getParentID());
-		return wiki.engine.renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), wiki.wikiList, wiki.getFileName(), getBean('ContentRenderer') ).blurb;
+		return wiki.engine.renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), wiki.wikiList, wiki.getFileName(), ContRend ).blurb;
 	}
 
 	public any function Initialize(required any wiki, required any rb, required any framework, required string rootPath) {
