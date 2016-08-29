@@ -28,8 +28,13 @@
 	this.liCurrentClass = 'active';
 	this.aCurrentClass = 'active';
 
-	useLastUpdate = ArrayLen(QueryColumnData(variables.iterator.getquery(), 'lastupdate').filter(function(f){ return len(f);}));
-	useSummary = ListFindNoCase(variables.iterator.getQuery().columnlist, 'summary')
+	useLastUpdate = false;
+	for (x in variables.iterator.getQuery()) {
+		if (Len(x.lastupdate)) {
+			useLastUpdate = true;
+		}
+	}
+	useSummary = ListFindNoCase(variables.iterator.getQuery().columnlist, 'summary');
 
 	qrystr = REReplace(CGI.query_string, 'startRow=\d+($|\&)', '');
 </cfscript>
@@ -90,7 +95,7 @@
 						<cfif item.getValue('Label') EQ item.getValue('title')>
 							#HTMLEditFormat(item.getValue('Label'))#
 						<cfelse>
-							<cfif rc.action == 'frontend:listing.search'>
+							<cfif rc.action EQ 'frontend:listing.search'>
 								#HTMLEditFormat(item.getValue('Title'))#
 							<cfelse>
 								#HTMLEditFormat(item.getValue('Title'))# (#HTMLEditFormat(item.getValue('Label'))#)

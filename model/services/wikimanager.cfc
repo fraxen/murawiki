@@ -1,26 +1,43 @@
-<cfscript>
-component displayname='WikiManager' name='wikiManager' accessors='true' extends="mura.cfobject" {
-	property type='any' name='beanFactory';
-	property type='struct' name='wikis';
-	property name='NotifyService';
+<cfcomponent displayname='wikiManager' name='wikiManager' accessors='true' extends='mura.cfobject'>
+	<cfproperty type='any' name='beanFactory' />
+	<cfproperty type='struct' name='wikis' />
 
+	<cffunction name='wddxDeserialize' output='false' returnType='any' access='private'>
+		<cfargument name='wddxstring' type='string' required='true'>
+		<cfset var out=''>
+		<cfwddx action='wddx2cfml' input='#ARGUMENTS.wddxstring#' output='out'>
+		<cfreturn out>
+	</cffunction>
+
+<cfscript>
 	setWikis({});
 
-	public query function getPagesByTag(required object wiki, array tags=['']) {
-		return getAllPages(ARGUMENTS.wiki, 'label', 'asc', [], false)
-			.filter(function(w) {
-				return w.tags != '';
-			})
-			.filter(function(w) {
-				return ArrayLen(tags.filter(function(t) {
-					return ListFindNoCase(w.tags, t);
-				}));
-			});
+	public query function getPagesByTag(required any wiki, array tags=['']) {
+		var ap = getAllPages(ARGUMENTS.wiki, 'label', 'asc', [], false);
+		queryAddColumn(ap, 'Keep', 'Integer', []);
+		for (var w in ap) {
+			if (w.tags != '') {
+				for (var t in tags) {
+					if (ListFindNoCase(w.tags, t)) {
+						ap.keep = 1;
+					}
+				}
+			}
+		}
+		ap = new Query(
+			dbtype = 'query',
+			q=ap,
+			sql = "
+				SELECT * from q
+				WHERE
+					keep = 1
+			"
+		).execute().getResult();
+		return ap;
 	}
 
-	public query function getTagCloud(required object wiki) {
-		return queryExecute(
-			sql="
+	public query function getTagCloud(required any wiki) {
+		var out = new Query(sql="
 				SELECT
 					tag, Count(tag) as tagCount 
 				FROM
@@ -38,12 +55,13 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 						tag 
 					ORDER BY
 						tag 			
-			");
+		").execute().getResult();
+		return out;
 	}
 
-	public query function history(required object wiki, required object rb) {
+	public query function history(required any wiki, required any rb) {
 		var sortLabel = {};
-		var history = queryExecute(
+		var history = new Query(
 			sql="
 				SELECT
 					tcontent.Title,
@@ -120,114 +138,122 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 					objectSubType = 'WikiPage' 
 					AND 
 					ParentID = '#ARGUMENTS.Wiki.getContentID()#' 
-		")
-			.map(function(c) {
-				if (isWddx(c.packet)) {
-					var props = {};
-					wddx output='props' input=c.packet action='wddx2cfml';
-					['Title', 'Filename', 'ContentID', 'ContentHistID', 'Label', 'RedirectLabel'].each(function(prop) {
-						if (StructKeyExists(props, prop)) {
-							c[prop] = props[prop];
-						}
-					});
-					c.packet = '';
+		").execute().getResult();
+		for (var c in history) {
+			if (isWddx(c.packet)) {
+				var props = {};
+				props = wddxDeserialize(c.packet);
+				var f = ['Title', 'Filename', 'ContentID', 'ContentHistID', 'Label', 'RedirectLabel'];
+				for (var prop in f) {
+					if (StructKeyExists(props, prop)) {
+						c[prop] = props[prop];
+						Evaluate('history.#prop# = props[prop]');
+					}
 				}
-				if (!StructKeyExists(sortLabel, c.Label)) {
-					sortLabel[c.Label] = {
-						latestUpdate = c.lastupdate,
-						numChanges = 0
-					};
-				}
-				sortLabel[c.Label].numChanges++;
-				if (c.lastUpdate > sortLabel[c.Label].latestUpdate) {
-					sortLabel[c.Label].latestUpdate = c.lastUpdate;
-				}
-				return c;
-			})
-			.map(function(c) {
-				c.latestUpdate = sortLabel[c.Label].latestUpdate;
-				c.numChanges = sortLabel[c.Label].numChanges;
-				return c;
-			})
-			.sort('latestUpdate, lastupdate, Label', 'desc, desc, asc');
+				history.packet = '';
+			}
+			if (!StructKeyExists(sortLabel, c.Label)) {
+				sortLabel[c.Label] = {
+					latestUpdate = c.lastupdate,
+					numChanges = 0
+				};
+			}
+			sortLabel[c.Label].numChanges++;
+			if (c.lastUpdate > sortLabel[c.Label].latestUpdate) {
+				sortLabel[c.Label].latestUpdate = c.lastUpdate;
+			}
+		}
+		for (var c in history) {
+			history.latestUpdate = sortLabel[c.Label].latestUpdate;
+			history.numChanges = sortLabel[c.Label].numChanges;
+		}
+		history = new Query(
+			dbtype = 'query',
+			q=history,
+			sql = "
+				SELECT * from q
+				ORDER BY
+					latestUpdate DESC, lastupdate DESC, Label ASC
+			"
+		).execute().getResult();
 		return history;
 	}
 
-	public struct function search(required object wiki, required string q) {
+	public struct function search(required any wiki, required string q) {
 		var searchResults = {};
 		var searchStatus = {};
 
 		if (ARGUMENTS.wiki.getUseIndex()) {
-			search collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' suggestions='Always' criteria='#ARGUMENTS.q#' name='searchResults' status='searchStatus';
-			queryAddColumn(searchResults, 'Label');
-			queryAddColumn(searchResults, 'Filename');
-			queryAddColumn(searchResults, 'LastUpdate');
-			searchResults = searchResults
-				.map (function (p) {
-					p.Label = p.Key;
-					p.Filename = '';
-					p.Lastupdate = '';
-					return p;
-				});
+			var temp = new Search(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#',suggestions='Always',criteria='#ARGUMENTS.q#',name='searchResults',status='searchStatus').search();
+			// search collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' suggestions='Always' criteria='#ARGUMENTS.q#' name='searchResults' status='searchStatus';
+			queryAddColumn(searchResults, 'Label', 'VarChar', []);
+			queryAddColumn(searchResults, 'Filename', 'VarChar', []);
+			queryAddColumn(searchResults, 'LastUpdate', 'VarChar', []);
+			for(var p in searchResults) {
+				p.Label = p.Key;
+				p.Filename = '';
+				p.Lastupdate = '';
+			}
 			return {searchResults = searchResults, searchStatus = searchStatus};
 		} else {
 			searchResults = getAllPages(ARGUMENTS.Wiki, 'lastupdate', 'desc', [], false, [], true);
-			queryAddColumn(searchResults, 'Rank');
-			queryAddColumn(searchResults, 'Summary');
-			searchResults = searchResults
-				.map(function(p) {
-					p.rank = 0;
-					['title', 'label', 'blurb'].each( function(c) {
-						p.rank = p.rank + ( Len(p[c]) - Len(ReplaceNoCase(p[c], q, '', 'all'))) / Len(q);
-					});
-					p.summary = Left(stripHTML(p.Body), 200);
-					return p;
-				})
-				.filter(function(p) {
-					return p.rank;
-				})
-				.sort('rank,lastupdate', 'desc,desc')
-				.map(function(p) {
-					p.lastupdate = '';
-					return p;
-				});
+			queryAddColumn(searchResults, 'Rank', 'Integer', []);
+			queryAddColumn(searchResults, 'Summary', 'VarChar', []);
+			for (var p in searchResults) {
+				searchResults.rank = 0;
+				var f = ['title', 'label', 'blurb'];
+				for (var c in f) {
+					searchResults.rank = searchResults.rank + ( Len(p[c]) - Len(ReplaceNoCase(p[c], q, '', 'all'))) / Len(q);
+				}
+				searchResults.summary = Left(stripHTML(p.Body), 200);
+				searchResults.lastupdate = '';
+			}
+			searchResults = new Query(
+				dbtype = 'query',
+				q=searchResults,
+				sql = "
+					SELECT * from q
+					WHERE
+						rank > 0
+				"
+			).execute().getResult();
 			return {searchResults = searchResults, searchStatus = {}};
 		}
 	}
 
-	public boolean function initCollection(required object wiki, required string collPath='') {
+	public boolean function initCollection(required any wiki, required string collPath='') {
 		var collectionExists = '';
-		collection action='list' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' name='collectionExists';
+		var collectionExists = new collection(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#').list();
+		// collection action='list' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' name='collectionExists';
 		if (collectionExists.RecordCount) {
-			collection action='delete' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#';
+			new collection(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#').delete();
+			// collection action='delete' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#';
 		}
-		collection action='create' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' path='#ARGUMENTS.collPath#';
+		new collection(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#', path='#ARGUMENTS.collPath#').create();
+		// collection action='create' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' path='#ARGUMENTS.collPath#';
 		return true;
 	}
 
-	public array function getOrphan(required object wiki, array skipLabels=[]) {
-		var allLinks = ARGUMENTS.wiki.wikiList
-			.reduce(function(carry, label, links) {
-				return carry.append(links, true);
-			}, [])
-			.reduce(function(carry, l) {
-				carry[l] = l;
-				return carry;
-			}, {})
-			.reduce(function(carry, l) {
-				return carry.append(l);
-			}, []);
-		var orphan = StructKeyArray(ARGUMENTS.wiki.wikilist)
-			.filter( function(l) {
-				return NOT ArrayFindNoCase(skipLabels, l);
-			})
-			.filter( function(l) {
-				return NOT ArrayFindNoCase(allLinks, l);
-			});
+	public array function getOrphan(required any wiki, array skipLabels=[]) {
+		var allLinks = [];
+		var orphan = [];
+		var temp = {};
+		for (var label in ARGUMENTS.wiki.wikiList) {
+			for (var link in ARGUMENTS.wiki.wikiList[label]) {
+				temp[link] = 1;
+			}
+		}
+		allLinks = StructKeyArray(temp);
+		for (var l in StructKeyArray(ARGUMENTS.wiki.wikilist)) {
+			if (NOT ArrayFindNoCase(skipLabels, l) AND NOT ArrayFindNoCase(allLinks, l)) {
+				ArrayAppend(orphan, l);
+			}
+		}
 		return orphan;
 	}
 
-	public query function getAllPages(required object wiki, string sortfield='label', string sortorder='asc', array skipLabels=[], boolean includeRedirect=true, array limitLabels=[], boolean includeBlurb=false) {
+	public query function getAllPages(required any wiki, string sortfield='label', string sortorder='asc', array skipLabels=[], boolean includeRedirect=true, array limitLabels=[], boolean includeBlurb=false) {
+		var out = '';
 		if (!ArrayFindNoCase(['title','label','lastupdate'], ARGUMENTS.sortfield)) {
 			ARGUMENTS.sortfield = 'label';
 		}
@@ -237,8 +263,7 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 		if (!ArrayFindNoCase([1,0], ARGUMENTS.includeRedirect)) {
 			ARGUMENTS.sortorder = 1;
 		}
-		return queryExecute(
-			sql="
+		out = new Query(sql="
 				SELECT
 					tcontent.Title,
 					tcontent.Filename,
@@ -298,20 +323,17 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 					tcontent.subType = 'WikiPage'
 					AND
 					tcontent.ParentID = '#ARGUMENTS.Wiki.getContentID()#'
+					" &
+					(ArrayLen(skipLabels) ? "AND NOT extendatt.attributeValue in (#ListQualify(ArrayToList(skipLabels), "'")#)" : "") &
+					(includeRedirect ? "" : "AND (extendRedirect.redirectLabel = '' OR extendRedirect.redirectLabel is null)") &
+					(ArrayLen(limitLabels) ? "AND extendatt.attributeValue in (#ListQualify(ArrayToList(limitLabels), "'")#)" : "") &
+					"
 				ORDER BY #sortfield# #sortorder#
-		")
-		.filter( function(w) {
-			return ArrayLen(skipLabels) == 0 ? true : Not ArrayFindNoCase(skipLabels, w.Label);
-		})
-		.filter( function(w) {
-			return includeRedirect ? true : !(Len(w.RedirectLabel));
-		})
-		.filter( function(w) {
-			return ArrayLen(limitLabels) == 0 ? true : ArrayFindNoCase(limitLabels, w.Label);
-		});
+		").execute().getResult();
+		return out;
 	}
 
-	public object function setWiki(required string ContentID, required object wiki) {
+	public any function setWiki(required string ContentID, required any wiki) {
 		var w = getWikis();
 		w[ARGUMENTS.ContentID] = ARGUMENTS.wiki;
 		setWikis(w);
@@ -344,7 +366,9 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 	}
 
 	public struct function loadWikiList(required any wiki) {
-		return queryExecute(
+		var temp = {};
+		var out = {};
+		var q = new Query (
 			sql="
 				SELECT
 					tcontent.Title,
@@ -371,20 +395,23 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 					AND
 					(tclassextendattributes.name IN ('Label', 'OutgoingLinks') OR tclassextendattributes.name IS NULL)
 				ORDER BY tcontent.ContentID ASC
-		")
-		.reduce( function(carry, p) {
-			carry[p.ContentID][p.AttributeName] = p.AttributeValue;
-			return carry;
-		}, {})
-		.reduce( function(carry, ContentID, p) {
-			param p.OutgoingLinks = '';
-			carry[p.Label] = ListToArray(p.OutgoingLinks);
-			return carry;
-		}, {});
+		").execute().getResult();
+		var temp = {};
+		for (var p in q) {
+			temp[p.ContentID][p.AttributeName] = p.AttributeValue;
+		}
+		for (var p in structKeyArray(temp)) {
+			out[temp[p].Label] = [];
+			if (StructKeyExists(temp[p], 'OutgoingLinks')) {
+				out[temp[p].Label] = ListToArray(temp[p].OutgoingLinks);
+			}
+		}
+		return out;
 	}
 
 	public array function loadTags(required any wiki) {
-		return queryExecute(
+		var out = {};
+		var q = new Query(
 			sql="
 				SELECT
 					tcontent.Title,
@@ -411,74 +438,70 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 					AND
 					tclassextendattributes.name = 'Label'
 				ORDER BY tcontent.ContentID ASC
-		")
-		.reduce( function(carry, p) {
-			ListToArray(p.tags).each( function(t) {
-				carry[t] = 1;
-			});
-			return carry;
-		}, {})
-		.reduce( function(carry, t) {
-			return carry.append(t);
-		}, [])
-		.sort('text', 'asc');
+		").execute().getResult();
+		for (var p in q) {
+			for(var t in ListToArray(p.tags)) {
+				out[t] = 1;
+			}
+		}
+		out = StructKeyArray(out);
+		ArraySort(out, 'text', 'asc');
+		return out;
 	}
 
 	public any function loadWikis() {
 		var wikis = {};
-		getBean('feed')
+		var siteIds = getBean('pluginManager')
+			.getAssignedSites(application.murawiki.pluginconfig.getModuleID());
+		siteIds = (ValueList(siteIds.SiteID));
+
+		var q = getBean('feed')
 			.setMaxItems(0)
 			.setShowNavOnly(0)
 			.setShowExcludeSearch(1)
-			.setSiteID(
-				ValueList(
-					getBean('pluginManager')
-						.getAssignedSites(application.murawiki.pluginconfig.getModuleID())
-						.siteID
-				)
-			)
+			.setSiteID(siteIds)
 			.addParam(
 				field='subtype',
 				condition='EQUALS',
 				criteria='Wiki',
 				dataType='varchar'
 			)
-			.getQuery()
-			.each( function(w) {
-				var engineopts = {};
-				wikis[w.ContentID] = getBean('content').loadBy(
-					ContentId=w.ContentId,
-					SiteID=w.SiteID
-				)
-				engineopts = isJSON(wikis[w.ContentID].getEngineOpts()) ? DeserializeJSON(wikis[w.ContentID].getEngineOpts()) : {};
-				wikis[w.ContentID].wikiList = loadWikiList(wikis[w.ContentID]);
-				wikis[w.ContentID].tags = loadTags(wikis[w.ContentID]);
-				wikis[w.ContentID].engine = beanFactory.getBean(wikis[w.ContentID].getWikiEngine() & 'engine')
-					.setup(engineopts)
-					.setResource(
-						new mura.resourceBundle.resourceBundleFactory(
-						parentFactory = APPLICATION.settingsManager.getSite(w.SiteID).getRbFactory(),
-						resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/model/beans/engine/rb_#wikis[w.ContentID].getWikiEngine()#/',
-						locale = wikis[w.ContentID].getLanguage()
-					))
-				;
-				wikis[w.ContentID].rb = new mura.resourceBundle.resourceBundleFactory(
+			.getQuery();
+		for (w in q) {
+			var engineopts = {};
+			wikis[w.ContentID] = getBean('content').loadBy(
+				ContentId=w.ContentId,
+				SiteID=w.SiteID
+			);
+			engineopts = isJSON(wikis[w.ContentID].getEngineOpts()) ? DeserializeJSON(wikis[w.ContentID].getEngineOpts()) : {};
+			wikis[w.ContentID].wikiList = loadWikiList(wikis[w.ContentID]);
+			wikis[w.ContentID].tags = loadTags(wikis[w.ContentID]);
+			wikis[w.ContentID].engine = beanFactory.getBean(wikis[w.ContentID].getWikiEngine() & 'engine')
+				.setup(engineopts)
+				.setResource(
+					new mura.resourceBundle.resourceBundleFactory(
 					parentFactory = APPLICATION.settingsManager.getSite(w.SiteID).getRbFactory(),
-					resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
+					resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/model/beans/engine/rb_#wikis[w.ContentID].getWikiEngine()#/',
 					locale = wikis[w.ContentID].getLanguage()
-				);
-				if (wikis[w.ContentID].getUseIndex() == 1 && wikis[w.ContentID].getIsInit() == 1) {
-					var allPages = getAllPages(wikis[w.ContentID], 'Label', 'Asc', [], false, [], true)
-						.map( function(p) {
-							if (p.Title != p.Label) {
-								p.Title = '#p.Title# (#p.Label#)';
-							}
-							p.Body = '#stripHTML(p.Body)# #p.tags# #p.title#';
-							return p;
-						});
-					index collection='Murawiki_#w.ContentID#' action='refresh' query='allPages' key='Label' title='Title' body='Body';
+				))
+			;
+			wikis[w.ContentID].rb = new mura.resourceBundle.resourceBundleFactory(
+				parentFactory = APPLICATION.settingsManager.getSite(w.SiteID).getRbFactory(),
+				resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
+				locale = wikis[w.ContentID].getLanguage()
+			);
+			if (wikis[w.ContentID].getUseIndex() == 1 && wikis[w.ContentID].getIsInit() == 1) {
+				var allPages = getAllPages(wikis[w.ContentID], 'Label', 'Asc', [], false, [], true);
+				for (var p in allPages) {
+					if (p.Title != p.Label) {
+						p.Title = '#p.Title# (#p.Label#)';
+					}
+					p.Body = '#stripHTML(p.Body)# #p.tags# #p.title#';
 				}
-			});
+				new index(collection='Murawiki_#w.ContentID#', query='allPages', key='Label', title='Title', body='Body').refresh();
+				// index collection='Murawiki_#w.ContentID#' action='refresh' query='allPages' key='Label' title='Title' body='Body';
+			}
+		}
 		setWikis(wikis);
 		return wikis;
 	}
@@ -496,20 +519,15 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 	}
 
 	public any function getDisplayObjects() {
-		var do = {};
-		getBean('pluginManager')
-			.getAssignedSites(application.murawiki.pluginconfig.getModuleID())
-			.each( function(s) {
-				getBean('pluginManager')
-					.getDisplayObjectsBySiteID(siteid=s.SiteID)
-					.filter( function (p) {
-						return p.title == 'murawiki'
-					})
-					.each( function(p) {
-						do[p.name] = p;
-					});
-			});
-		return do;
+		var dispo = {};
+		for (var s in getBean('pluginManager').getAssignedSites(application.murawiki.pluginconfig.getModuleID())) {
+			for (var p in getBean('pluginManager').getDisplayObjectsBySiteID(siteid=s.SiteID)) {
+				if (p.title == 'murawiki') {
+					dispo[p.name] = p;
+				}
+			}
+		}
+		return dispo;
 	}
 
 	public string function stripHTML(required string html) {
@@ -530,20 +548,19 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 	public any function Initialize(required any wiki, required any rb, required any framework, required string rootPath) {
 		// 'Formats' the wiki - adds display objects + creates default pages. Only meant to be run one per wiki
-		setting requesttimeout='28800';
-		var wiki = ARGUMENTS.wiki;
+		// setting requesttimeout='28800';
+		setting requesttimeout='60';
 		var page = {};
 		var dspO = getDisplayObjects();
-		var rb = ARGUMENTS.rb;
-		var engine = wiki.engine
+		var engine = wiki.engine;
 		var blurb = '';
 		var body = {};
 
 		// Remove any existing display objects
 		for (var r=1; r < APPLICATION.settingsManager.getSite(wiki.getSiteID()).getcolumnCount()+1; r++) {
-			wiki.getDisplayRegion(r).each( function(d) {
+			for (var d in wiki.getDisplayRegion(r)) {
 				wiki.removeDisplayObject(r, d.object, d.objectid);
-			});
+			}
 		}
 
 		// Sidebar displayobjects
@@ -553,11 +570,11 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 				object = 'plugin',
 				name = dspO[name].name,
 				objectID = dspO[name].ObjectID
-			)
+			);
 		}
 
 		// Delete existing pages
-		getBean('feed')
+		for (var c in getBean('feed')
 			.setMaxItems(0)
 			.setSiteID( Wiki.getSiteID() )
 			.addParam(
@@ -570,9 +587,9 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			.setShowNavOnly(0)
 			.setShowExcludeSearch(1)
 			.getQuery()
-			.each( function(c) {
-				getBean('content').loadBy(ContentId=c.ContentID, SiteID = c.SiteID).delete();
-			}, true, 8);
+		) {
+			getBean('content').loadBy(ContentId=c.ContentID, SiteID = c.SiteID).delete();
+		}
 
 		// Create home
 		blurb = Replace(engine.getResource().getKey('homeBody'), '\r', Chr(13), 'ALL');
@@ -588,7 +605,8 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 			Tags = rb.getKey('homeTags'),
 			redirect = '',
 			parentid = wiki.getContentID()
-		}).save();
+		});
+		blurb.save();
 		if (wiki.getUseTags()) {
 			blurb.addDisplayObject(
 				regionid = wiki.getRegionMain(),
@@ -790,5 +808,5 @@ component displayname='WikiManager' name='wikiManager' accessors='true' extends=
 
 		return wiki;
 	}
-}
 </cfscript>
+</cfcomponent>

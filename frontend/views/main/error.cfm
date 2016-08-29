@@ -30,10 +30,9 @@ https://github.com/stevewithington/MuraFW1
 			<h2>Debug Output</h2>
 			<!--- <cfset local.scopes = 'application,arguments,cgi,client,cookie,form,local,request,server,session,url,variables'> --->
 			<cfscript>
-				[rc].each( function(s) {
-					dump(s);
-					flush;
-				});
+				for(var s in rc) {
+					writeDump(s);
+				}
 			</cfscript>
 		</div>
 	</cfif>

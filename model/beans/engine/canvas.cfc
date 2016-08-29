@@ -18,8 +18,8 @@ component persistent="false" accessors="true" output="false" {
 		}
 	});
 
-	public object function setup(required struct engineOpts) {
-		setEngineOptsFixed(ARGUMENTS.engineOpts)
+	public any function setup(required struct engineOpts) {
+		setEngineOptsFixed(ARGUMENTS.engineOpts);
 		setRenderer(
 			new canvas.pagerender(
 				variables.engineopts.WikiTermsEnabled.val,
@@ -30,13 +30,13 @@ component persistent="false" accessors="true" output="false" {
 		return this;
 	}
 
-	public object function setEngineOptsFixed(required struct engineOpts) {
+	public any function setEngineOptsFixed(required struct engineOpts) {
 		var opts = getEngineOpts();
-		StructKeyArray(ARGUMENTS.engineOpts)
-			.each(function(o) {
-				opts[o].val = engineOpts[o];
-			})
-		return setEngineOpts(opts);
+		for (o in StructKeyArray(ARGUMENTS.engineOpts)) {
+			opts[o].val = engineOpts[o];
+		}
+		setEngineOpts(opts);
+		return getEngineOpts();
 	}
 
 	public object function renderHTML(required string blurb, required string label, required struct wikiList, required string parentpath, required any ContentRenderer) {
@@ -44,13 +44,14 @@ component persistent="false" accessors="true" output="false" {
 		var outLinks = [];
 		page.setBody(blurb);
 		outHTML = getRenderer().renderbody_normal_mura(page, '#chr(9)#', ARGUMENTS.blurb);
-		outHTML = ListToArray(outHTML, 'href="#chr(9)#/', false, true)
+		outHTML = ListToArray(outHTML, 'href="#chr(9)#/', false, true);
+		/* TODO
 			.map(function(t) {
 				var label = '';
 				var link = '';
 				if (Left(t, 10) == 'index.cfm/') {
 					label = REReplace(t, '^index.cfm/([^"]*)".*', '\1', 'ONE');
-					ArrayAppend(outLinks, label)
+					ArrayAppend(outLinks, label);
 					if (StructKeyExists(wikiList, label)) {
 						link = ContentRenderer.createHREF(filename='#parentpath#/#LCase(label)#');
 					} else {
@@ -64,6 +65,7 @@ component persistent="false" accessors="true" output="false" {
 			.reduce(function(carry, t) {
 				return carry & t;
 			}, '');
+		*/
 		return { blurb=outHTML, outgoingLinks=outLinks };
 	}
 

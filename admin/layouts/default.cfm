@@ -1,4 +1,3 @@
-<cfsilent>
 <!---
 
 This file was modified from MuraFW1
@@ -7,6 +6,7 @@ Licensed under the Apache License, Version v2.0
 https://github.com/stevewithington/MuraFW1
 
 --->
+<cfsilent>
 	<cfsavecontent variable="local.errors">
 		<cfif StructKeyExists(rc, 'errors') and IsArray(rc.errors) and ArrayLen(rc.errors)>
 			<div class="alert alert-error">
@@ -27,15 +27,16 @@ https://github.com/stevewithington/MuraFW1
 			</div><!--- /.alert --->
 		</cfif>
 	</cfsavecontent>
-	<cfscript>
-		param name="rc.compactDisplay" default="false";
-		body = local.errors & body;
-		wikiList = rc.wikis.reduce( function(carry, ContentID, w) {
-			carry[w.getSiteID()][w.getFileName()] = w;
-			return carry;
-		}, {});
-	</cfscript>
 </cfsilent>
+<cfscript>
+	param name="rc.compactDisplay" default="false";
+	body = local.errors & body;
+	wikiList = {};
+	for (ContentID in structKeyArray(rc.wikis)) {
+		// wikiList[w.getSiteID()][w.getFileName()] = w;
+		wikiList[rc.wikis[ContentID].getSiteID()][rc.wikis[ContentID].getFileName()] = rc.wikis[ContentID];
+	}
+</cfscript>
 <cfsavecontent variable="local.newBody">
 	<cfoutput>
 		<div class="container-murafw1">
@@ -49,8 +50,8 @@ https://github.com/stevewithington/MuraFW1
 							<li class="<cfif rc.action eq 'admin:main.default'>active</cfif>">
 								<a href="#buildURL('admin:main')#"><i class="icon-home"></i> Plugin home</a>
 							</li>
-							<cfloop index="SiteID" collection="#wikiList#">
-								<cfloop index="wiki" collection="#wikiList[SiteId]#">
+							<cfloop index="SiteID" array="#StructKeyArray(wikiList)#">
+								<cfloop index="wiki" array="#StructKeyArray(wikiList[SiteId])#">
 								<li class="<cfif rc.action eq 'admin:edit.default' AND rc.wiki EQ wikiList[SiteId][wiki].getContentID()>active</cfif>">
 									<a href="#buildURL(action='admin:edit.default', queryString='wiki=#wikiList[SiteId][wiki].getContentID()#')#"><i class="icon-book"></i> #wiki# (#SiteID#)</a>
 								</li>

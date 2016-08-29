@@ -24,19 +24,19 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 
 	public void function search() {
 		param rc.q = '';
-		var searchResults = {}
+		var searchResults = {};
 		if (rc.q != '') {
 			searchResults = getWikiManagerService().search(rc.wiki, rc.q);
-			searchResults.searchResults = searchResults.searchResults
-				.map (function (p) {
-					p.Filename = $.CreateHREF(filename='#rc.wiki.getFilename()#/#p.Label#/');
-					return p;
-				});
+			searchResults.searchResults = searchResults.searchResults;
+			for (var p in searchResults.searchResults) {
+				p.Filename = $.CreateHREF(filename='#rc.wiki.getFilename()#/#p.Label#/');
+			}
 			rc.searchStatus = searchResults.searchStatus;
 			rc.listingIterator = $.getBean('contentIterator')
 				.setQuery(searchResults.searchResults);
 		} else {
-			rc.listingIterator = $.getBean('contentIterator').setQuery(QueryNew(['Label', 'Title', 'lastupdate'])) ;
+			rc.listingIterator = $.getBean('contentIterator');
+			rc.listingIterator.setQuery(QueryNew('Label,Title,lastupdate'));
 		}
 		return;
 	}
@@ -75,7 +75,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function tagcloud() {
-		rc.getTagCloud = function() { return getWikiManagerService().getTagCloud(rc.wiki)};
+		rc.getTagCloud = function() { return getWikiManagerService().getTagCloud(rc.wiki);};
 		framework.setLayout('default');
 		return;
 	}
@@ -101,7 +101,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.listingIterator = $.getBean('contentIterator')
 			.setQuery(
 				getWikiManagerService().getAllPages(rc.wiki, rc.sortby, rc.direction, skipLabels, rc.includeredirect, rc.orphan)
-			)
+			);
 		return;
 	}
 
@@ -122,21 +122,17 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function undefined() {
-		rc.undefined = rc.wiki.wikiList
-			.reduce(function(carry, label, links) {
-				return carry.append(links, true);
-			}, [])
-			.reduce(function(carry, l) {
-				carry[l] = l;
-				return carry;
-			}, {})
-			.reduce(function(carry, l) {
-				return carry.append(l);
-			}, [])
-			.filter( function(l) {
-				return NOT ArrayFindNoCase(StructKeyArray(rc.wiki.wikilist), l);
-			})
-			.sort('text', 'asc');
+		rc.undefined = [];
+		var temp = {};
+		for (var label in rc.wiki.wikiList) {
+			for( var l in rc.wiki.wikiList[label]) {
+				if (!ArrayFindNoCase(StructKeyArray(rc.wiki.wikiList), l)) {
+					temp[l] = 1;
+				}
+			}
+		}
+		rc.undefined = StructKeyArray(temp);
+		ArraySort(rc.undefined, 'text', 'asc');
 		framework.setLayout('default');
 		return;
 	}

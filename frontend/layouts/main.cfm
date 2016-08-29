@@ -10,7 +10,7 @@
 			<style>.select2-dropdown--below {
 				top: 3rem; /*your input height*/
 			}</style>
-		')
+		');
 	}
 	thisTags = rc.wiki.tags;
 	ListToArray(rc.wikiPage.getTags()).each(function(t) {
@@ -20,6 +20,8 @@
 		ArrayAppend(thisTags, t);
 	});
 	thisTags.sort('text');
+	wikiList = StructKeyArray(rc.wiki.wikiList);
+	wikiList.sort('text','asc');
 </cfscript>
 <cfoutput>
 <cfif structKeyExists(URL, 'undefined')>
@@ -42,7 +44,7 @@
 		<p>#rc.rb.getKey('orphanMessage')#</p>
 	</div>
 </cfif>
-<cfif structKeyExists(URL, 'version') AND rc.wikiPage.getIsActive() != 1>
+<cfif structKeyExists(URL, 'version') AND rc.wikiPage.getIsActive() NEQ 1>
 	<div class="message" id="version">
 		#ReReplace(rc.rb.getKey('versionNote'), '{versiondate}', '#DateFormat(rc.wikiPage.getLastUpdate(), 'yyyy-mm-dd')# #TimeFormat(rc.wikiPage.getLastUpdate(), 'HH:mm')#')#<br>
 		<a href="#$.createHREF(filename=rc.wikiPage.getFilename())#">#rc.rb.getKey('versionNoteLink')#</a><br/>
@@ -105,7 +107,7 @@
 				<cfset attachCount = 1 />
 				<cfif ArrayLen(StructKeyArray(rc.attachments))>
 					<ul>
-					<cfloop index="a" struct="#rc.attachments#">
+					<cfloop index="a" array="#StructKeyArray(rc.attachments)#">
 						<li name="attachment#attachCount#">
 							<input type="hidden" name="attachment#attachCount#" value='#SerializeJson({'#a#': rc.attachments[a]})#' />
 							#rc.attachments[a].title#<span><a href="javascript:removeAttachment('attachment#attachCount#');"><i class="fa fa-trash" aria-hidden="true"></i> remove</a>
@@ -158,8 +160,8 @@
 				</label>
 				<select name="redirectlabel" class="form-control s2" data-placeholder="#rc.rb.getKey('redirectPlaceholder')#" data-tags="tags">
 					<option></option>
-					<cfloop item="label" array="#StructKeyArray(rc.wiki.wikiList).sort('text','asc')#">
-						<cfif label != rc.wikiPage.getLabel()>
+					<cfloop item="label" array="#wikiList#">
+						<cfif label NEQ rc.wikiPage.getLabel()>
 						<option value="#label#">#label#</option>
 						</cfif>
 					</cfloop>

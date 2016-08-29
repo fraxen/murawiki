@@ -29,7 +29,7 @@
 		<!--- TODO Dynamically select here... --->
 		<select id="language" name="language" class="form-control" data-placeholder="Select language" data-allow-clear="false">
 			<cfloop index="l" array="#rc.language#">
-				<option value="#l#" <cfif rc.wikiedit.getLanguage() == l>selected="selected"</cfif>>#l#</option>
+				<option value="#l#" <cfif rc.wikiedit.getLanguage() EQ l>selected="selected"</cfif>>#l#</option>
 			</cfloop>
 		</select>
 	</div>
@@ -63,11 +63,11 @@
 			<cfloop from="1" to="#APPLICATION.settingsManager.getSite(rc.siteid).getcolumnCount()#" index="r">
 				<option value="#r#"
 					<cfif
-						rc.wikiedit.getRegionMain() == r
+						rc.wikiedit.getRegionMain() EQ r
 						OR
-						(rc.wikiEdit.getRegionMain() == ''
+						(rc.wikiEdit.getRegionMain() EQ ''
 						AND
-						ListGetAt(APPLICATION.settingsManager.getSite(rc.siteid).getcolumnNames(),r,"^") == 'Main Content'
+						ListGetAt(APPLICATION.settingsManager.getSite(rc.siteid).getcolumnNames(),r,"^") EQ 'Main Content'
 						)
 					>selected="selected"</cfif>
 				>#ListGetAt(APPLICATION.settingsManager.getSite(rc.siteid).getcolumnNames(),r,"^")#</option>
@@ -79,7 +79,7 @@
 		<select id="regionside" name="regionside" class="form-control" data-placeholder="Select region" data-allow-clear="false" <cfif rc.wikiedit.getIsInit()>disabled="disabled"</cfif>>
 			<cfloop from="1" to="#APPLICATION.settingsManager.getSite(rc.siteid).getcolumnCount()#" index="r">
 				<option value="#r#"
-					<cfif rc.wikiedit.getRegionSide() == r>selected="selected"</cfif>
+					<cfif rc.wikiedit.getRegionSide() EQ r>selected="selected"</cfif>
 				>#ListGetAt(APPLICATION.settingsManager.getSite(rc.siteid).getcolumnNames(),r,"^")#</option>
 			</cfloop>
 		</select>
@@ -90,7 +90,7 @@
 			<option value="">None</option>
 			<cfloop index="s" array="#rc.stylesheets#">
 				<option value="#s#"
-					<cfif rc.wikiedit.getStyleSheet() == s>selected="selected"</cfif>
+					<cfif rc.wikiedit.getStyleSheet() EQ s>selected="selected"</cfif>
 				>#s#</option>
 			</cfloop>
 		</select>
@@ -122,7 +122,7 @@
 		<!--- TODO Dynamically select here... --->
 		<select id="wikiengine" name="wikiengine" class="form-control" data-placeholder="Select engine" data-allow-clear="false" <cfif rc.wikiedit.getIsInit()>disabled="disabled"</cfif>>
 			<cfloop index="e" array="#StructKeyArray(rc.engines)#">
-				<option value="#e#" <cfif rc.wikiedit.getWikiEngine() == e>selected="selected"</cfif>>#e#</option>
+				<option value="#e#" <cfif rc.wikiedit.getWikiEngine() EQ e>selected="selected"</cfif>>#e#</option>
 			</cfloop>
 		</select>
 	</div>
@@ -133,7 +133,7 @@
 			<cfset thisOpt = StructKeyExists(rc.wikiedit.getEngineOpts(), opt) ? rc.wikiEdit.getEngineOpts()[opt] : rc.engines[e][opt].val />
 			<div class="mura-form-textfield form-group control-group">
 				<label for="engineopt_#opt#">#opt#<br/><em>#rc.engines[e][opt].hint#</em></label>
-				<input type="text" name="engineopt_#opt#" id="engineopt_#opt#" class="form-control" value="#thisOpt#" <cfif rc.wikiedit.getWikiEngine() != e>disabled="disabled"</cfif>/>
+				<input type="text" name="engineopt_#opt#" id="engineopt_#opt#" class="form-control" value="#thisOpt#" <cfif rc.wikiedit.getWikiEngine() NEQ e>disabled="disabled"</cfif>/>
 			</div>
 		</cfloop>
 		</div>

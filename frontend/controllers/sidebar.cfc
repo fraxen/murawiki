@@ -28,16 +28,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			framework.setView('main.blank');
 			return;
 		}
-		rc.backlinks = rc.wiki.wikiList
-			.filter( function(l) {
-				return ArrayFindNoCase(rc.wiki.wikiList[l], label);
-			})
-			.filter( function(l) {
-				return l!=label;
-			})
-			.reduce( function(carry, l) {
-				return carry.append(l);
-			}, []);
+		rc.backlinks = [];
+		for (var l in rc.wiki.wikiList) {
+			if (ArrayFindNoCase(rc.wiki.wikiList[l], label) && l != label) {
+				ArrayAppend(rc.backlinks, l);
+			}
+		}
 	}
 
 	public void function pageoperations() {
@@ -61,9 +57,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		if (structKeyExists(URL, 'version')) {
 			rc.wikiPage = $.getBean('content').loadBy(ContentHistID=rc.version);
 		}
-		rc.attachments = DeserializeJSON(rc.wikiPage.getAttachments());
-		rc.attachments = isStruct(rc.attachments) ? rc.attachments : {};
-		if (Len(rc.attachments) == 0) {
+		rc.attachments = isJson(rc.wikiPage.getAttachments()) ? DeserializeJSON(rc.wikiPage.getAttachments()) : {};
+		if (ArrayLen(structKeyArray(rc.attachments)) == 0) {
 			framework.setView('main.blank');
 		}
 		return;

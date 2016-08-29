@@ -1,11 +1,11 @@
 <cfscript>
-	var tags = rc.getTagCloud();
-	var tagValueArray = ListToArray(ValueList(tags.tagCount));
-	var max = ArrayMax(tagValueArray);
-	var min = Arraymin(tagValueArray);
-	var diff = max - min;
-	var distribution = diff;
-	var rbFactory=$.getSite().getRbFactory();
+	tags = rc.getTagCloud();
+	tagValueArray = ListToArray(ValueList(tags.tagCount));
+	max = ArrayMax(tagValueArray);
+	min = Arraymin(tagValueArray);
+	diff = max - min;
+	distribution = diff;
+	rbFactory=$.getSite().getRbFactory();
 </cfscript>
 <cfoutput>
 	<br /><br />

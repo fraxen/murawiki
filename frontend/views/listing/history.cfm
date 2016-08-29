@@ -10,7 +10,7 @@
 		<cfloop query="rc.history" group="label">
 			<tr>
 				<td colspan="2">
-					<cfif rc.history.status != 'Deleted'>
+					<cfif rc.history.status NEQ 'Deleted'>
 						<a href="#$.CreateHREF(filename=rc.history.filename)#">
 					<cfelse>
 						<a href="#$.CreateHREF(filename='#rc.wiki.getFilename()#/#rc.history.label#/')#" class="deleted">
@@ -20,7 +20,7 @@
 					<a href="##" data-toggle="collapse" data-target=".row_#rc.history.label#" class="accordion-toggle" onclick="return false;"><i class="fa fa-chevron-right" aria-hidden="true"></i> #rc.history.NumChanges# changes, latest at #DateFormat(rc.history.Lastupdate, 'yyyy-mm-dd')# #TimeFormat(rc.history.Lastupdate, 'HH:mm')#</a>
 				</td>
 			</tr>
-			<cfset isDeleted = rc.history.status=='Deleted' />
+			<cfset isDeleted = rc.history.status EQ 'Deleted' />
 			<cfloop>
 			<tr class="changes">
 				<td class="hiddenRow">
@@ -28,7 +28,8 @@
 					<cfif isDeleted>
 						<a href="#$.CreateHREF(filename='#rc.wiki.getFilename()#/#rc.history.label#/')#">
 					<cfelse>
-						<a href="#$.CreateHREF(filename=rc.history.filename, querystring="#!rc.history.active && rc.history.status != 'Deleted' ? 'version=#rc.history.ContentHistID#' : ''#")#">
+						<cfset qstring = NOT rc.history.active AND rc.history.status NEQ 'Deleted' ? 'version=#rc.history.ContentHistID#' : '' />
+						<a href="#$.CreateHREF(filename=rc.history.filename, querystring=qstring)#">
 					</cfif>
 					#DateFormat(rc.history.Lastupdate, 'yyyy-mm-dd')# #TimeFormat(rc.history.Lastupdate, 'HH:mm')#
 					</a>

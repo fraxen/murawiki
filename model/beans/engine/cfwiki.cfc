@@ -54,20 +54,21 @@ component persistent="false" accessors="true" output="false" {
 		return returnVar;
 	}
 
-	public object function setup(required struct engineopts) {
-		return setEngineOptsFixed(ARGUMENTS.engineOpts);
+	public any function setup(required struct engineopts) {
+		setEngineOptsFixed(ARGUMENTS.engineOpts);
+		return this;
 	}
 
-	public object function setEngineOptsFixed(required struct engineopts) {
+	public any function setEngineOptsFixed(required struct engineopts) {
 		var opts = getEngineOpts();
-		StructKeyArray(ARGUMENTS.engineopts)
-			.each(function(o) {
-				opts[o].val = engineopts[o];
-			})
-		return setEngineOpts(opts);
+		for (o in StructKeyArray(ARGUMENTS.engineOpts)) {
+			opts[o].val = engineOpts[o];
+		}
+		setEngineOpts(opts);
+		return getEngineOpts();
 	}
 
-	public object function renderHTML(required string blurb, required string label, required struct wikiList, required string parentpath, required any ContentRenderer) {
+	public any function renderHTML(required string blurb, required string label, required struct wikiList, required string parentpath, required any ContentRenderer) {
 		var thisBlurb = '#ARGUMENTS.blurb##Chr(10)#';
 		var temp = 0;
 		var tuckedawayStrings = {};
@@ -94,10 +95,10 @@ component persistent="false" accessors="true" output="false" {
 			// }}}
 
 			// {{{ Tuck code in <img> tags away so URL's with CamelCase aren't wiki formatted
-			thisBlurb=ReReplaceNoCase(thisBlurb,"((http|https|file|ftp)://[^[:space:]]+.((gif)|(jpe?g)|(png)))", '<img class="wiki" src="\1" alt="Image: \1" />',"ALL")
-			temp = tuckAway (thisBlurb = thisBlurb, token= '<itok>', blockStart= '<img', blockEnd='>', include= 'yes')
-			tuckedawayStrings.img = temp.FormattedStrings
-			thisBlurb = temp.Blurb
+			thisBlurb=ReReplaceNoCase(thisBlurb,"((http|https|file|ftp)://[^[:space:]]+.((gif)|(jpe?g)|(png)))", '<img class="wiki" src="\1" alt="Image: \1" />',"ALL");
+			temp = tuckAway (thisBlurb = thisBlurb, token= '<itok>', blockStart= '<img', blockEnd='>', include= 'yes');
+			tuckedawayStrings.img = temp.FormattedStrings;
+			thisBlurb = temp.Blurb;
 			// }}}
 
 			// {{{ Create links out of URL's
@@ -107,9 +108,9 @@ component persistent="false" accessors="true" output="false" {
 			thisBlurb=ReReplace(thisBlurb,'(<a href[^>]+>)([^<]{35,35})([^<]{1,9999})(....)(<.a>)','\1\2...\4\5','ALL');
 
 			// Tuck code in <a> tags away so URL's with CamelCase don't get wiki formatted
-			temp = tuckAway (thisBlurb = thisBlurb, token= '<atok>', blockStart= '<a', blockEnd='</a>', include='yes')
-			tuckedawayStrings.ahr = temp.formattedStrings
-			thisBlurb = temp.Blurb
+			temp = tuckAway (thisBlurb = thisBlurb, token= '<atok>', blockStart= '<a', blockEnd='</a>', include='yes');
+			tuckedawayStrings.ahr = temp.formattedStrings;
+			thisBlurb = temp.Blurb;
 			// }}}
 		// }}}
 
@@ -186,27 +187,27 @@ component persistent="false" accessors="true" output="false" {
 
 		// {{{ RESTORE...
 			// put <pre></pre> back in
-			tuckedawayStrings.pre.each( function(s) {
+			for(var s in tuckedawayStrings.pre) {
 				thisBlurb = Replace(thisBlurb, '<ptok>', s, 'ONE');
-			});
+			}
 
 			// put <img> back in
-			tuckedawayStrings.img.each( function(s) {
+			for(var s in tuckedawayStrings.img) {
 				thisBlurb = replace(thisBlurb, '<itok>', s, 'ONE');
-			});
+			}
 
 			// put <a></a> back in
-			tuckedawayStrings.ahr.each( function(s) {
+			for(var s in tuckedawayStrings.ahr) {
 				thisBlurb = replace(thisBlurb, '<atok>', s, 'ONE');
-			});
+			}
 
 			// Deal with bracket links
-			tuckedawayStrings.links.each( function(s) {
+			for(var s in tuckedawayStrings.links) {
 				var linkName = '';
 				var link = '';
-				ARGUMENTS.s = ReReplace(ARGUMENTS.s, '\[\[(.*?)\]\]', '\1');
-				linkName = ListLast(ARGUMENTS.s, '|');
-				link = ReReplace(ListFirst(ARGUMENTS.s , '|'), ' ', '_', 'ALL');
+				s = ReReplace(s, '\[\[(.*?)\]\]', '\1');
+				linkName = ListLast(s, '|');
+				link = ReReplace(ListFirst(s , '|'), ' ', '_', 'ALL');
 				cssClass = '';
 				if (ReFind('^([A-Z]|[a-z]|[0-9]|_)*$', link, 1, False)) {
 					// this is an internal wiki link
@@ -215,14 +216,14 @@ component persistent="false" accessors="true" output="false" {
 					link = ContentRenderer.CreateHREF(filename='#parentpath#/#LCase(link)#');
 				};
 				thisBlurb = Replace(thisBlurb, '<bracketlink>', '<a href="#link#"#cssClass#>#linkName#</a>', 'ONE');
-			});
+			}
 		// }}}
 
 		// {{{ XHTML FIXES
-			thisBlurb = ReReplace(thisBlurb,'&(?![a-z]+;)','&amp;','ALL')
+			thisBlurb = ReReplace(thisBlurb,'&(?![a-z]+;)','&amp;','ALL');
 		// }}}
 
-		return { blurb=thisBlurb, outgoingLinks=outGoingLinks };
+		return { blurb:thisBlurb, outgoingLinks:outGoingLinks };
 	}
 
 	public array function outGoingLinks(required string blurb, required string label) {

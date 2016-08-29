@@ -70,7 +70,8 @@
 		<!--- }}} --->
 		<tr>
 			<td>
-				<a href="#$.CreateHref(filename=rc.wikiPage.getFileName(), querystring='#h.active == 0 ? 'version=#h.contenthistid#' : ''#')#">#DateFormat(h.lastupdate, 'yyyy-mm-dd')# #TimeFormat(h.lastupdate, 'HH:mm')#</a><br/>
+				<cfset qstring = h.active EQ 0 ? 'version=#h.contenthistid#' : '' />
+				<a href="#$.CreateHref(filename=rc.wikiPage.getFileName(), querystring=qstring)#">#DateFormat(h.lastupdate, 'yyyy-mm-dd')# #TimeFormat(h.lastupdate, 'HH:mm')#</a><br/>
 			</td>
 			<td>
 				<cfif Len(h.Notes)>

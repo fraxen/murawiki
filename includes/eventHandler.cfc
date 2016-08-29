@@ -28,7 +28,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	public void function onSiteLoginPromptRender($) {
 		var cf = $.content().getFilename();
 		if (ListLen(cf, '/') > 1 && ListLast(cf, '/') != 'speciallogin') {
-			$.getBean('feed')
+			for (var f in $.getBean('feed')
 				.setMaxItems(0)
 				.setShowNavOnly(0)
 				.setShowExcludeSearch(1)
@@ -40,15 +40,15 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 					dataType='varchar'
 				)
 				.getQuery()
-				.each( function(w) {
-					if (w.filename == ListDeleteAt($.event('currentfilename'), ListLen(cf, '/'), '/')) {
-						$.redirect(
-							location = "#$.createHREF(filename='#w.filename#/SpecialLogin/', querystring='display=login&returnURL=#$.createHREF(filename=$.content().getFilename())#')#"
-							, statusCode = '301'
-						);
-						abort;
-					}
-				});
+			) {
+				if (w.filename == ListDeleteAt($.event('currentfilename'), ListLen(cf, '/'), '/')) {
+					$.redirect(
+						location = "#$.createHREF(filename='#w.filename#/SpecialLogin/', querystring='display=login&returnURL=#$.createHREF(filename=$.content().getFilename())#')#"
+						, statusCode = '301'
+					);
+					abort;
+				}
+			}
 		}
 	}
 
@@ -82,7 +82,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		// If the current filename is under a wiki, load a content bean
 		var cf = $.event('currentfilename');
 		if (ListLen(cf, '/') > 1) {
-			$.getBean('feed')
+			for (var w in $.getBean('feed')
 				.setMaxItems(0)
 				.setShowNavOnly(0)
 				.setShowExcludeSearch(1)
@@ -94,28 +94,27 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 					dataType='varchar'
 				)
 				.getQuery()
-				.each( function(w) {
-					if (w.filename == ListDeleteAt($.event('currentfilename'), ListLen(cf, '/'), '/')) {
-						var wiki = $.getBean('content').loadBy(ContentID = w.ContentID, SiteID = w.SiteID);
-						$.setContentBean(
-							$.getBean('contentBean').set({
-								ContentID = w.ContentID,
-								siteid = $.event('siteid'),
-								type = 'Page',
-								subType = 'WikiPage',
-								label = ListLast(cf, '/'),
-								title = ListLast(cf, '/'),
-								approved = 1,
-								display = 1,
-								isnew = 0,
-								template = wiki.getChildTemplate() != '' ? wiki.getChildTemplate() : wiki.getTemplate(),
-								parentid = w.ContentID
-							})
-						);
-						$.content()['isUndefined'] = 1;
-						return;
-					}
-				});
+			) {
+				if (w.filename == ListDeleteAt($.event('currentfilename'), ListLen(cf, '/'), '/')) {
+					var wiki = $.getBean('content').loadBy(ContentID = w.ContentID, SiteID = w.SiteID);
+					$.setContentBean(
+						$.getBean('contentBean').set({
+							ContentID = w.ContentID,
+							siteid = $.event('siteid'),
+							type = 'Page',
+							subType = 'WikiPage',
+							label = ListLast(cf, '/'),
+							title = ListLast(cf, '/'),
+							approved = 1,
+							display = 1,
+							isnew = 0,
+							template = wiki.getChildTemplate() != '' ? wiki.getChildTemplate() : wiki.getTemplate(),
+							parentid = w.ContentID
+						})
+					);
+					$.content()['isUndefined'] = 1;
+				}
+			}
 		}
 	}
 

@@ -374,6 +374,7 @@
 	<cfreturn bodySB.toString()>		
 </cffunction>
 
+<!---
 <cffunction name="renderbody_normal" access="public" returnType="string" output="false"
 			hint="I do the heavy lifting of transforming a page body into the display.">
 	<cfargument name="pageBean" type="PageBean" required="true">
@@ -441,6 +442,7 @@
 	<cfreturn body>		
 
 </cffunction>
+--->
 
 <cffunction name="renderbody_normal_mura" access="public" returnType="string" output="false"
 			hint="I do the heavy lifting of transforming a page body into the display.">
@@ -496,6 +498,7 @@ CUSTOMIZE THE METHODS BELOW TO MODIFY YOUR WIKI
 See documentation for help.
 --->
 
+<!---
 <cffunction name="render_links" output="false" returnType="string" priority="2" 
 			hint="Links are rendered using [[url]] or [[url|label]] format. URLs can either be external, fully qualified URLs, or internal URLs in the form of FOO.MOO, where MOO Is a child of FOO.">
 	<cfargument name="string" type="string" required="true">
@@ -571,6 +574,7 @@ See documentation for help.
 
 	<cfreturn arguments.string>
 </cffunction>
+--->
 
 <!--- Removed from v2 
 <cffunction name="render_headers" output="false" returnType="string" priority="3" hint="Use [h]...[/h] for headers. Example: [h]Foo[/h]. To create an smaller headers, you can add more Hs, for up to 6. So for a &lt;h3&gt; tag, use [hhh]">
@@ -636,7 +640,7 @@ See documentation for help.
 	
 	<cfreturn arguments.string>
 </cffunction>
---->
+
 <cffunction name="render_bullets" output="false" returnType="string" priority="5" hint="Bulleted lists can be created using an asterisk: *">
 	<cfargument name="string" type="string" required="true">
 	<cfargument name="webpath" type="string" required="true">
@@ -1149,7 +1153,7 @@ See documentation for help.
 	</cfif>
 	<cfreturn newSB.toString()>	
 </cffunction>
-
+--->
 
 <cffunction name="renderbody_normal" access="public" returnType="string" output="false"
 			hint="I do the heavy lifting of transforming a page body into the display.">

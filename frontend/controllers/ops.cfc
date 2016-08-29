@@ -7,7 +7,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			$.redirect(
 				location = $.createHREF(filename='#rc.wiki.getFilename()#/#$.content().getLabel()#', querystring='notauth=1')
 				, statusCode = '302'
-			)
+			);
 		}
 	}
 
@@ -18,7 +18,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		$.redirect(
 			location = $.createHREF(filename='#rc.wiki.getFilename()#/#rc.wikiPage.getLabel()#', querystring='touched=1')
 			, statusCode = '302'
-		)
+		);
 	}
 
 	public void function delete() {
@@ -28,7 +28,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		$.redirect(
 			location = $.createHREF(filename='#rc.wiki.getFilename()#/#rc.wikiPage.getLabel()#')
 			, statusCode = '302'
-		)
+		);
 	}
 
 	public void function revert() {
@@ -42,7 +42,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		$.redirect(
 			location = $.createHREF(filename=rc.wikiPage.getFilename())
 			, statusCode = '302'
-		)
+		);
 	}
 
 	public void function redirectRemove() {
@@ -57,7 +57,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		$.redirect(
 			location = $.createHREF(filename=rc.wikiPage.getFilename())
 			, statusCode = '302'
-		)
+		);
 	}
 
 	public void function redirect() {
@@ -79,7 +79,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		$.redirect(
 			location = $.createHREF(filename=rc.wikiPage.getFilename())
 			, statusCode = '302'
-		)
+		);
 	}
 
 	public void function page() {
@@ -101,17 +101,27 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 						attachments.append(thisFile);
 					}
 				}
-				catch(e) {
+				catch(any e) {
+					var fname = '';
+					if ($.getConfigBean().getCompiler() == 'Adobe') {
+						for (var f in FORM.getPartsArray()) {
+							if(f.isFile() AND f.getName() == 'attachment#i#') {
+								fname = f.getFileName();
+							}
+						}
+					} else {
+						fname = GetPageContext().formScope().getUploadResource('attachment#i#').getName();
+					}
 					thisFile = $.getBean('content').set({
 						type = 'File',
 						siteid = rc.wiki.getSiteID(),
-						title = GetPageContext().formScope().getUploadResource("attachment#i#").getName(),
+						title = fname,
 						menutitle = '',
 						urltitle = '',
 						htmltitle = '',
-						summary = GetPageContext().formScope().getUploadResource("attachment#i#").getName(),
-						filename = GetPageContext().formScope().getUploadResource("attachment#i#").getName(),
-						fileext = ListLast(GetPageContext().formScope().getUploadResource("attachment#i#").getName(), '.'),
+						summary = fname,
+						filename = fname,
+						fileext = ListLast(fname, '.'),
 						parentid = rc.wikiPage.getContentID(),
 						approved=1,
 						display=1,
@@ -123,10 +133,11 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 						siteid = rc.wiki.getSiteID(),
 						parentid = rc.wikiPage.getContentID(),
 						newfile = rc['attachment#i#'],
-						filefield = 'attachment#i#',
+						filefield = 'attachment#i#'
 					}).save();
 					thisFile.setFileID(fb.getFileID());
 					thisFile.save();
+					attachments[thisFile.getContentID()] = {};
 					attachments[thisFile.getContentID()].filename = thisFile.getFilename();
 					attachments[thisFile.getContentID()].title = thisFile.getTitle();
 				}
@@ -153,12 +164,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			Tags = rc.tags,
 			parentid = rc.wiki.getContentID(),
 			attachments = SerializeJson(attachments)
-		})
+		});
 		rc.wikiPage.save();
 		$.redirect(
 			location = $.createHREF(filename=rc.wikiPage.getFilename())
 			, statusCode = '302'
-		)
+		);
 		return;
 	}
 }

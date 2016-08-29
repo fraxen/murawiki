@@ -3,34 +3,29 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 
 	public void function Undefined() {
 		// Redirects to a random undefined page
-		var undef = rc.wiki.wikiList
-			.reduce(function(carry, label, links) {
-				return carry.append(links, true);
-			}, [])
-			.reduce(function(carry, l) {
-				carry[l] = l;
-				return carry;
-			}, {})
-			.reduce(function(carry, l) {
-				return carry.append(l);
-			}, [])
-			.filter( function(l) {
-				return NOT ArrayFindNoCase(StructKeyArray(rc.wiki.wikilist), l);
-			});
+		var undef = [];
+		var temp = {};
+		for (var label in rc.wiki.wikiList) {
+			for( var l in rc.wiki.wikiList[label]) {
+				if (!ArrayFindNoCase(StructKeyArray(rc.wiki.wikiList), l)) {
+					temp[l] = 1;
+				}
+			}
+		}
+		undef = StructKeyArray(temp);
 		if (ArrayLen(undef)) {
-			undef
-				.reduce(function(carry, l) {
-					carry[l].RandomSort = Rand();
-					return carry;
-				}, {})
-				.sort('numeric', 'asc', 'RandomSort')
-				.each( function(l) {
-					$.redirect(
-						location = $.createHREF(filename='#rc.wiki.getFilename()#/#l#/', querystring='undefined=1'),
-						statusCode = '302'
-					);
-					abort;
-				});
+			temp = {};
+			for (var l in undef) {
+				temp[l] = {};
+				temp[l].RandomSort = Rand();
+			}
+			for (var ll in StructSort(temp, 'numeric', 'asc', 'RandomSort')) {
+				$.redirect(
+					location = $.createHREF(filename='#rc.wiki.getFilename()#/#ll#/', querystring='undefined=1'),
+					statusCode = '302'
+				);
+				abort;
+			}
 		} else {
 			$.redirect(
 				location = $.createHREF(filename='#rc.wiki.getFilename()#/#rc.rb.getKey('maintUndefinedLabel')#/'),
@@ -117,7 +112,7 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 			.setShowExcludeSearch(1)
 			.getQuery()
 			.reduce(function(carry, p) {
-				p.RandomSort = Rand()
+				p.RandomSort = Rand();
 				carry[p.ContentID] = p;
 				return carry;
 			}, {})
@@ -126,7 +121,7 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 				$.redirect(
 					location = $.createHREF(filename='#rc.Wiki.getFilename()#/#$.getBean('content').loadBy(ContentID=ContentID, SiteID = rc.Wiki.getSiteID()).getLabel()#', querystring='older=1'),
 					statusCode = '302'
-				)
+				);
 			});
 	}
 }
