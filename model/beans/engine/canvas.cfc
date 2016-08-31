@@ -39,33 +39,32 @@ component persistent="false" accessors="true" output="false" {
 		return getEngineOpts();
 	}
 
-	public object function renderHTML(required string blurb, required string label, required struct wikiList, required string parentpath, required any ContentRenderer) {
+	public object function renderHTML(required string blurb, required string thisLabel, required struct wikiList, required string parentpath, required any ContentRenderer) {
 		var page = new canvas.pagebean();
 		var outLinks = [];
+		var outHTML = '';
+		var temp = '';
+		var label = '';
+		var link = '';
 		page.setBody(blurb);
-		outHTML = getRenderer().renderbody_normal_mura(page, '#chr(9)#', ARGUMENTS.blurb);
-		outHTML = ListToArray(outHTML, 'href="#chr(9)#/', false, true);
-		/* TODO
-			.map(function(t) {
-				var label = '';
-				var link = '';
-				if (Left(t, 10) == 'index.cfm/') {
-					label = REReplace(t, '^index.cfm/([^"]*)".*', '\1', 'ONE');
-					ArrayAppend(outLinks, label);
-					if (StructKeyExists(wikiList, label)) {
-						link = ContentRenderer.createHREF(filename='#parentpath#/#LCase(label)#');
-					} else {
-						link = ContentRenderer.createHREF(filename='#parentpath#/#label#') & '" class="undefined';
-					}
-					return 'href="#REReplace(t, '^index.cfm/#label#', link, 'ONE')#';
+		temp = getRenderer().renderbody_normal_mura(page, '#chr(9)#', ARGUMENTS.blurb);
+		for (var t in ListToArray(temp, 'href="#chr(9)#/', false, true)) {
+			label = '';
+			link = '';
+			if (Left(t, 10) == 'index.cfm/') {
+				label = REReplace(t, '^index.cfm/([^"]*)".*', '\1', 'ONE');
+				ArrayAppend(outLinks, label);
+				if (StructKeyExists(wikiList, label)) {
+					link = ContentRenderer.createHREF(filename='#parentpath#/#LCase(label)#');
 				} else {
-					return t;
+					link = ContentRenderer.createHREF(filename='#parentpath#/#label#') & '" class="undefined';
 				}
-			})
-			.reduce(function(carry, t) {
-				return carry & t;
-			}, '');
-		*/
+				outHTML = outHTML & 'href="#REReplace(t, '^index.cfm/#label#', link, 'ONE')#';
+			} else {
+				outHTML = outHTML & t;
+				return t;
+			}
+		}
 		return { blurb=outHTML, outgoingLinks=outLinks };
 	}
 

@@ -45,20 +45,19 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 			rc.rb.getKey('tagsLabel')
 		];
 		var orphan = getWikiManagerService().getOrphan(rc.wiki, skipLabels);
+		var temp = {};
 		if (ArrayLen(orphan)) {
-			orphan
-				.reduce(function(carry, l) {
-					carry[l].RandomSort = Rand();
-					return carry;
-				}, {})
-				.sort('numeric', 'asc', 'RandomSort')
-				.each( function(l) {
-					var wikipage = $.getBean('content').loadBy(SiteID=rc.wiki.getSiteID(), filename='#rc.Wiki.getFilename()#/#l#/');
-					$.redirect(
-						location = $.createHREF(filename='#wikipage.getFilename()#', querystring='orphan=1'),
-						statusCode = '302'
-					);
-				});
+			for (var l in orphan) {
+				temp[l] = {};
+				temp[l].RandomSort = Rand();
+			}
+			for (var l in StructSort(temp, 'numeric', 'asc', 'RandomSort')) {
+				var wikipage = $.getBean('content').loadBy(SiteID=rc.wiki.getSiteID(), filename='#rc.Wiki.getFilename()#/#l#/');
+				$.redirect(
+					location = $.createHREF(filename='#wikipage.getFilename()#', querystring='orphan=1'),
+					statusCode = '302'
+				);
+			}
 		} else {
 			$.redirect(
 				location = $.createHREF(filename='#rc.wiki.getFilename()#/#rc.rb.getKey('maintOrphanLabel')#/'),
@@ -69,17 +68,19 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 
 	public void function Older() {
 		// Redirects to one of the ten oldest pages
+		var temp = {};
 		var skipLabels = ArrayToList([
 			rc.rb.getKey('SearchResultsLabel'),
 			rc.rb.getKey('allpagesLabel'),
 			rc.rb.getKey('maintHistoryLabel'),
 			rc.rb.getKey('maintoldLabel'),
+			rc.rb.getKey('mainthomeLabel'),
 			rc.rb.getKey('maintorphanLabel'),
 			rc.rb.getKey('maintundefinedLabel'),
 			rc.rb.getKey('searchResultsLabel'),
 			rc.rb.getKey('tagsLabel')
 		]);
-		$.getBean('feed')
+		var older = $.getBean('feed')
 			.setMaxItems(10)
 			.setSiteID( rc.Wiki.getSiteID() )
 			.addParam(
@@ -110,19 +111,17 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 			.setSortDirection('asc')
 			.setShowNavOnly(0)
 			.setShowExcludeSearch(1)
-			.getQuery()
-			.reduce(function(carry, p) {
-				p.RandomSort = Rand();
-				carry[p.ContentID] = p;
-				return carry;
-			}, {})
-			.sort('numeric', 'asc', 'RandomSort')
-			.each( function(ContentID, p) {
-				$.redirect(
-					location = $.createHREF(filename='#rc.Wiki.getFilename()#/#$.getBean('content').loadBy(ContentID=ContentID, SiteID = rc.Wiki.getSiteID()).getLabel()#', querystring='older=1'),
-					statusCode = '302'
-				);
-			});
+			.getQuery();
+		for (var p in older) {
+			temp[p.ContentID] = {};
+			temp[p.ContentID].RandomSort = Rand();
+		}
+		for (var ContentID in StructSort(temp, 'numeric', 'asc', 'RandomSort')) {
+			$.redirect(
+				location = $.createHREF(filename='#rc.Wiki.getFilename()#/#$.getBean('content').loadBy(ContentID=ContentID, SiteID = rc.Wiki.getSiteID()).getLabel()#', querystring='older=1'),
+				statusCode = '302'
+			);
+		}
 	}
 }
 </cfscript>

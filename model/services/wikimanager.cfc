@@ -605,8 +605,7 @@
 			Tags = rb.getKey('homeTags'),
 			redirect = '',
 			parentid = wiki.getContentID()
-		});
-		blurb.save();
+		}).save();
 		if (wiki.getUseTags()) {
 			blurb.addDisplayObject(
 				regionid = wiki.getRegionMain(),

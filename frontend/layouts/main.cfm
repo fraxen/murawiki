@@ -13,12 +13,11 @@
 		');
 	}
 	thisTags = rc.wiki.tags;
-	ListToArray(rc.wikiPage.getTags()).each(function(t) {
-		if (ArrayFindNoCase(thisTags, t)) {
-			return;
+	for (t in rc.wikiPage.getTags()) {
+		if (!ArrayFindNoCase(thisTags, t)) {
+			ArrayAppend(thisTags, t);
 		}
-		ArrayAppend(thisTags, t);
-	});
+	}
 	thisTags.sort('text');
 	wikiList = StructKeyArray(rc.wiki.wikiList);
 	wikiList.sort('text','asc');

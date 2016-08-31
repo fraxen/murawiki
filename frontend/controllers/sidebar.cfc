@@ -47,12 +47,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function attachments() {
-		var relSet = application.classExtensionManager
-			.getSubTypeByName(siteid=$.event('siteid'), type='Page', subtype='WikiPage')
-			.getRelatedContentSets()
-			.filter(function(rcs) {
-				return rcs.getAvailableSubTypes() == 'File/Default';
-			})[1].getRelatedContentSetID();
 		rc.wikiPage = $.content();
 		if (structKeyExists(URL, 'version')) {
 			rc.wikiPage = $.getBean('content').loadBy(ContentHistID=rc.version);
@@ -67,23 +61,19 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	public void function recents() {
 		rc.backlinks = [];
 		if (StructKeyExists(COOKIE, '#rc.wiki.getContentID()#history')) {
-			rc.backlinks = ListToArray(Cookie['#rc.wiki.getContentID()#history']).filter(function(l) { return l!=$.content().getLabel();});
+			rc.backlinks = ListToArray(Cookie['#rc.wiki.getContentID()#history']);
+			ArrayDelete(rc.backlinks, $.content().getLabel());
 		}
 		return;
 	}
 
 	public void function latestupdates() {
-		rc.latest = getWikiManagerService().history(rc.wiki, rc.rb)
-			.filter(function(w) {
-				return w.Active == 1 && w.Status == 'Live';
-			})
-			.reduce(function(carry, w) {
-				ArrayAppend(carry, w.Label);
-				return carry;
-			}, [])
-			.filter(function(l, i) {
-				return i < 11;
-			});
+		var rc.latest = [];
+		for (var w in getWikiManagerService().history(rc.wiki, rc.rb)) {
+			if (w.Active == 1 && w.Status == 'Live' && ArrayLen(rc.latest) LT 10) {
+				ArrayAppend(rc.latest, w.Label);
+			}
+		}
 		return;
 	}
 }
