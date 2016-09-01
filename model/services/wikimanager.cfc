@@ -184,7 +184,9 @@
 		var searchStatus = {};
 
 		if (ARGUMENTS.wiki.getUseIndex()) {
-			var temp = new Search(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#',suggestions='Always',criteria='#ARGUMENTS.q#',name='searchResults',status='searchStatus').search();
+			var temp = new Search().search(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#',suggestions='Always',criteria='#ARGUMENTS.q#',name='searchResults',status='searchStatus');
+			searchStatus = temp.getResult().Status;
+			searchResults = temp.getResult().Name;
 			// search collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' suggestions='Always' criteria='#ARGUMENTS.q#' name='searchResults' status='searchStatus';
 			queryAddColumn(searchResults, 'Label', 'VarChar', []);
 			queryAddColumn(searchResults, 'Filename', 'VarChar', []);
@@ -222,14 +224,19 @@
 	}
 
 	public boolean function initCollection(required any wiki, required string collPath='') {
-		var collectionExists = '';
-		var collectionExists = new collection(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#').list();
+		var collectionExists = false;
+		var col = new collection();
+		for (var c in col.list(action='list').getResult().name) {
+			if (c.name == 'Murawiki_#ARGUMENTS.wiki.getContentID()#') {
+				collectionExists = True;
+			}
+		}
 		// collection action='list' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' name='collectionExists';
-		if (collectionExists.RecordCount) {
-			new collection(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#').delete();
+		if (collectionExists) {
+			col.delete(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#');
 			// collection action='delete' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#';
 		}
-		new collection(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#', path='#ARGUMENTS.collPath#').create();
+		col.create(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#', path='#ARGUMENTS.collPath#');
 		// collection action='create' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' path='#ARGUMENTS.collPath#';
 		return true;
 	}
@@ -498,7 +505,7 @@
 					}
 					p.Body = '#stripHTML(p.Body)# #p.tags# #p.title#';
 				}
-				new index(collection='Murawiki_#w.ContentID#', query='allPages', key='Label', title='Title', body='Body').refresh();
+				new index().refresh(collection='Murawiki_#w.ContentID#', query='#allPages#', key='Label', title='Title', body='Body');
 				// index collection='Murawiki_#w.ContentID#' action='refresh' query='allPages' key='Label' title='Title' body='Body';
 			}
 		}

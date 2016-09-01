@@ -10,12 +10,18 @@
 		</button>
 	</span>
 </form>
-<cfif structKeyExists(rc, 'searchStatus') && StructKeyExists(rc.searchStatus, 'keywords')>
+<cfif structKeyExists(rc, 'searchStatus') AND StructKeyExists(rc.searchStatus, 'keywords')>
 	<div>
 		#rc.rb.getKey('searchSuggestions')#:&nbsp;
 		<cfloop index="i" array="#rc.searchStatus.keywords[rc.q]#">
 			<a href="#$.createHREF(filename='#rc.wiki.getFilename()#/#rc.rb.getKey('SearchResultsLabel')#/')#?q=#i#">#i#</a>&nbsp;
 		</cfloop>
+	</div>
+</cfif>
+<cfif structKeyExists(rc, 'searchStatus') AND StructKeyExists(rc.searchStatus, 'SuggestedQuery') AND rc.searchStatus.SuggestedQuery NEQ ''>
+	<div>
+		#rc.rb.getKey('searchSuggestions')#:&nbsp;
+		<a href="#$.createHREF(filename='#rc.wiki.getFilename()#/#rc.rb.getKey('SearchResultsLabel')#/')#?q=#rc.searchStatus.SuggestedQuery#">#rc.searchStatus.SuggestedQuery#</a>
 	</div>
 </cfif>
 </cfoutput>
