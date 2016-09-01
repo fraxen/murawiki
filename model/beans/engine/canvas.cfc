@@ -39,7 +39,7 @@ component persistent="false" accessors="true" output="false" {
 		return getEngineOpts();
 	}
 
-	public object function renderHTML(required string blurb, required string thisLabel, required struct wikiList, required string parentpath, required any ContentRenderer) {
+	public any function renderHTML(required string blurb, required string thisLabel, required struct wikiList, required string parentpath, required any ContentRenderer) {
 		var page = new canvas.pagebean();
 		var outLinks = [];
 		var outHTML = '';
@@ -62,10 +62,9 @@ component persistent="false" accessors="true" output="false" {
 				outHTML = outHTML & 'href="#REReplace(t, '^index.cfm/#label#', link, 'ONE')#';
 			} else {
 				outHTML = outHTML & t;
-				return t;
 			}
 		}
-		return { blurb=outHTML, outgoingLinks=outLinks };
+		return { blurb:outHTML, outgoingLinks:outLinks };
 	}
 
 	public array function outGoingLinks(required string blurb, required string label) {
