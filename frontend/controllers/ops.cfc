@@ -146,7 +146,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		}
 		param rc.tags = '';
 		if (rc.notes == '') {
-			rc.delete('notes');
+			StructDelete(rc, 'notes');
 		}
 		param rc.notes = rc.wikiPage.getIsNew() ? rc.rb.getKey('NoteCreate') : rc.rb.getKey('NoteEdit');
 		rc.wikiPage.setParentID(rc.parentid);

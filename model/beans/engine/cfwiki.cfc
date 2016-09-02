@@ -211,7 +211,7 @@ component persistent="false" accessors="true" output="false" {
 				cssClass = '';
 				if (ReFind('^([A-Z]|[a-z]|[0-9]|_)*$', link, 1, False)) {
 					// this is an internal wiki link
-					outgoingLinks.append(link);
+					ArrayAppend(outgoingLinks, link);
 					cssClass = !StructKeyExists(wikiList, link) ? ' class="undefined"' : '';
 					link = ContentRenderer.CreateHREF(filename='#parentpath#/#LCase(link)#');
 				};

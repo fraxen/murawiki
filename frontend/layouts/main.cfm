@@ -18,9 +18,9 @@
 			ArrayAppend(thisTags, t);
 		}
 	}
-	thisTags.sort('text');
+	ArraySort(thisTags, 'text');
 	wikiList = StructKeyArray(rc.wiki.wikiList);
-	wikiList.sort('text','asc');
+	ArraySort(wikiList, 'text');
 </cfscript>
 <cfoutput>
 <cfif structKeyExists(URL, 'undefined')>
@@ -123,7 +123,7 @@
 			<div class="mura-form-textfield form-group control-group">
 				<label for="tags">#rc.rb.getKey('tags')#</label>
 				<select name="tags" multiple="multiple" class="form-control s2" data-placeholder="#rc.rb.getKey('tagsPlaceholder')#" data-tags="tags">
-					<cfloop item="kw" array="#thisTags#">
+					<cfloop index="kw" array="#thisTags#">
 						<option value="#kw#" <cfif ListFindNoCase(rc.wikiPage.getTags(), kw)>selected="selected"</cfif>>#kw#</option>
 					</cfloop>
 				</select>
@@ -159,7 +159,7 @@
 				</label>
 				<select name="redirectlabel" class="form-control s2" data-placeholder="#rc.rb.getKey('redirectPlaceholder')#" data-tags="tags">
 					<option></option>
-					<cfloop item="label" array="#wikiList#">
+					<cfloop index="label" array="#wikiList#">
 						<cfif label NEQ rc.wikiPage.getLabel()>
 						<option value="#label#">#label#</option>
 						</cfif>
