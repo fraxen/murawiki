@@ -555,8 +555,7 @@
 
 	public any function Initialize(required any wiki, required any rb, required any framework, required string rootPath) {
 		// 'Formats' the wiki - adds display objects + creates default pages. Only meant to be run one per wiki
-		// setting requesttimeout='28800';
-		setting requesttimeout='60';
+		setting requesttimeout='28800';
 		var page = {};
 		var dspO = getDisplayObjects();
 		var engine = wiki.engine;
