@@ -26,9 +26,9 @@
 		}
 		ap = new Query(
 			dbtype = 'query',
-			q=ap,
+			qAP=ap,
 			sql = "
-				SELECT * from q
+				SELECT * from qAP
 				WHERE
 					keep = 1
 			"
@@ -169,9 +169,9 @@
 		}
 		history = new Query(
 			dbtype = 'query',
-			q=history,
+			qread=history,
 			sql = "
-				SELECT * from q
+				SELECT * from qread
 				ORDER BY
 					latestUpdate DESC, lastupdate DESC, Label ASC
 			"
@@ -184,10 +184,13 @@
 		var searchStatus = {};
 
 		if (ARGUMENTS.wiki.getUseIndex()) {
-			var temp = new Search().search(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#',suggestions='Always',criteria='#ARGUMENTS.q#',name='searchResults',status='searchStatus');
-			searchStatus = temp.getResult().Status;
-			searchResults = temp.getResult().Name;
-			// search collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' suggestions='Always' criteria='#ARGUMENTS.q#' name='searchResults' status='searchStatus';
+			if (getConfigBean().getCompiler() == 'Lucee') {
+				search collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' suggestions='Always' criteria='#ARGUMENTS.q#' name='searchResults' status='searchStatus';
+			} else {
+				var temp = new Search().search(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#',suggestions='Always',criteria='#ARGUMENTS.q#',name='searchResults',status='searchStatus');
+				searchStatus = temp.getResult().Status;
+				searchResults = temp.getResult().Name;
+			}
 			queryAddColumn(searchResults, 'Label', 'VarChar', []);
 			queryAddColumn(searchResults, 'Filename', 'VarChar', []);
 			queryAddColumn(searchResults, 'LastUpdate', 'VarChar', []);
@@ -212,9 +215,9 @@
 			}
 			searchResults = new Query(
 				dbtype = 'query',
-				q=searchResults,
+				qSearch=searchResults,
 				sql = "
-					SELECT * from q
+					SELECT * from qSearch
 					WHERE
 						rank > 0
 				"
@@ -225,19 +228,28 @@
 
 	public boolean function initCollection(required any wiki, required string collPath='') {
 		var collectionExists = false;
-		var col = new collection();
-		for (var c in col.list(action='list').getResult().name) {
-			if (c.name == 'Murawiki_#ARGUMENTS.wiki.getContentID()#') {
-				collectionExists = True;
+		if (getConfigBean().getCompiler() == 'Lucee') {
+			collection action='list' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' name='collectionExists';
+			if (collectionExists.RecordCount) {
+				try{
+					collection action='delete' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#';
+				}
+				catch(any e) {
+				}
 			}
+			collection action='create' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' path='#ARGUMENTS.collPath#';
+		} else {
+			var col = new collection();
+			for (var c in col.list(action='list').getResult().name) {
+				if (c.name == 'Murawiki_#ARGUMENTS.wiki.getContentID()#') {
+					collectionExists = True;
+				}
+			}
+			if (collectionExists) {
+				col.delete(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#');
+			}
+			col.create(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#', path='#ARGUMENTS.collPath#');
 		}
-		// collection action='list' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' name='collectionExists';
-		if (collectionExists) {
-			col.delete(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#');
-			// collection action='delete' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#';
-		}
-		col.create(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#', path='#ARGUMENTS.collPath#');
-		// collection action='create' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' path='#ARGUMENTS.collPath#';
 		return true;
 	}
 
@@ -483,6 +495,9 @@
 			engineopts = isJSON(wikis[w.ContentID].getEngineOpts()) ? DeserializeJSON(wikis[w.ContentID].getEngineOpts()) : {};
 			wikis[w.ContentID].wikiList = loadWikiList(wikis[w.ContentID]);
 			wikis[w.ContentID].tags = loadTags(wikis[w.ContentID]);
+			if (wikis[w.ContentID].getWikiEngine() == '') {
+				wikis[w.ContentID].setWikiEngine('canvas')
+			}
 			wikis[w.ContentID].engine = beanFactory.getBean(wikis[w.ContentID].getWikiEngine() & 'engine')
 				.setup(engineopts)
 				.setResource(
@@ -499,14 +514,24 @@
 			);
 			if (wikis[w.ContentID].getUseIndex() == 1 && wikis[w.ContentID].getIsInit() == 1) {
 				var allPages = getAllPages(wikis[w.ContentID], 'Label', 'Asc', [], false, [], true);
-				for (var p in allPages) {
-					if (p.Title != p.Label) {
-						p.Title = '#p.Title# (#p.Label#)';
+				if (getConfigBean().getCompiler() == 'Lucee') {
+					allPages = allPages.map( function(p) {
+						if (p.Title != p.Label) {
+							p.Title = '#p.Title# (#p.Label#)';
+						}
+						p.Body = '#stripHTML(p.Body)# #p.tags# #p.title#';
+						return p;
+					});
+					index collection='Murawiki_#w.ContentID#' action='refresh' query='allPages' key='Label' title='Title' body='Body';
+				} else {
+					for (var p in allPages) {
+						if (p.Title != p.Label) {
+							p.Title = '#p.Title# (#p.Label#)';
+						}
+						p.Body = '#stripHTML(p.Body)# #p.tags# #p.title#';
 					}
-					p.Body = '#stripHTML(p.Body)# #p.tags# #p.title#';
+					new index().refresh(collection='Murawiki_#w.ContentID#', query='#allPages#', key='Label', title='Title', body='Body');
 				}
-				new index().refresh(collection='Murawiki_#w.ContentID#', query='#allPages#', key='Label', title='Title', body='Body');
-				// index collection='Murawiki_#w.ContentID#' action='refresh' query='allPages' key='Label' title='Title' body='Body';
 			}
 		}
 		setWikis(wikis);

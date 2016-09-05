@@ -68,7 +68,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function latestupdates() {
-		var rc.latest = [];
+		rc.latest = [];
 		for (var w in getWikiManagerService().history(rc.wiki, rc.rb)) {
 			if (w.Active == 1 && w.Status == 'Live' && ArrayLen(rc.latest) LT 10) {
 				ArrayAppend(rc.latest, w.Label);

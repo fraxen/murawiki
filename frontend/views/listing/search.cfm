@@ -18,7 +18,7 @@
 		</cfloop>
 	</div>
 </cfif>
-<cfif structKeyExists(rc, 'searchStatus') AND StructKeyExists(rc.searchStatus, 'SuggestedQuery') AND rc.searchStatus.SuggestedQuery NEQ ''>
+<cfif $.getConfigBean().getCompiler() NEQ 'Lucee' AND structKeyExists(rc, 'searchStatus') AND StructKeyExists(rc.searchStatus, 'SuggestedQuery') AND rc.searchStatus.SuggestedQuery NEQ ''>
 	<div>
 		#rc.rb.getKey('searchSuggestions')#:&nbsp;
 		<a href="#$.createHREF(filename='#rc.wiki.getFilename()#/#rc.rb.getKey('SearchResultsLabel')#/')#?q=#rc.searchStatus.SuggestedQuery#">#rc.searchStatus.SuggestedQuery#</a>
