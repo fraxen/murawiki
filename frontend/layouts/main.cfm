@@ -99,7 +99,7 @@
 					name="blurb"
 					class="form-control"
 					data-required="false"
-					>#REReplace(rc.wikiPage.getBlurb(),'(#Chr(13)##Chr(10)#|#Chr(10)#|#Chr(13)#)', '#Chr(22)#', 'all')#</textarea>
+					>#REReplace(rc.wikiPage.getBlurb(),'(#Chr(13)##Chr(10)#|#Chr(10)#|#Chr(13)#)', '#Chr(13)#', 'all')#</textarea>
 			</div>
 			<div class="mura-form-textfield form-group control-group attachments">
 				<label>#rc.rb.getKey('sidebarAttachmentTitle')#</label>
@@ -218,9 +218,6 @@
 		if (window.location.search.match(/\?notauth=1/)) {
 			$('#notauthModal').modal('show');
 		}
-		$('#editform textarea').val(
-			$('#editform textarea').val().replace(new RegExp(String.fromCharCode(22), 'g'), String.fromCharCode(10))
-		);
 		<cfif $.currentUser().getIsLoggedIn() && rc.authedit>
 			$('a.pageedit').click(function() {
 				if ($(this).attr('disabled') != 'disabled') {

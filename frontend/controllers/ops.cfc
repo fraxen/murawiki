@@ -89,6 +89,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=rc.SiteID);
 		rc.wiki = getWikiManagerService().getWiki(rc.parentid);
 		rc.rb = rc.wiki.rb;
+		rc.blurb = REReplace(rc.blurb,'(#Chr(13)##Chr(10)#|#Chr(10)#|#Chr(13)#)', '#Chr(13)#', 'all')
 
 		var i=1;
 		var attachments={};
