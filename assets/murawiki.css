@@ -28,6 +28,8 @@ div.panel a:hover {BACKGROUND: #BEC6EE; COLOR: Navy;}
 #panelLatestUpdates li.history2 a, #panelRecents li.history2 a { OPACITY: 0.95; }
 #panelLatestUpdates li a:hover, #panelRecents li a:hover {OPACITY: 1 !important;}
 a .uline {TEXT-DECORATION: Underline;}
+div.panel ul {LIST-STYLE-TYPE: None; PADDING: 0;}
+div.panel ul li {PADDING: 0 0 0 1em;}
 
 #editform input[type='submit'] { MARGIN: 0 auto; WIDTH: 80%; DISPLAY: Block;}
 #editform textarea {HEIGHT: 20em;}
