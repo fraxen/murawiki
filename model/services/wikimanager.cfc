@@ -2,6 +2,81 @@
 	<cfproperty type='any' name='beanFactory' />
 	<cfproperty type='struct' name='wikis' />
 
+	<cffunction name='dosearch' output='false' returnType='any' access='private'>
+		<cfargument name='collection' type='string' required='true' />
+		<cfargument name='q' type='string' required='true' />
+		<cfset var searchResults = {} />
+		<cfset var searchStatus = {} />
+		<cfsearch
+			collection = '#ARGUMENTS.Collection#'
+			suggestions = 'Always'
+			criteria = '#ARGUMENTS.q#'
+			name = 'searchResults'
+			status = 'searchStatus'
+		/>
+		<cfreturn {searchResults: searchResults, searchStatus: searchStatus} />
+	</cffunction>
+
+	<cffunction name='doIndex' output='false' returnType='void' access='private'>
+		<cfargument name='collection' type='string' required='true' />
+		<cfargument name='query' type='query' required='true' />
+		<cfargument name='key' type='string' required='true' />
+		<cfargument name='title' type='string' required='true' />
+		<cfargument name='body' type='string' required='true' />
+
+		<cfindex
+			action = 'refresh'
+			collection = '#ARGUMENTS.Collection#'
+			query = ARGUMENTS.query
+			key = '#ARGUMENTS.key#'
+			title = '#ARGUMENTS.Title#'
+			body = '#ARGUMENTS.Body#'
+		/>
+
+		<cfreturn />
+	</cffunction>
+
+	<cffunction name='collectionCreate' output='false' returnType='void' access='private'>
+		<cfargument name='col' type='string' required='true' />
+		<cfargument name='path' type='string' required='true' />
+		
+		<cfcollection
+			action = 'create'
+			collection = '#ARGUMENTS.col#'
+			path = '#ARGUMENTS.path#'
+		/>
+		
+		<cfreturn />
+	</cffunction>
+
+	<cffunction name='collectionDelete' output='false' returnType='void' access='private'>
+		<cfargument name='col' type='string' required='true' />
+		
+		<cfcollection
+			action = 'delete'
+			collection = '#ARGUMENTS.col#'
+		/>
+		
+		<cfreturn />
+	</cffunction>
+
+	<cffunction name='collectionExists' output='false' returnType='boolean' access='private'>
+		<cfargument name='col' type='string' required='true' />
+
+		<cfset var colList = {} />
+		<cfset var i = 0 />
+
+		<cfcollection
+			action='list'
+			name='colList' />
+		<cfloop index='i' from='1' to='#colList.RecordCount#'>
+			<cfif colList['name'][i] EQ ARGUMENTS.col>
+				<cfreturn true />
+			</cfif>
+		</cfloop>
+		<cfreturn false />
+	</cffunction>
+
 	<cffunction name='wddxDeserialize' output='false' returnType='any' access='private'>
 		<cfargument name='wddxstring' type='string' required='true'>
 		<cfset var out=''>
@@ -184,13 +259,9 @@
 		var searchStatus = {};
 
 		if (ARGUMENTS.wiki.getUseIndex()) {
-			if (getConfigBean().getCompiler() == 'Lucee') {
-				search collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' suggestions='Always' criteria='#ARGUMENTS.q#' name='searchResults' status='searchStatus';
-			} else {
-				var temp = new Search().search(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#',suggestions='Always',criteria='#ARGUMENTS.q#',name='searchResults',status='searchStatus');
-				searchStatus = temp.getResult().Status;
-				searchResults = temp.getResult().Name;
-			}
+			var temp = doSearch('Murawiki_#ARGUMENTS.Wiki.getContentID()#', ARGUMENTS.q);
+			searchStatus = temp.searchStatus;
+			searchResults = temp.searchResults;
 			queryAddColumn(searchResults, 'Label', 'VarChar', []);
 			queryAddColumn(searchResults, 'Filename', 'VarChar', []);
 			queryAddColumn(searchResults, 'LastUpdate', 'VarChar', []);
@@ -227,29 +298,10 @@
 	}
 
 	public boolean function initCollection(required any wiki, required string collPath='') {
-		var collectionExists = false;
-		if (getConfigBean().getCompiler() == 'Lucee') {
-			collection action='list' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' name='collectionExists';
-			if (collectionExists.RecordCount) {
-				try{
-					collection action='delete' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#';
-				}
-				catch(any e) {
-				}
-			}
-			collection action='create' collection='Murawiki_#ARGUMENTS.wiki.getContentID()#' path='#ARGUMENTS.collPath#';
-		} else {
-			var col = new collection();
-			for (var c in col.list(action='list').getResult().name) {
-				if (c.name == 'Murawiki_#ARGUMENTS.wiki.getContentID()#') {
-					collectionExists = True;
-				}
-			}
-			if (collectionExists) {
-				col.delete(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#');
-			}
-			col.create(collection='Murawiki_#ARGUMENTS.wiki.getContentID()#', path='#ARGUMENTS.collPath#');
+		if (collectionExists('Murawiki_#ARGUMENTS.wiki.getContentID()#')) {
+			collectionDelete('Murawiki_#ARGUMENTS.wiki.getContentID()#');
 		}
+		collectionCreate('Murawiki_#ARGUMENTS.wiki.getContentID()#', collPath);
 		return true;
 	}
 
@@ -496,7 +548,7 @@
 			wikis[w.ContentID].wikiList = loadWikiList(wikis[w.ContentID]);
 			wikis[w.ContentID].tags = loadTags(wikis[w.ContentID]);
 			if (wikis[w.ContentID].getWikiEngine() == '') {
-				wikis[w.ContentID].setWikiEngine('canvas')
+				wikis[w.ContentID].setWikiEngine('canvas');
 			}
 			wikis[w.ContentID].engine = beanFactory.getBean(wikis[w.ContentID].getWikiEngine() & 'engine')
 				.setup(engineopts)
@@ -514,24 +566,13 @@
 			);
 			if (wikis[w.ContentID].getUseIndex() == 1 && wikis[w.ContentID].getIsInit() == 1) {
 				var allPages = getAllPages(wikis[w.ContentID], 'Label', 'Asc', [], false, [], true);
-				if (getConfigBean().getCompiler() == 'Lucee') {
-					allPages = allPages.map( function(p) {
-						if (p.Title != p.Label) {
-							p.Title = '#p.Title# (#p.Label#)';
-						}
-						p.Body = '#stripHTML(p.Body)# #p.tags# #p.title#';
-						return p;
-					});
-					index collection='Murawiki_#w.ContentID#' action='refresh' query='allPages' key='Label' title='Title' body='Body';
-				} else {
-					for (var p in allPages) {
-						if (p.Title != p.Label) {
-							p.Title = '#p.Title# (#p.Label#)';
-						}
-						p.Body = '#stripHTML(p.Body)# #p.tags# #p.title#';
+				for (var r=1; r <= allPages.RecordCount; r++) {
+					if (allPages.Title[r] != allPages.Label[r]) {
+						allPages.Title[r] = '#allPages.Title[r]# (#allPages.Label[r]#)';
 					}
-					new index().refresh(collection='Murawiki_#w.ContentID#', query='#allPages#', key='Label', title='Title', body='Body');
+					allPages.Body[r] = '#stripHTML(allPages.Body[r])# #allPages.tags[r]# #allPages.title[r]#';
 				}
+				doIndex(collection='Murawiki_#w.ContentID#',query=allPages,key='Label',title='Title',body='Body');
 			}
 		}
 		setWikis(wikis);
