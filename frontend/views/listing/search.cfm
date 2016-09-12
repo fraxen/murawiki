@@ -11,9 +11,15 @@
 	</span>
 </form>
 <cfif structKeyExists(rc, 'searchStatus') AND StructKeyExists(rc.searchStatus, 'keywords')>
+	<cfscript>
+		altkw = [];
+		for (i in StructKeyArray(rc.searchStatus.keywords)) {
+			altkw.addAll(rc.searchStatus.keywords[i]);
+		}
+	</cfscript>
 	<div>
 		#rc.rb.getKey('searchSuggestions')#:&nbsp;
-		<cfloop index="i" array="#rc.searchStatus.keywords[rc.q]#">
+		<cfloop index="i" array="#altkw#">
 			<a href="#$.createHREF(filename='#rc.wiki.getFilename()#/#rc.rb.getKey('SearchResultsLabel')#/')#?q=#i#">#i#</a>&nbsp;
 		</cfloop>
 	</div>

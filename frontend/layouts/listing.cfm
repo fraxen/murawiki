@@ -91,7 +91,11 @@
 			<tr>
 				<td>#variables.iterator.getRecordIndex()#.</td>
 				<td>
-					<a href="#$.CreateHREF(filename=item.getValue('Filename'))#">
+					<cfset thisLabel = item.getValue('Filename') />
+					<cfif thisLabel EQ '' AND item.getValue('key') NEQ ''>
+						<cfset thisLabel = '#rc.wiki.getFileName()#/#item.getValue('key')#' />
+					</cfif>
+					<a href="#$.CreateHREF(filename=thisLabel)#">
 						<cfif item.getValue('Label') EQ item.getValue('title')>
 							#HTMLEditFormat(item.getValue('Label'))#
 						<cfelse>
