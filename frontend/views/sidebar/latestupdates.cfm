@@ -11,7 +11,7 @@
 				<li class="history#i#"><a href="#$.createHREF(filename='#rc.wiki.getFilename()#/#LCase(rc.latest[i])#')#">#rc.latest[i]#</a></li>
 			</cfloop>
 		<cfelse>
-			<li><em>#rc.rb.getKey('sidebarRecentNone')#</em></li>
+			<li><em>#rc.rb.getKey('sidebarLatestNone')#</em></li>
 		</cfif>
 	</ul>
 </div>
