@@ -88,6 +88,12 @@ component persistent="false" accessors="true" output="false" {
 			thisBlurb = temp.Blurb;
 			// }}}
 
+			// {{{ Tuck away any text in enclosed in ¤¤ away so it's not formatted as links
+			temp = tuckAway (thisBlurb = thisBlurb, token= '<nolink>', blockStart= '[nolink]', blockEnd='[/nolink]');
+			tuckedawayStrings.nolink = temp.formattedStrings;
+			thisBlurb = temp.Blurb;
+			// }}}
+
 			// {{{ Deal with [] links
 			temp = tuckAway (thisBlurb = thisBlurb, token= '<bracketlink>', blockStart= '[[', blockEnd=']]', include=true);
 			tuckedawayStrings.links = temp.formattedStrings;
@@ -199,6 +205,11 @@ component persistent="false" accessors="true" output="false" {
 			// put <a></a> back in
 			for(var s in tuckedawayStrings.ahr) {
 				thisBlurb = replace(thisBlurb, '<atok>', s, 'ONE');
+			}
+
+			// put no-link back in
+			for(var s in tuckedawayStrings.nolink) {
+				thisBlurb = replace(thisBlurb, '<nolink>', s, 'ONE');
 			}
 
 			// Deal with bracket links
