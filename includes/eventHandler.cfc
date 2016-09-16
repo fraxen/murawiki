@@ -28,7 +28,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	public void function onSiteLoginPromptRender($) {
 		var cf = $.content().getFilename();
 		if (ListLen(cf, '/') > 1 && ListLast(cf, '/') != 'speciallogin') {
-			for (var f in $.getBean('feed')
+			for (var w in $.getBean('feed')
 				.setMaxItems(0)
 				.setShowNavOnly(0)
 				.setShowExcludeSearch(1)
