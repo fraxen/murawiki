@@ -4,14 +4,16 @@
 	pluginPath = '#rc.$.globalConfig('context')#/plugins/#rc.pluginConfig.getPackage()#';
 	if (rc.wiki.getStyleSheet() != '') {
 		$.addToHTMLHeadQueue(action='append', text='
-			<link rel="stylesheet" type="text/css" href="#pluginPath#/assets/murawiki.css" rel="stylesheet" />
-			<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
-			<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
-			<style>.select2-dropdown--below {
-				top: 3rem; /*your input height*/
-			}</style>
+			<link rel="stylesheet" type="text/css" href="#pluginPath#/assets/#rc.wiki.getStyleSheet()#" rel="stylesheet" />
 		');
 	}
+	$.addToHTMLHeadQueue(action='append', text='
+		<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+		<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+		<style>.select2-dropdown--below {
+			top: 3rem; /*your input height*/
+		}</style>
+	');
 	thisTags = rc.wiki.tags;
 	for (t in rc.wikiPage.getTags()) {
 		if (!ArrayFindNoCase(thisTags, t)) {

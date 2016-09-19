@@ -1,0 +1,110 @@
+a.undefined:link {
+	COLOR: #555;
+	BORDER-BOTTOM: 1px dotted #555;
+}
+a.undefined:after {
+	font-family: FontAwesome;
+	top:0;
+	padding-left:0.1em;
+	content: "\f128"; 
+}
+div.panel {
+	PADDING: 0.5em;
+	BACKGROUND: #eee;
+	OVERFLOW: Hidden;
+	MARGIN: 0;
+}
+div.panel a {DISPLAY: Block;}
+div.panel a:hover {BACKGROUND: #BEC6EE; COLOR: Navy;}
+#panelLatestUpdates li.history10 a, #panelRecents li.history10 a { OPACITY: 0.31; }
+#panelLatestUpdates li.history9 a, #panelRecents li.history9 a { OPACITY: 0.39; }
+#panelLatestUpdates li.history8 a, #panelRecents li.history8 a { OPACITY: 0.47; }
+#panelLatestUpdates li.history7 a, #panelRecents li.history7 a { OPACITY: 0.55; }
+#panelLatestUpdates li.history6 a, #panelRecents li.history6 a { OPACITY: 0.63; }
+#panelLatestUpdates li.history5 a, #panelRecents li.history5 a { OPACITY: 0.71; }
+#panelLatestUpdates li.history4 a, #panelRecents li.history4 a { OPACITY: 0.79; }
+#panelLatestUpdates li.history3 a, #panelRecents li.history3 a { OPACITY: 0.87; }
+#panelLatestUpdates li.history2 a, #panelRecents li.history2 a { OPACITY: 0.95; }
+#panelLatestUpdates li a:hover, #panelRecents li a:hover {OPACITY: 1 !important;}
+a .uline {TEXT-DECORATION: Underline;}
+div.panel ul {LIST-STYLE-TYPE: None; PADDING: 0;}
+div.panel ul li {PADDING: 0 0 0 1em;}
+
+#editform input[type='submit'] { MARGIN: 0 auto; WIDTH: 80%; DISPLAY: Block;}
+#editform textarea {HEIGHT: 20em;}
+#editform .attachments li span { DISPLAY: Inline-Block; FLOAT: Right;}
+
+div.undefined {
+	MARGIN: 4em;
+	TEXT-ALIGN: Center;
+	FONT-STYLE: Italic;
+	FONT-SIZE: 150%;
+}
+span.thisLabel {
+	FONT-WEIGHT: Bold;
+}
+
+div.message {
+	WIDTH: 100%;
+	TEXT-ALIGN: Center;
+	PADDING: 1em;
+	BORDER: 2px solid #999;
+	MARGIN-BOTTOM: 2em;
+}
+a[disabled] {
+	POINTER-EVENTS: none;
+	COLOR: Gray;
+}
+#wikiPageHistory {
+	WIDTH: 100%;
+}
+#wikiPageHistory tr, #wikiPageHistory td {
+	BORDER: None;
+}
+#wikiPageHistory tr.time td {
+	COLOR: #777;
+	BORDER-BOTTOM: 1px solid #777 !important;
+	PADDING-BOTTOM: 0;
+}
+#wikiPageHistory tr:not(.time) {
+	CURSOR: Pointer;
+}
+#wikiPageHistory tr:not(.time):hover {
+	BACKGROUND: #eee;
+}
+.content ul.tags {MARGIN-TOP: 2em;}
+.content ul.tags li { DISPLAY: Inline; BORDER: 1px solid #ccc; BORDER-RADIUS: 5px; PADDING: 3px; MARGIN: 3px; BACKGROUND: #ddd; }
+
+.wikiBodyInc {MARGIN-TOP: 4em;}
+.wikilisting table td {vertical-align: baseline;}
+.wikilisting tr:hover  {CURSOR: Pointer;}
+.wikilisting table {WIDTH: 100% !important;}
+div.moreResults {
+	MARGIN: 0.5em 0 0.5em 0;
+	PADDING: 0 0.5em 0 0.5em;
+	TEXT-ALIGN: Right;
+	HEIGHT: 100% !important;
+	LINE-HEIGHT: 2em;
+}
+#timestamp {
+	FONT-STYLE: Italic;
+	FLOAT: Right;
+	PADDING: 0 0 1em 1em;
+	BORDER-BOTTOM: 1px solid #ccc;
+	BORDER-LEFT: 1px solid #ccc;
+}
+.wikilisting .hiddenRow {
+    padding: 0 !important;
+}
+.wikilisting .deleted {
+	TEXT-DECORATION: line-through;
+}
+.mura-editable-label {DISPLAY: None;}
+div.code, div.wiki_code{ 
+	white-space: pre; 
+	font-family: Consolas, 'Andale Mono', 'Monaco', monospace;
+	width: 70%;
+	border: 1px solid #3D8BD8;
+	padding: 5px;
+	background-color: #EEEEEE;
+}
