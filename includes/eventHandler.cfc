@@ -110,6 +110,8 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 							subType = 'WikiPage',
 							label = ListLast(cf, '/'),
 							title = ListLast(cf, '/'),
+							htmltitle = ListLast(cf, '/'),
+							menutitle = ListLast(cf, '/'),
 							approved = 1,
 							display = 1,
 							isnew = 0,
