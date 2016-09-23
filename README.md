@@ -40,6 +40,9 @@
 * Set up
   * Make sure you use a three-column layout
   * Test search
+* Whitespace supression (server/ContentRenderer)
+* CSS
+* Add another renderer...
 
 ## Future
 * Full Mura 7 compatibility
