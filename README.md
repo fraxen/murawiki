@@ -1,5 +1,11 @@
 # MuraWiki - Mura CMS plugin for Wiki
 *Short description - plugin etc*
+
+## Status
+* Currently RC/beta
+* Feature complete
+* Needs more real-world testing
+
 ## Requirements
 * Mura CMS (not 7 yet)
   * CFML engine (tested on...)
@@ -45,6 +51,7 @@
 * Add another renderer...
 
 ## Future
+* fraxen/murawiki#24 implement locking to prevent simultaneous editing of a page
 * Full Mura 7 compatibility
 * Other renderers
   * HTML
