@@ -57,6 +57,11 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	}
 
 	public void function onPageWikiPageBodyRender($) {
+		var renderer=$.getContentRenderer();
+		renderer.showAdminToolBar=false;
+		renderer.showMemberToolBar= false;
+		renderer.showEditableObjects= false;
+		renderer.showInlineEditor= false;
 		writeOutput(getApplication().doAction('frontend:main.wikiPage'));
 	}
 
