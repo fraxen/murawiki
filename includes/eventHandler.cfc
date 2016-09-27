@@ -15,13 +15,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	public void function onSiteMonitor(required struct $) {
 		// Refresh the cached content every four hours
 		if ((hour(now()) MOD 4) == 0 && minute(now()) < 15) {
-			try {
-				var wm = getApplication().getSubSystemBeanFactory('frontend').getBean('WikiManagerService');
-				wm.setWikis({});
-			}
-			catch(any e) {
-				pass;
-			}
+			getApplication().getBeanFactory().getBean('wikiManagerService').setWikis({});
 		}
 	}
 
