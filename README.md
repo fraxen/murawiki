@@ -20,18 +20,19 @@ If you are currently using Mura CMS, then you get to use the user database, perm
 * FAQ, that is easy to maintain and keep updated.
 * Shared knowledgebase of a mix of document information resources.
 
-## What is a Wiki
-* cloud, unstructured
-* documentation/text
+## What is a Wiki?
+*But whatitaminnit - what in the #¤%& is a wiki???* A Wiki is a unstructured body ("cloud") of textual information resources which are easily linked with each other. The basic design is unhierarchical and the underlying idea is to make editing and participation very easy to spread maintenance responsibilities. [Read more on the Wikipedia page for *Wiki*](https://en.wikipedia.org/wiki/Wiki).
 
 ## Alternatives
-* Canvas
-* MediaWiki, XWiki etc
+The biggest other option for a CFML-powered Wiki is the excellent **[Canvas Wiki](http://canvas.riaforge.org)**, which is a stand-alone Wiki CMS that has more futures than MuraWiki - it has better handling of sections and attachments, for instance. The page renderer from Canvas is included in MuraWiki.
+If you go outside the CFML-world, there are plenty of options, and many are quite feature-heavy. For deployment on a servlet-engine there is e.g. XWiki, and for other engines (e.g. PHP) there is MuraWiki (which powers WikiPedia) and many others.
+
 
 ## History
-* CFWiki
-* Mach-II Wiki
-* Fun with Mura
+This project started off with an ancient ColdFusion-application called CfWiki, programmed by Brian Shearer with contributions from many others. Not sure what license this was under, but I am sort of assuming it is Apache/MIT-license...
+Over they years I modified CfWiki and implemented it in Mach-II, which wasn't very difficult. All the processing was moved to CFCs and there was a full MVC architecture. I am happy to share the code (*MachWiki*) if anyone is interested.
+There was some problem with race conditions in *MachWiki* though, and at the same time I was implementing some projects as plugins in Mura CMS. I thought it would be an interesting little project to re-implement CfWiki inside Mura CMS taking full advantage of the handy api and object model exposed by Mura - so that one wouldn't worry about CRUD and handling e.g. users.
+
 
 ## Credits
 * FW1Plugin Parts are inherited from https://github.com/stevewithington/MuraFW1 by Steve Withington
