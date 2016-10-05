@@ -15,9 +15,8 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 
 	public void function onSiteMonitor(required struct $) {
 		// Refresh the cached content every four hours
-		getModel();
-		if ((hour(now()) MOD 1) == 0 && minute(now()) < 15) {
-			getModel().getBean('wikiManagerService').setWikis({});
+		if (DateDiff('h', getModel().getBean('wikiManagerService').getLastReload(), Now()) > 3) {
+			getModel().getBean('wikiManagerService').loadWikis();
 		}
 	}
 
@@ -137,10 +136,10 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	private any function getModel() {
 		// Lazy setter of model property, to account for occasions when the model is not properly loaded
 		if (VARIABLES.model == '') {
-			if (StructKeyExist(APPLICATION, VARIABLES.framework.applicationKey)) {
-				VARIBLES.model = application[VARIABLES.framework.applicationKey].factory;
+			if (StructKeyExists(APPLICATION, VARIABLES.framework.applicationKey)) {
+				setModel(APPLICATION[VARIABLES.framework.applicationKey].factory);
 			} else {
-				return new murawiki.includes.fw1.framework.ioc(variables.framework.diPath, variables.framework.diConfig);
+				return new fw1.framework.ioc(variables.framework.diPath, variables.framework.diConfig);
 			}
 		}
 		return VARIABLES.model;

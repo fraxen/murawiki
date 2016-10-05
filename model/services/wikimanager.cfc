@@ -1,6 +1,7 @@
 <cfcomponent displayname='wikiManager' name='wikiManager' accessors='true' extends='mura.cfobject'>
 	<cfproperty type='any' name='beanFactory' />
 	<cfproperty type='struct' name='wikis' />
+	<cfproperty type='date' name='lastReload' default="{ts '2000-01-01 00:00:00'}" />
 
 	<cffunction name='dosearch' output='false' returnType='any' access='private'>
 		<cfargument name='collection' type='string' required='true' />
@@ -521,6 +522,7 @@
 	}
 
 	public any function loadWikis() {
+		lock scope='application' type='exclusive' timeout=120 {
 		var wikis = {};
 		var siteIds = getBean('pluginManager')
 			.getAssignedSites(application.murawiki.pluginconfig.getModuleID());
@@ -576,6 +578,8 @@
 			}
 		}
 		setWikis(wikis);
+		setLastReload(Now());
+		}
 		return wikis;
 	}
 
