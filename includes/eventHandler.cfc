@@ -11,11 +11,13 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 
 	// framework variables
 	include 'fw1config.cfm';
+	property name='model' default='';
 
 	public void function onSiteMonitor(required struct $) {
 		// Refresh the cached content every four hours
-		if ((hour(now()) MOD 4) == 0 && minute(now()) < 15) {
-			getApplication().getBeanFactory().getBean('wikiManagerService').setWikis({});
+		getModel();
+		if ((hour(now()) MOD 1) == 0 && minute(now()) < 15) {
+			getModel().getBean('wikiManagerService').setWikis({});
 		}
 	}
 
@@ -120,7 +122,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	}
 
 	public void function onBeforePageWikiPageSave(required struct $) {
-		getApplication().getBeanFactory().getBean('wikiManagerService').BeforePageWikiPageSave($.content(), $.getContentRenderer());
+		getModel().getBean('wikiManagerService').BeforePageWikiPageSave($.content(), $.getContentRenderer());
 	}
 
 	// ========================== Helper Methods ==============================
@@ -130,6 +132,18 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 			request['#variables.framework.applicationKey#Application'] = new '#variables.framework.package#.Application'();
 		};
 		return request['#variables.framework.applicationKey#Application'];
+	}
+
+	private any function getModel() {
+		// Lazy setter of model property, to account for occasions when the model is not properly loaded
+		if (VARIABLES.model == '') {
+			if (StructKeyExist(APPLICATION, VARIABLES.framework.applicationKey)) {
+				VARIBLES.model = application[VARIABLES.framework.applicationKey].factory;
+			} else {
+				return new murawiki.includes.fw1.framework.ioc(variables.framework.diPath, variables.framework.diConfig);
+			}
+		}
+		return VARIABLES.model;
 	}
 
 }

@@ -109,11 +109,8 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		// Bean Factory (uses DI/1)
 		// Be sure to pass in your comma-separated list of folders to scan for CFCs
 		local.beanFactory = new murawiki.includes.fw1.framework.ioc(
-			'/#variables.framework.package#/model',
-			{
-				strict = true,
-				transients = ['engine']
-			}
+			variables.framework.diPath,
+			variables.framework.diConfig
 		);
 
 		// optionally set Mura to be the parent beanFactory
