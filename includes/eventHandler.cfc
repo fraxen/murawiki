@@ -135,7 +135,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 
 	private any function getModel() {
 		// Lazy setter of model property, to account for occasions when the model is not properly loaded
-		if (VARIABLES.model == '') {
+		if (!isObject(VARIABLES.model)) {
 			if (StructKeyExists(APPLICATION, VARIABLES.framework.applicationKey)) {
 				setModel(APPLICATION[VARIABLES.framework.applicationKey].factory);
 			} else {
