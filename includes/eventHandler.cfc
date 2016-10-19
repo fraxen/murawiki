@@ -8,10 +8,9 @@ https://github.com/stevewithington/MuraFW1
 
 */
 component persistent="false" accessors="true" output="false" extends="mura.plugin.pluginGenericEventHandler" {
-
+	property name='model' default='';
 	// framework variables
 	include 'fw1config.cfm';
-	property name='model' default='';
 
 	public void function onSiteMonitor(required struct $) {
 		// Refresh the cached content every four hours
