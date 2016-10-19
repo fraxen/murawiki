@@ -1,5 +1,7 @@
 # MuraWiki - Mura CMS plugin for Wiki
-A full wiki-implementation as a plugin for [Mura CMS 6.2](http://www.getmura.com/).
+A full wiki-implementation as a plugin for [Mura CMS 6.2](http://www.getmura.com/) - a CFML (Adobe ColdFusion/Lucee) content management system.
+
+<p align="center"><strong><a href="https://github.com/fraxen/mura500/releases">Download latest release</a></strong></p>
 
 ## Status
 This projects is sort of at a beta/rc stage. Version 1.0 is feature complete and has been tested with various CFML engines (Adobe/Lucee), but it could use some more real-world testing. It is recommended that you start by deploying this on a development/staging server and reviewe it fully before putting into production.
@@ -35,33 +37,36 @@ There was some problem with race conditions in *MachWiki* though, and at the sam
 
 
 ## Credits
-* FW1Plugin Parts are inherited from https://github.com/stevewithington/MuraFW1 by Steve Withington
-* FW1
-* Canvas
-* CFWiki The CfWiki rendering engine was originally programmed by Brian Shearer (and many others)
+* FW1Plugin Parts are inherited from https://github.com/stevewithington/MuraFW1 by Steve Withington _[apache license](https://raw.githubusercontent.com/stevewithington/MuraFW1/develop/license.txt)_
+* [FW1/DI1](https://github.com/framework-one/fw1) is an excellent CFML framework, by Sean Corfield _[apache license](https://raw.githubusercontent.com/framework-one/fw1/develop/LICENSE)_
+* The Canvas rendering engine was extracted from [Canvas Wiki](http://canvas.riaforge.org/) by Raymond Camden _apache license_
+* CFWiki The CfWiki rendering engine was originally programmed by Brian Shearer (and many others) - code in the public domain, can't find a website for that...
 
 ## Instructions
-* Download
-* If you clone, make sure you get the submodules
-* Load into Mura
-* Set up
-  * Make sure you use a three-column layout
-  * Test search
-* Whitespace supression (server/ContentRenderer)
-* CSS
-* Add another renderer...
+* [Download the latest release, or deploy by URL](https://github.com/fraxen/murawiki/releases)
+* ...or clone this repo
+* Load into Mura from the plugins page in the administrator
+* Create a wiki by adding an item in the site manager of type _Wiki_ and give it the name of the wiki
+* Set up and configure the wiki in the plugin page in the administration
+* Now it should be ready for use and testing!
+
+## Hints and tips
+* It is designed to use a Bootstrap3 theme with a three-column layout, if not all is displaying correctly, verify that you have 3-column template (site manager)
+* If you use cfindex/cfsearch, you might want to verify that it works as expected
+* You might want to disable _whitespace supression_ you can will need to do this both at the CFML server level, and in the site ContentRenderer.
+* There are a few CSS/designs to choose from. You might want to consider putting this in your theme/site css.
 
 ## License
-* Link to license file
-* Parts from other thingies...
+[Apache license 2.0](https://raw.githubusercontent.com/fraxen/murawiki/master/LICENSE)
+See the _credits_ section for parts inherited/included from other pieces.
 
 ## Future
-* fraxen/murawiki#24 implement locking to prevent simultaneous editing of a page
-* Full Mura 7 compatibility
-* Other renderers
-  * HTML
-  * Markdown
-* Sections
-
-
-
+###Highest priority
+* [Implement locking to prevent simultaneous editing of a page](https://github.com/fraxen/murawiki/issues/24)
+* [Full Mura 7 compatibility](https://github.com/fraxen/murawiki/issues/25)
+* [Lucee 5 testing](https://github.com/fraxen/murawiki/issues/28)
+* [HTML renderer, to allow for full WYSIWYG editing](https://github.com/fraxen/murawiki/issues/30)
+### Other
+* [Markdown renderer](https://github.com/fraxen/murawiki/issues/31)
+* [Sections](https://github.com/fraxen/murawiki/issues/32) - to group content, would also allow a separate _Special_ section, templates and permission set by section.
+* [PostgreSQL compatibility](https://github.com/fraxen/murawiki/issues/27) and [Oracle compatibility](https://github.com/fraxen/murawiki/issues/26)
