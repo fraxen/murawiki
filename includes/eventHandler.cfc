@@ -138,7 +138,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 			if (StructKeyExists(APPLICATION, VARIABLES.framework.applicationKey)) {
 				setModel(APPLICATION[VARIABLES.framework.applicationKey].factory);
 			} else {
-				return new fw1.framework.ioc(variables.framework.diPath, variables.framework.diConfig);
+				return new fw1.ioc(variables.framework.diPath, variables.framework.diConfig);
 			}
 		}
 		return VARIABLES.model;

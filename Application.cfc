@@ -15,7 +15,7 @@ https://github.com/stevewithington/MuraFW1
 		on how to access these methods.
 
 */
-component persistent="false" accessors="true" output="false" extends="includes.fw1.framework.one" {
+component persistent="false" accessors="true" output="false" extends="includes.fw1.one" {
 
 	include 'includes/fw1config.cfm'; // framework variables
 	include '../../config/applicationSettings.cfm';
@@ -108,7 +108,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 
 		// Bean Factory (uses DI/1)
 		// Be sure to pass in your comma-separated list of folders to scan for CFCs
-		local.beanFactory = new murawiki.includes.fw1.framework.ioc(
+		local.beanFactory = new murawiki.includes.fw1.ioc(
 			variables.framework.diPath,
 			variables.framework.diConfig
 		);

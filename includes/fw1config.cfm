@@ -36,7 +36,7 @@ https://github.com/stevewithington/MuraFW1
 	variables.framework.diEngine = 'di1';
 	variables.framework.diLocations = 'model,controllers';
 	variables.framework.diConfig = {strict: true, transients: ['engine']};
-	variables.framework.diComponent = variables.framework.package & '.includes.fw1.framework.ioc';
+	variables.framework.diComponent = variables.framework.package & '.includes.fw1.ioc';
 	variables.framework.diOverrideAllowed = true;
 	variables.framework.diPath = '/#variables.framework.package#/model';
 
