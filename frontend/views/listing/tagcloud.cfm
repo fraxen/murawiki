@@ -1,5 +1,5 @@
 <cfscript>
-	tags = rc.getTagCloud();
+	tags = rc.tagcloud;
 	tagValueArray = ListToArray(ValueList(tags.tagCount));
 	max = ArrayMax(tagValueArray);
 	min = Arraymin(tagValueArray);

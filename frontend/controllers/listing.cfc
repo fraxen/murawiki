@@ -17,7 +17,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function history() {
-		rc.history = getWikiManagerService().history(rc.wiki, rc.rb);
+		rc.history = rc.Wiki.getHistory();
 		framework.setLayout('default');
 		return;
 	}
@@ -49,7 +49,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			framework.setLayout('default');
 		} else {
 			rc.listingIterator = $.getBean('contentIterator')
-				.setQuery(getWikiManagerService().getPagesByTag(rc.wiki, ListToArray(rc.tag)));
+				.setQuery(rc.wiki.getPagesByTag(ListToArray(rc.tag)));
 		}
 		return;
 	}
@@ -70,12 +70,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			rc.rb.getKey('tagsLabel')
 		];
 		rc.listingIterator = $.getBean('contentIterator')
-			.setQuery(getWikiManagerService().getAllPages(rc.wiki, rc.sortby, rc.direction, skipLabels, rc.includeredirect));
+			.setQuery(rc.wiki.getAllPages(rc.sortby, rc.direction, skipLabels, rc.includeredirect));
 		return;
 	}
 
 	public void function tagcloud() {
-		rc.getTagCloud = function() { return getWikiManagerService().getTagCloud(rc.wiki);};
+		rc.tagcloud = rc.Wiki.getTagCloud();
 		framework.setLayout('default');
 		return;
 	}
@@ -96,11 +96,11 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			rc.rb.getKey('instructionsLabel'),
 			rc.wiki.getHome()
 		];
-		rc.orphan = getWikiManagerService().getOrphan(rc.wiki, skipLabels);
+		rc.orphan = rc.Wiki.getOrphan(skipLabels);
 		ArrayAppend(rc.orphan, CreateUUID());
 		rc.listingIterator = $.getBean('contentIterator')
 			.setQuery(
-				getWikiManagerService().getAllPages(rc.wiki, rc.sortby, rc.direction, skipLabels, rc.includeredirect, rc.orphan)
+				rc.wiki.getAllPages(rc.sortby, rc.direction, skipLabels, rc.includeredirect, rc.orphan)
 			);
 		return;
 	}
@@ -117,7 +117,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			rc.rb.getKey('tagsLabel')
 		];
 		rc.listingIterator = $.getBean('contentIterator')
-			.setQuery(getWikiManagerService().getAllPages(rc.wiki, 'lastupdate', 'asc', skipLabels, false));
+			.setQuery(rc.wiki.getAllPages('lastupdate', 'asc', skipLabels, false));
 		return;
 	}
 

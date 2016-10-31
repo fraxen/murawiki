@@ -24,7 +24,7 @@ component persistent="false" accessors="true" output="false" extends="mura.cfobj
 			rc.wiki = getWikiManagerService().getWiki($.content().getParentID());
 		}
 		if (isObject(rc.wiki)) {
-			rc.rb = rc.wiki.rb;
+			rc.rb = rc.wiki.getRb();
 		}
 		rc.dispEditLinks = $.CurrentUser().getIsLoggedIn() || rc.wiki.getEditLinksAnon() == 1;
 		rc.authEdit = $.CurrentUser().isSuperUser() || ArrayFind(['editor', 'author'], $.getBean('permUtility').getNodePerm($.event('crumbData')));

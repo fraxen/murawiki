@@ -44,7 +44,7 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 			rc.wiki.getHome(),
 			rc.rb.getKey('tagsLabel')
 		];
-		var orphan = getWikiManagerService().getOrphan(rc.wiki, skipLabels);
+		var orphan = rc.Wiki.getOrphan(skipLabels);
 		var temp = {};
 		if (ArrayLen(orphan)) {
 			for (var l in orphan) {

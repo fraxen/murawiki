@@ -29,8 +29,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			return;
 		}
 		rc.backlinks = [];
-		for (var l in rc.wiki.wikiList) {
-			if (ArrayFindNoCase(rc.wiki.wikiList[l], label) && l != label) {
+		for (var l in rc.wiki.getWikiList()) {
+			if (ArrayFindNoCase(rc.wiki.getWikiList()[l], label) && l != label) {
 				ArrayAppend(rc.backlinks, l);
 			}
 		}
@@ -69,7 +69,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 
 	public void function latestupdates() {
 		rc.latest = [];
-		for (var w in getWikiManagerService().history(rc.wiki, rc.rb)) {
+		for (var w in rc.Wiki.getHistory()) {
 			if (w.Active == 1 && w.Status == 'Live' && ArrayLen(rc.latest) LT 10) {
 				ArrayAppend(rc.latest, w.Label);
 			}

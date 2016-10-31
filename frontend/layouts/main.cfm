@@ -13,14 +13,14 @@
 			top: 3rem; /*your input height*/
 		}</style>
 	');
-	thisTags = rc.wiki.tags;
+	thisTags = rc.wiki.getWikiTags();
 	for (t in rc.wikiPage.getTags()) {
 		if (!ArrayFindNoCase(thisTags, t)) {
 			ArrayAppend(thisTags, t);
 		}
 	}
 	ArraySort(thisTags, 'text');
-	wikiList = StructKeyArray(rc.wiki.wikiList);
+	wikiList = StructKeyArray(rc.wiki.getWikiList());
 	ArraySort(wikiList, 'text');
 </cfscript>
 <cfoutput>
@@ -138,7 +138,7 @@
 				<br/><input type="submit" class="btn btn-default" value="#rc.rb.getKey('submit')#" /><br/>
 			</div>
 			<div>
-				#rc.wiki.engine.getResource().getKey('editInstructions')#
+				#rc.wiki.getEngine().getResource().getKey('editInstructions')#
 			</div>
 		</form>
 	</div>
