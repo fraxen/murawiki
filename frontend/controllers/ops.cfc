@@ -11,6 +11,19 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		}
 	}
 
+	public void function fixOutLinks() {
+		var n = new com.nordpil.cfcgntp.gntp();
+		StructKeyArray(rc.wiki.getWikiList()).each( function(label) {
+			var p = getBean('content').loadBy(filename='#rc.wiki.getFilename()#/#Label#', SiteID = rc.Wiki.getSiteID());
+			if (p.getOutLinks() == '' && !p.getOutgoingLinks() == '') {
+				n.notify('Fixing #rc.Wiki.getTitle()#', p.getLabel());
+				p.setOutLinks(p.getOutgoingLinks());
+				p.save();
+			}
+		});
+		abort;
+	}
+
 	public void function touch() {
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=$.event('siteID'));
 		rc.wiki = getWikiManagerService().getWiki(rc.wikiPage.getParentID());
