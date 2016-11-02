@@ -64,11 +64,11 @@ component persistent="false" accessors="true" output="false" {
 				outHTML = outHTML & t;
 			}
 		}
-		return { blurb:outHTML, outgoingLinks:outLinks };
+		return { blurb:outHTML, outLinks:outLinks };
 	}
 
-	public array function outGoingLinks(required string blurb, required string label) {
-		return renderHTML(ARGUMENTS.blurb, ARGUMENTS.label)['outGoingLinks'];
+	public array function outLinks(required string blurb, required string label) {
+		return renderHTML(ARGUMENTS.blurb, ARGUMENTS.label)['outLinks'];
 	}
 
 }

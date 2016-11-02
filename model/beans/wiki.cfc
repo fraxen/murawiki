@@ -508,7 +508,7 @@
 					AND
 					tcontent.ParentID = '#ARGUMENTS.Wiki.getContentID()#'
 					AND
-					(tclassextendattributes.name IN ('Label', 'OutgoingLinks') OR tclassextendattributes.name IS NULL)
+					(tclassextendattributes.name IN ('Label', 'OutLinks') OR tclassextendattributes.name IS NULL)
 				ORDER BY tcontent.ContentID ASC
 		").execute().getResult();
 		var temp = {};
@@ -517,8 +517,8 @@
 		}
 		for (var p in structKeyArray(temp)) {
 			out[temp[p].Label] = [];
-			if (StructKeyExists(temp[p], 'OutgoingLinks')) {
-				out[temp[p].Label] = ListToArray(temp[p].OutgoingLinks);
+			if (StructKeyExists(temp[p], 'OutLinks')) {
+				out[temp[p].Label] = ListToArray(temp[p].OutLinks);
 			}
 		}
 		return out;
@@ -564,10 +564,10 @@
 		return out;
 	}
 
-	public string function outGoingLinks(required any wikiPage, required any ContRend) {
-		var wiki = getWiki(ARGUMENTS.wikiPage.getParentID());
+	public string function outLinks(required any wikiPage, required any ContRend) {
+		var wiki = getBeanFactory().getBean('WikiManagerService').getWiki(ARGUMENTS.wikiPage.getParentID());
 		return ArrayToList(
-			wiki.engine.renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), Wiki.getWikiList(), wiki.getFileName(), ContRend ).OutgoingLinks
+			wiki.getEngine().renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), Wiki.getWikiList(), wiki.getFileName(), ContRend ).OutLinks
 		);
 	}
 

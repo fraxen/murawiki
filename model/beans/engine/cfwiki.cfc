@@ -73,7 +73,7 @@ component persistent="false" accessors="true" output="false" {
 		var temp = 0;
 		var tuckedawayStrings = {};
 		var sTemp = {};
-		var outGoingLinks = [];
+		var outLinks = [];
 
 		// {{{ FORMATTING
 			// {{{ REMOVE ALL HTML CODE
@@ -148,7 +148,7 @@ component persistent="false" accessors="true" output="false" {
 			}
 		// }}}
 
-		outGoingLinks = listToArray(sTemp.labelList);
+		outLinks = listToArray(sTemp.labelList);
 
 		// {{{ FORMAT LABELS
 			// loop through list we just created until all list items are gone
@@ -222,7 +222,7 @@ component persistent="false" accessors="true" output="false" {
 				cssClass = '';
 				if (ReFind('^([A-Z]|[a-z]|[0-9]|_)*$', link, 1, False)) {
 					// this is an internal wiki link
-					ArrayAppend(outgoingLinks, link);
+					ArrayAppend(outLinks, link);
 					cssClass = !StructKeyExists(wikiList, link) ? ' class="undefined"' : '';
 					link = ContentRenderer.CreateHREF(filename='#parentpath#/#LCase(link)#');
 				};
@@ -234,11 +234,11 @@ component persistent="false" accessors="true" output="false" {
 			thisBlurb = ReReplace(thisBlurb,'&(?![a-z]+;)','&amp;','ALL');
 		// }}}
 
-		return { blurb:thisBlurb, outgoingLinks:outGoingLinks };
+		return { blurb:thisBlurb, outLinks:outLinks };
 	}
 
-	public array function outGoingLinks(required string blurb, required string label) {
-		return renderHTML(ARGUMENTS.blurb, ARGUMENTS.label)['outGoingLinks'];
+	public array function outLinks(required string blurb, required string label) {
+		return renderHTML(ARGUMENTS.blurb, ARGUMENTS.label)['outLinks'];
 	}
 
 }

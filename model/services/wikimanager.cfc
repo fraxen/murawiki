@@ -26,14 +26,13 @@ component accessors="true" output="false" extends="mura.cfobject" {
 			body = Wiki.renderHTML(wp, ContRend),
 			metadesc = stripHTML( Wiki.renderHTML(wp, ContRend) ),
 			metakeywords = wp.getTags(),
-			outgoingLinks = outgoingLinks(wp, ContRend),
+			outLinks = Wiki.outLinks(wp, ContRend),
 			isNav = wiki.getSiteNav(),
 			searchExclude = wiki.getSiteSearch() ? 0 : 1
 		});
 
 		// Update outgoing links
-		wiki.getWikiList()[wp.getLabel()] = ListToArray(wp.getOutgoingLinks());
-		setWiki(wiki.getContentID(), wiki);
+		wiki.getWikiList()[wp.getLabel()] = ListToArray(wp.getOutLinks());
 		return wp;
 	}
 
