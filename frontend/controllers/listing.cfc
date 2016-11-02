@@ -26,7 +26,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		param rc.q = '';
 		var searchResults = {};
 		if (rc.q != '') {
-			searchResults = getWikiManagerService().search(rc.wiki, rc.q);
+			searchResults = rc.Wiki.search(rc.q);
 			searchResults.searchResults = searchResults.searchResults;
 			for (var p in searchResults.searchResults) {
 				p.Filename = $.CreateHREF(filename='#rc.wiki.getFilename()#/#p.Label#/');
@@ -124,9 +124,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	public void function undefined() {
 		rc.undefined = [];
 		var temp = {};
-		for (var label in rc.wiki.wikiList) {
-			for( var l in rc.wiki.wikiList[label]) {
-				if (!ArrayFindNoCase(StructKeyArray(rc.wiki.wikiList), l)) {
+		for (var label in rc.wiki.getWikiList()) {
+			for( var l in rc.wiki.getWikiList()[label]) {
+				if (!ArrayFindNoCase(StructKeyArray(rc.wiki.getWikiList()), l)) {
 					temp[l] = 1;
 				}
 			}

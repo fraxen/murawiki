@@ -43,7 +43,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 
 		if (rc.useIndex) {
 			try {
-				rc.useIndex = getWikiManagerService().initCollection(wiki, rc.collectionpath) ? 1 : 0;
+				rc.useIndex = Wiki.collectionInit(rc.collectionpath) ? 1 : 0;
 			}
 			catch(any e) {
 				rc.useIndex = 0;

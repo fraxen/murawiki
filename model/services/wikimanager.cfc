@@ -5,57 +5,6 @@ component accessors="true" output="false" extends="mura.cfobject" {
 	property name='lastReload' default="{ts '2000-01-01 00:00:00'}";
 	setWikis({});
 
-	public struct function search(required any wiki, required string q) {
-		var searchResults = {};
-		var searchStatus = {};
-
-		if (ARGUMENTS.wiki.getUseIndex()) {
-			var temp = doSearch('Murawiki_#ARGUMENTS.Wiki.getContentID()#', ARGUMENTS.q);
-			searchStatus = temp.searchStatus;
-			searchResults = temp.searchResults;
-			queryAddColumn(searchResults, 'Label', 'VarChar', []);
-			queryAddColumn(searchResults, 'Filename', 'VarChar', []);
-			queryAddColumn(searchResults, 'LastUpdate', 'VarChar', []);
-			for(var p in searchResults) {
-				p.Label = p.Key;
-				p.Filename = '';
-				p.Lastupdate = '';
-			}
-			return {searchResults = searchResults, searchStatus = searchStatus};
-		} else {
-			searchResults = getAllPages(ARGUMENTS.Wiki, 'lastupdate', 'desc', [], false, [], true);
-			queryAddColumn(searchResults, 'Rank', 'Integer', []);
-			queryAddColumn(searchResults, 'Summary', 'VarChar', []);
-			for (var p in searchResults) {
-				searchResults.rank = 0;
-				var f = ['title', 'label', 'blurb'];
-				for (var c in f) {
-					searchResults.rank = searchResults.rank + ( Len(p[c]) - Len(ReplaceNoCase(p[c], q, '', 'all'))) / Len(q);
-				}
-				searchResults.summary = Left(stripHTML(p.Body), 200);
-				searchResults.lastupdate = '';
-			}
-			searchResults = new Query(
-				dbtype = 'query',
-				qSearch=searchResults,
-				sql = "
-					SELECT * from qSearch
-					WHERE
-						rank > 0
-				"
-			).execute().getResult();
-			return {searchResults = searchResults, searchStatus = {}};
-		}
-	}
-
-	public boolean function initCollection(required any wiki, required string collPath='') {
-		if (collectionExists('Murawiki_#ARGUMENTS.wiki.getContentID()#')) {
-			collectionDelete('Murawiki_#ARGUMENTS.wiki.getContentID()#');
-		}
-		collectionCreate('Murawiki_#ARGUMENTS.wiki.getContentID()#', collPath);
-		return true;
-	}
-
 	public any function setWiki(required string ContentID, required any wiki) {
 		var w = getWikis();
 		w[ARGUMENTS.ContentID] = ARGUMENTS.wiki;
@@ -73,9 +22,9 @@ component accessors="true" output="false" extends="mura.cfobject" {
 			active=1,
 			approved=1,
 			display=1,
-			summary = renderHTML(wp, ContRend),
-			body = renderHTML(wp, ContRend),
-			metadesc = stripHTML( renderHTML(wp, ContRend) ),
+			summary = Wiki.renderHTML(wp, ContRend),
+			body = Wiki.renderHTML(wp, ContRend),
+			metadesc = stripHTML( Wiki.renderHTML(wp, ContRend) ),
 			metakeywords = wp.getTags(),
 			outgoingLinks = outgoingLinks(wp, ContRend),
 			isNav = wiki.getSiteNav(),
@@ -144,24 +93,12 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		return ReReplace(ARGUMENTS.html, '<[^>]*(?:>|$)', ' ', 'ALL');
 	}
 
-	public string function outGoingLinks(required any wikiPage, required any ContRend) {
-		var wiki = getWiki(ARGUMENTS.wikiPage.getParentID());
-		return ArrayToList(
-			wiki.engine.renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), wiki.getWikiList(), wiki.getFileName(), ContRend ).OutgoingLinks
-		);
-	}
-
-	public string function renderHTML(required any wikiPage, required any ContRend) {
-		var wiki = getWiki(ARGUMENTS.wikiPage.getParentID());
-		return wiki.getEngine().renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), wiki.getWikiList(), wiki.getFileName(), ContRend ).blurb;
-	}
-
 	public any function Initialize(required any wiki, required any rb, required any framework, required string rootPath) {
 		// 'Formats' the wiki - adds display objects + creates default pages. Only meant to be run one per wiki
 		setting requesttimeout='28800';
 		var page = {};
 		var dspO = getDisplayObjects();
-		var engine = wiki.engine;
+		var engine = wiki.getEngine();
 		var blurb = '';
 		var body = {};
 

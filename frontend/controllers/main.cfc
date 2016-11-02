@@ -51,7 +51,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		if (StructKeyExists(URL, 'version')) {
 			rc.wikiPage = $.getBean('content').loadBy(ContentHistID=rc.version);
 		}
-		rc.blurb = getWikiManagerService().renderHTML(rc.wikiPage, $.getContentRenderer());
+		rc.blurb = rc.Wiki.renderHTML(rc.wikiPage, $.getContentRenderer());
 		rc.attachments = isJson(rc.wikiPage.getAttachments()) ? DeserializeJSON(rc.wikiPage.getAttachments()): {};
 		rc.tags = [];
 		if (rc.wiki.getUseTags()) {

@@ -5,9 +5,9 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 		// Redirects to a random undefined page
 		var undef = [];
 		var temp = {};
-		for (var label in rc.wiki.wikiList) {
-			for( var l in rc.wiki.wikiList[label]) {
-				if (!ArrayFindNoCase(StructKeyArray(rc.wiki.wikiList), l)) {
+		for (var label in rc.wiki.getWikiList()) {
+			for( var l in rc.wiki.getWikiList()[label]) {
+				if (!ArrayFindNoCase(StructKeyArray(rc.wiki.getWikiList()), l)) {
 					temp[l] = 1;
 				}
 			}
