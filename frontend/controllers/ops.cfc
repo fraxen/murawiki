@@ -34,7 +34,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	public void function revert() {
 		rc.wikiPage = $.getBean('content').loadBy(contentHistID = rc.version);
 		rc.wiki = getWikiManagerService().getWiki(rc.wikiPage.getParentID());
-		rc.rb = rc.wiki.rb;
+		rc.rb = rc.wiki.getRb();
 		rc.wikiPage.set({
 			active=1,
 			notes= '#rc.rb.getKey('reverted')# #DateFormat(rc.wikiPage.getLastUpdate(), 'yyyy-mm-dd')# #TimeFormat(rc.wikiPage.getLastUpdate(), 'HH:mm')#'
@@ -49,7 +49,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		param rc.parentid = $.content().getParentID();
 		rc.wiki = getWikiManagerService().getWiki(rc.parentid);
 		rc.wikiPage = $.getBean('content').loadBy(filename='#rc.wiki.getFileName()#/#rc.labelfrom#', SiteID=rc.SiteID);
-		rc.rb = rc.wiki.rb;
+		rc.rb = rc.wiki.getRb();
 		rc.wikiPage.set({
 			redirect='',
 			notes= rc.rb.getKey('redirectRemoveNote')
@@ -65,7 +65,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		param rc.title = rc.fromLabel;
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=rc.SiteID);
 		rc.wiki = getWikiManagerService().getWiki(rc.parentid);
-		rc.rb = rc.wiki.rb;
+		rc.rb = rc.wiki.getRb();
 		rc.wikiPage.set({
 			type="Page",
 			subtype="WikiPage",
@@ -88,7 +88,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.title = rc.title == '' ? rc.label : rc.title;
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=rc.SiteID);
 		rc.wiki = getWikiManagerService().getWiki(rc.parentid);
-		rc.rb = rc.wiki.rb;
+		rc.rb = rc.wiki.getRb();
 		rc.blurb = REReplace(rc.blurb,'(#Chr(13)##Chr(10)#|#Chr(10)#|#Chr(13)#)', '#Chr(13)#', 'all');
 
 		var i=1;
