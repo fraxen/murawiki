@@ -141,22 +141,22 @@
 		Wiki.getHistory = function() {
 			return getHistory(Wiki);
 		}
-		Wiki.getOrphan = function(array skipLabels=[]) {
+		Wiki.getOrphan = function (array skipLabels=[]) {
 			return getOrphan(Wiki, ARGUMENTS.skipLabels);
 		}
-		Wiki.search = function(string q='') {
+		Wiki.search = function (string q='') {
 			return search(Wiki, ARGUMENTS.q);
 		}
-		Wiki.collectionSearch = function(string collection='', string q='') {
+		Wiki.collectionSearch = function (string collection='', string q='') {
 			return collectionSearch(ARGUMENTS.collection, ARGUMENTS.q);
 		}
-		Wiki.outLinks = function(WikiPage, ContentRenderer) {
+		Wiki.outLinks = function (WikiPage, ContentRenderer) {
 			return OutLinks(ARGUMENTS.WikiPage, ARGUMENTS.ContentRenderer);
 		}
-		Wiki.renderHTML = function(WikiPage, ContentRenderer) {
+		Wiki.renderHTML = function (WikiPage, ContentRenderer) {
 			return renderHTML(ARGUMENTS.WikiPage, ARGUMENTS.ContentRenderer);
 		}
-		Wiki.collectionInit = function(required string collPath='') {
+		Wiki.collectionInit = function (required string collPath='') {
 			return collectionInit(Wiki, ARGUMENTS.collPath);
 		}
 		// }}}
