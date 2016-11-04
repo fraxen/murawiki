@@ -1,9 +1,9 @@
 <cfscript>
 	param rc.Attachments = {};
 	pluginPath = '#rc.$.globalConfig('context')#/plugins/#rc.pluginConfig.getPackage()#';
-	if (rc.wiki.getStyleSheet() != '') {
+	if (rc.wiki.getContentBean().getStyleSheet() != '') {
 		$.addToHTMLHeadQueue(action='append', text='
-			<link rel="stylesheet" type="text/css" href="#pluginPath#/assets/#rc.wiki.getStyleSheet()#" rel="stylesheet" />
+			<link rel="stylesheet" type="text/css" href="#pluginPath#/assets/#rc.wiki.getContentBean().getStyleSheet()#" rel="stylesheet" />
 		');
 	}
 	$.addToHTMLHeadQueue(action='append', text='
@@ -63,7 +63,7 @@
 		</div>
 		<div class="modal-body">
 			<form id="editform" class="mura-form-builder" method="post" action="#BuildURL('frontend:ops.redirectremove')#" onsubmit="return validateForm(this);">
-				<input type="hidden" name="ParentID" value="#rc.wiki.getContentID()#" />
+				<input type="hidden" name="ParentID" value="#rc.wiki.getContentBean().getContentID()#" />
 				<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />
 				<input type="hidden" name="labelfrom" value="#rc.redirectfrom#" />
 				<div >
@@ -81,7 +81,7 @@
 	</div>
 	<div class="modal-body">
 		<form id="editform" class="mura-form-builder" method="post" enctype="multipart/form-data" action="#BuildURL('frontend:ops.page')#" onsubmit="return validateForm(this);">
-			<input type="hidden" name="ParentID" value="#rc.wiki.getContentID()#" />
+			<input type="hidden" name="ParentID" value="#rc.wiki.getContentBean().getContentID()#" />
 			<input type="hidden" name="ContentID" value="#rc.wikiPage.getContentID()#" />
 			<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />
 			<div class="mura-form-textfield req form-group control-group">
@@ -120,7 +120,7 @@
 				<br/>
 				<div class="center"><a href="javascript:addAttachment();">Add another attachment</a></div>
 			</div>
-			<cfif rc.wiki.getUseTags()> 
+			<cfif rc.wiki.getContentBean().getUseTags()> 
 			<div class="mura-form-textfield form-group control-group">
 				<label for="tags">#rc.rb.getKey('tags')#</label>
 				<select name="tags" multiple="multiple" class="form-control s2" data-placeholder="#rc.rb.getKey('tagsPlaceholder')#" data-tags="tags">
@@ -150,7 +150,7 @@
 	</div>
 	<div class="modal-body">
 		<form id="editform" class="mura-form-builder" method="post" action="#BuildURL('frontend:ops.redirect')#" onsubmit="return validateForm(this);">
-			<input type="hidden" name="ParentID" value="#rc.wiki.getContentID()#" />
+			<input type="hidden" name="ParentID" value="#rc.wiki.getContentBean().getContentID()#" />
 			<input type="hidden" name="ContentID" value="#rc.wikiPage.getContentID()#" />
 			<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />
 			<input type="hidden" name="fromLabel" value="#rc.wikiPage.getLabel()#" />
@@ -183,7 +183,7 @@
 	</div>
 	<div class="modal-body">
 		<form id="editform" class="mura-form-builder" method="post" action="#BuildURL('frontend:ops.delete')#" onsubmit="return validateForm(this);">
-			<input type="hidden" name="ParentID" value="#rc.wiki.getContentID()#" />
+			<input type="hidden" name="ParentID" value="#rc.wiki.getContentBean().getContentID()#" />
 			<input type="hidden" name="ContentID" value="#rc.wikiPage.getContentID()#" />
 			<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />
 			<div >
@@ -271,7 +271,7 @@
 			})
 		<cfelse>
 			<cfoutput>
-			loginLink = '#$.createHREF(filename=rc.Wiki.getFilename())#/SpecialLogin/?display=login&returnURL=' + encodeURIComponent(document.location.href);
+			loginLink = '#$.createHREF(filename=rc.wiki.getContentBean().getFilename())#/SpecialLogin/?display=login&returnURL=' + encodeURIComponent(document.location.href);
 			</cfoutput>
 			$('a.pageedit').click(function() {
 				document.location.href = loginLink;

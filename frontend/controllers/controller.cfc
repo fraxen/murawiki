@@ -26,7 +26,7 @@ component persistent="false" accessors="true" output="false" extends="mura.cfobj
 		if (isObject(rc.wiki)) {
 			rc.rb = rc.wiki.getRb();
 		}
-		rc.dispEditLinks = $.CurrentUser().getIsLoggedIn() || rc.wiki.getEditLinksAnon() == 1;
+		rc.dispEditLinks = $.CurrentUser().getIsLoggedIn() || rc.wiki.getContentBean().getEditLinksAnon() == 1;
 		rc.authEdit = $.CurrentUser().isSuperUser() || ArrayFind(['editor', 'author'], $.getBean('permUtility').getNodePerm($.event('crumbData')));
 
 		if ( StructKeyExists(URL, 'display') && URL.display == 'login' ) {

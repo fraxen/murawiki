@@ -13,7 +13,7 @@
 					<cfif rc.history.status NEQ 'Deleted'>
 						<a href="#$.CreateHREF(filename=rc.history.filename)#">
 					<cfelse>
-						<a href="#$.CreateHREF(filename='#rc.wiki.getFilename()#/#rc.history.label#/')#" class="deleted">
+						<a href="#$.CreateHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.history.label#/')#" class="deleted">
 					</cfif>
 						<h3>#rc.history.label#</h3>
 					</a>
@@ -26,7 +26,7 @@
 				<td class="hiddenRow">
 					<div class="row_#rc.history.label# collapse">
 					<cfif isDeleted>
-						<a href="#$.CreateHREF(filename='#rc.wiki.getFilename()#/#rc.history.label#/')#">
+						<a href="#$.CreateHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.history.label#/')#">
 					<cfelse>
 						<cfset qstring = NOT rc.history.active AND rc.history.status NEQ 'Deleted' ? 'version=#rc.history.ContentHistID#' : '' />
 						<a href="#$.CreateHREF(filename=rc.history.filename, querystring=qstring)#">

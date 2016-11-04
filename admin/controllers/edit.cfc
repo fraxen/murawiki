@@ -13,7 +13,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 		for (var e in directoryList('#application.murawiki.pluginconfig.getFullPath()#/model/beans/engine', false, 'query', '*.cfc', 'name asc')) {
 			rc.engines[listFirst(e.name, '.')] = beanFactory.getBean(listFirst(e.name, '.')).getEngineOpts();
 		}
-		rc.wikiEdit.setEngineOpts(rc.wikiEdit.getEngineOpts() == '' ? {} : DeserializeJSON(rc.wikiEdit.getEngineOpts()));
+		rc.wikiEdit.getContentBean().setEngineOpts(rc.wikiEdit.getContentBean().getEngineOpts() == '' ? {} : DeserializeJSON(rc.wikiEdit.getContentBean().getEngineOpts()));
 	}
 
 	public void function submit() {
@@ -28,9 +28,9 @@ component persistent="false" accessors="true" output="false" extends="controller
 		param rc.SiteSearch=0;
 		param rc.useIndex=0;
 		param rc.collectionpath='';
-		param rc.WikiEngine = wiki.getWikiEngine();
-		param rc.regionmain = wiki.getRegionmain();
-		param rc.regionside = wiki.getRegionside();
+		param rc.WikiEngine = wiki.getContentBean().getWikiEngine();
+		param rc.regionmain = wiki.getContentBean().getRegionmain();
+		param rc.regionside = wiki.getContentBean().getRegionside();
 		param rc.engineopts = {};
 
 		for (var p in StructKeyArray(rc)) {
@@ -53,7 +53,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 			}
 		}
 
-		wiki.set({
+		wiki.getContentBean().set({
 			  Title      = rc.title
 			, Home       = rc.Home
 			, WikiEngine = rc.WikiEngine
@@ -73,10 +73,10 @@ component persistent="false" accessors="true" output="false" extends="controller
 		getWikiManagerService().loadWikis();
 		wiki = getWikiManagerService().getWiki(rc.ContentID);
 
-		if (!wiki.getIsInit()) {
+		if (!wiki.getContentBean().getIsInit()) {
 			// Initalize the wiki
 			getWikiManagerService()
-				.Initialize(wiki, rb, framework, $.CreateHREF(filename=Wiki.getFilename(), complete=true));
+				.Initialize(wiki, rb, framework, $.CreateHREF(filename=wiki.getContentBean().getFilename(), complete=true));
 		} 
 		wiki.setIsInit(True).save();
 		framework.redirect(action='admin:edit', querystring='wiki=#rc.ContentID#');

@@ -5,7 +5,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		SUPER.before(rc);
 		if (!rc.authEdit) {
 			$.redirect(
-				location = $.createHREF(filename='#rc.wiki.getFilename()#/#$.content().getLabel()#', querystring='notauth=1')
+				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#$.content().getLabel()#', querystring='notauth=1')
 				, statusCode = '302'
 			);
 		}
@@ -16,7 +16,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.wiki = getWikiManagerService().getWiki(rc.wikiPage.getParentID());
 		rc.wikiPage.save();
 		$.redirect(
-			location = $.createHREF(filename='#rc.wiki.getFilename()#/#rc.wikiPage.getLabel()#', querystring='touched=1')
+			location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#', querystring='touched=1')
 			, statusCode = '302'
 		);
 	}
@@ -26,7 +26,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=rc.SiteID);
 		rc.wikiPage.delete();
 		$.redirect(
-			location = $.createHREF(filename='#rc.wiki.getFilename()#/#rc.wikiPage.getLabel()#')
+			location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#')
 			, statusCode = '302'
 		);
 	}
@@ -48,7 +48,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	public void function redirectRemove() {
 		param rc.parentid = $.content().getParentID();
 		rc.wiki = getWikiManagerService().getWiki(rc.parentid);
-		rc.wikiPage = $.getBean('content').loadBy(filename='#rc.wiki.getFileName()#/#rc.labelfrom#', SiteID=rc.SiteID);
+		rc.wikiPage = $.getBean('content').loadBy(filename='#rc.wiki.getContentBean().getFileName()#/#rc.labelfrom#', SiteID=rc.SiteID);
 		rc.rb = rc.wiki.getRb();
 		rc.wikiPage.set({
 			redirect='',
@@ -70,7 +70,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			type="Page",
 			subtype="WikiPage",
 			label=rc.fromLabel,
-			siteid=rc.wiki.getSiteID(),
+			siteid=rc.wiki.getContentBean().getSiteID(),
 			redirect=rc.redirectlabel,
 			parentid=rc.parentid,
 			title=rc.fromlabel,
@@ -115,7 +115,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 					}
 					thisFile = $.getBean('content').set({
 						type = 'File',
-						siteid = rc.wiki.getSiteID(),
+						siteid = rc.wiki.getContentBean().getSiteID(),
 						title = fname,
 						menutitle = '',
 						urltitle = '',
@@ -126,12 +126,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 						parentid = rc.wikiPage.getContentID(),
 						approved=1,
 						display=1,
-						isNav = rc.wiki.getSiteNav(),
-						searchExclude = rc.wiki.getSiteSearch() ? 0 : 1
+						isNav = rc.wiki.getContentBean().getSiteNav(),
+						searchExclude = rc.wiki.getContentBean().getSiteSearch() ? 0 : 1
 					});
 					var fb = $.getBean('file').set({
 						contentid = rc.wikiPage.getContentID(),
-						siteid = rc.wiki.getSiteID(),
+						siteid = rc.wiki.getContentBean().getSiteID(),
 						parentid = rc.wikiPage.getContentID(),
 						newfile = rc['attachment#i#'],
 						filefield = 'attachment#i#'
@@ -153,7 +153,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.wikiPage.setParentID(rc.parentid);
 		body = rc.Wiki.renderHTML(rc.wikiPage, $.getContentRenderer());
 		rc.wikiPage.set({
-			siteid = rc.wiki.getSiteID(),
+			siteid = rc.wiki.getContentBean().getSiteID(),
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rc.Title,
@@ -163,7 +163,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			Blurb = rc.blurb,
 			Notes = rc.Notes,
 			Tags = rc.tags,
-			parentid = rc.wiki.getContentID(),
+			parentid = rc.wiki.getContentBean().getContentID(),
 			attachments = SerializeJson(attachments)
 		});
 		rc.wikiPage.save();

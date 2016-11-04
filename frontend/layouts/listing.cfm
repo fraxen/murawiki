@@ -93,7 +93,7 @@
 				<td>
 					<cfset thisLabel = item.getValue('Filename') />
 					<cfif thisLabel EQ '' AND item.getValue('key') NEQ ''>
-						<cfset thisLabel = '#rc.wiki.getFileName()#/#item.getValue('key')#' />
+						<cfset thisLabel = '#rc.wiki.getContentBean().getFileName()#/#item.getValue('key')#' />
 					</cfif>
 					<a href="#$.CreateHREF(filename=thisLabel)#">
 						<cfif item.getValue('Label') EQ item.getValue('title')>

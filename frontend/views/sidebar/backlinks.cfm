@@ -4,7 +4,7 @@
 	<cfif ArrayLen(rc.backlinks)>
 		<ul>
 			<cfloop index="i" array="#rc.backlinks#">
-				<li><a href="#$.createHREF(filename='#rc.wiki.getFilename()#/#i#/')#">#i#</a></li>
+				<li><a href="#$.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#i#/')#">#i#</a></li>
 			</cfloop>
 		</ul>
 	<cfelse>

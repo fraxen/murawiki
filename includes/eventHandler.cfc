@@ -8,9 +8,11 @@ https://github.com/stevewithington/MuraFW1
 
 */
 component persistent="false" accessors="true" output="false" extends="mura.plugin.pluginGenericEventHandler" {
-	property name='model' default='';
+	property name='model';
 	// framework variables
 	include 'fw1config.cfm';
+
+	VARIABLES.model = '';
 
 	public void function onSiteMonitor(required struct $) {
 		// Refresh the cached content every four hours
@@ -109,7 +111,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 							approved = 1,
 							display = 1,
 							isnew = 0,
-							template = wiki.getChildTemplate() != '' ? wiki.getChildTemplate() : wiki.getTemplate(),
+							template = wiki.getContentBean().getChildTemplate() != '' ? wiki.getContentBean().getChildTemplate() : wiki.getContentBean().getTemplate(),
 							parentid = w.ContentID
 						})
 					);

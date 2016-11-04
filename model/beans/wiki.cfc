@@ -1,7 +1,12 @@
 <cfcomponent displayname='wiki' name='wiki' accessors='true' extends='mura.cfobject'>
 	<cfproperty type='any' name='beanFactory' />
-	<!--- Since we can't dynamically do inheritance, this will add methods etc into a Mura Wiki Content bean... --->
+	<cfproperty type='any' name='contentBean' />
+	<cfproperty name='WikiList' />
+	<cfproperty name='WikiTags' />
+	<cfproperty name='Engine' />
+	<cfproperty name='Rb' />
 
+	<!--- {{{ TAG BASED FUNCTIONS - For ACF compatibility --->
 	<cffunction name='collectionSearch' output='false' returnType='any' access='private'>
 		<cfargument name='collection' type='string' required='true' />
 		<cfargument name='q' type='string' required='true' />
@@ -83,96 +88,67 @@
 		<cfwddx action='wddx2cfml' input='#ARGUMENTS.wddxstring#' output='out'>
 		<cfreturn out>
 	</cffunction>
+	<!--- }}} --->
 
 <cfscript>
 	public any function init(required string ContentID, required string SiteID, beanFactory) {
-		var Wiki = getBean('content').loadBy(
-			ContentId=ARGUMENTS.ContentId,
-			SiteID=ARGUMENTS.SiteID
+		setContentBean(
+			getBean('content').loadBy(
+				ContentId=ARGUMENTS.ContentId,
+				SiteID=ARGUMENTS.SiteID
+			)
 		);
-		var engineopts = isJSON(Wiki.getEngineOpts()) ? DeserializeJSON(Wiki.getEngineOpts()) : {};
+		var engineopts = isJSON(getContentBean().getEngineOpts()) ? DeserializeJSON(getContentBean().getEngineOpts()) : {};
 		setBeanFactory(ARGUMENTS.beanFactory);
 
 		// {{{ LOAD ADDITIONAL STUFF
-		Wiki.setValue('WikiList', loadWikiList(Wiki));
-		Wiki.setValue('WikiTags', loadTags(Wiki));
-		if (Wiki.getWikiEngine() == '') {
-			Wiki.setWikiEngine('canvas');
+		setWikiList(loadWikiList());
+		setWikiTags(loadTags());
+		if (getContentBean().getWikiEngine() == '') {
+			getContentBean().setWikiEngine('canvas');
 		}
-		Wiki.setValue('engine',
-			getBeanFactory().getBean(Wiki.getWikiEngine() & 'engine')
+		setEngine(
+			getBeanFactory().getBean(getContentBean().getWikiEngine() & 'engine')
 				.setup(engineopts)
 				.setResource(
 					new mura.resourceBundle.resourceBundleFactory(
 					parentFactory = APPLICATION.settingsManager.getSite(ARGUMENTS.SiteID).getRbFactory(),
-					resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/model/beans/engine/rb_#Wiki.getWikiEngine()#/',
-					locale = Wiki.getLanguage()
+					resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/model/beans/engine/rb_#getContentBean().getWikiEngine()#/',
+					locale = getContentBean().getLanguage()
 				))
 		);
-		Wiki.setValue('rb',
+		setRb(
 			new mura.resourceBundle.resourceBundleFactory(
-				parentFactory = APPLICATION.settingsManager.getSite(Wiki.getSiteId()).getRbFactory(),
+				parentFactory = APPLICATION.settingsManager.getSite(getContentBean().getSiteId()).getRbFactory(),
 				resourceDirectory = '#application.murawiki.pluginconfig.getFullPath()#/resourceBundles/',
-				locale = Wiki.getLanguage()
+				locale = getContentBean().getLanguage()
 			)
 		);
-		if (Wiki.getUseIndex() && Wiki.getIsInit()) {
-			var allPages = getAllPages(Wiki, 'Label', 'Asc', [], false, [], true);
+		if (getContentBean().getUseIndex() && getContentBean().getIsInit()) {
+			var allPages = getAllPages('Label', 'Asc', [], false, [], true);
 			for (var r=1; r <= allPages.RecordCount; r++) {
 				if (allPages.Title[r] != allPages.Label[r]) {
 					allPages.Title[r] = '#allPages.Title[r]# (#allPages.Label[r]#)';
 				}
 				allPages.Body[r] = '#getBeanFactory().getBean('WikiManagerService').stripHTML(allPages.Body[r])# #allPages.tags[r]# #allPages.title[r]#';
 			}
-			indexRefresh(collection='Murawiki_#Wiki.getContentID()#',query=allPages,key='Label',title='Title',body='Body');
+			indexRefresh(collection='Murawiki_#getContentBean().getContentID()#',query=allPages,key='Label',title='Title',body='Body');
 		}
 		// }}}
 
-		// {{{ ADD ADDITIONAL FUNCTIONS
-		Wiki.getAllPages = function (string sortfield='label', string sortorder='asc', array skipLabels=[], boolean includeRedirect=true, array limitLabels=[], boolean includeBlurb=false) {
-			return getAllPages(Wiki, ARGUMENTS.sortfield, ARGUMENTS.sortorder, ARGUMENTS.skipLabels, ARGUMENTS.includeRedirect, ARGUMENTS.limitLabels, ARGUMENTS.includeBlurb);
-		}
-		Wiki.getPagesByTag = function (array tags=['']) {
-			return getPagesByTag(Wiki, ARGUMENTS.tags);
-		}
-		Wiki.getTagCloud = function () {
-			return getTagCloud(Wiki);
-		}
-		Wiki.getHistory = function() {
-			return getHistory(Wiki);
-		}
-		Wiki.getOrphan = function (array skipLabels=[]) {
-			return getOrphan(Wiki, ARGUMENTS.skipLabels);
-		}
-		Wiki.search = function (string q='') {
-			return search(Wiki, ARGUMENTS.q);
-		}
-		Wiki.collectionSearch = function (string collection='', string q='') {
-			return collectionSearch(ARGUMENTS.collection, ARGUMENTS.q);
-		}
-		Wiki.outLinks = function (WikiPage, ContentRenderer) {
-			return OutLinks(ARGUMENTS.WikiPage, ARGUMENTS.ContentRenderer);
-		}
-		Wiki.renderHTML = function (WikiPage, ContentRenderer) {
-			return renderHTML(ARGUMENTS.WikiPage, ARGUMENTS.ContentRenderer);
-		}
-		Wiki.collectionInit = function (required string collPath='') {
-			return collectionInit(Wiki, ARGUMENTS.collPath);
-		}
-		// }}}
-		return Wiki;
+		return THIS;
 	}
 
-	public boolean function collectionInit(required any wiki, required string collPath='') {
-		if (collectionExists('Murawiki_#ARGUMENTS.wiki.getContentID()#')) {
-			collectionDelete('Murawiki_#ARGUMENTS.wiki.getContentID()#');
+	public boolean function collectionInit(required string collPath='') {
+		if (collectionExists('Murawiki_#getContentBean().getContentID()#')) {
+			collectionDelete('Murawiki_#getContentBean().getContentID()#');
 		}
-		collectionCreate('Murawiki_#ARGUMENTS.wiki.getContentID()#', collPath);
+		collectionCreate('Murawiki_#getContentBean().getContentID()#', collPath);
 		return true;
 	}
 
-	public query function getPagesByTag(required any wiki, array tags=['']) {
-		var ap = getAllPages(ARGUMENTS.wiki, 'label', 'asc', [], false);
+	public query function getPagesByTag(array tags=['']) {
+		var ap = getAllPages('label', 'asc', [], false);
 		queryAddColumn(ap, 'Keep', 'Integer', []);
 		for (var w in ap) {
 			if (w.tags != '') {
@@ -195,7 +171,7 @@
 		return ap;
 	}
 
-	public query function getTagCloud(required any wiki) {
+	public query function getTagCloud() {
 		var out = new Query(sql="
 				SELECT
 					tag, Count(tag) as tagCount 
@@ -204,10 +180,10 @@
 					INNER JOIN
 						tcontent on (tcontenttags.contenthistID=tcontent.contenthistID) 
 						WHERE
-							tcontent.siteID = '#ARGUMENTS.Wiki.getSiteID()#'
+							tcontent.siteID = '#getContentBean().getSiteID()#'
 							AND tcontent.Approved = 1 
 							AND tcontent.active = 1 
-							AND tcontent.parentID ='#ARGUMENTS.Wiki.getContentID()#' 
+							AND tcontent.parentID ='#getContentBean().getContentID()#' 
 							AND tcontent.SubType = 'WikiPage'
 							AND tcontenttags.taggroup is null 
 					GROUP BY
@@ -218,7 +194,7 @@
 		return out;
 	}
 
-	public query function getHistory(required any Wiki) {
+	public query function getHistory() {
 		var sortLabel = {};
 		var history = new Query(
 			sql="
@@ -266,11 +242,11 @@
 					) extendRedirect
 					ON (tcontent.ContentHistID = extendRedirect.baseID)
 				WHERE
-					tcontent.SiteID = '#ARGUMENTS.Wiki.getSiteID()#'
+					tcontent.SiteID = '#getContentBean().getSiteID()#'
 					AND
 					tcontent.subType = 'WikiPage'
 					AND
-					tcontent.ParentID = '#ARGUMENTS.Wiki.getContentID()#'
+					tcontent.ParentID = '#getContentBean().getContentID()#'
 					AND
 					tcontent.lastupdate > #CreateODBCDateTime(Now()-createTimeSpan(30,0,0,0))#
 				UNION
@@ -281,7 +257,7 @@
 					'' AS ContentHistID,
 					deletedDate as lastUpdate,
 					0 AS Active,
-					'#ARGUMENTS.Wiki.getRb().getKey('historyDeleted')#' AS Notes,
+					'#getRb().getKey('historyDeleted')#' AS Notes,
 					'Deleted' AS Status,
 					deletedBy AS Username,
 					'' AS Label,
@@ -292,11 +268,11 @@
 				FROM
 					ttrash
 				WHERE 
-					SiteID = '#ARGUMENTS.Wiki.getSiteID()#'
+					SiteID = '#getContentBean().getSiteID()#'
 					AND 
 					objectSubType = 'WikiPage' 
 					AND 
-					ParentID = '#ARGUMENTS.Wiki.getContentID()#' 
+					ParentID = '#getContentBean().getContentID()#' 
 		").execute().getResult();
 		for (var c in history) {
 			if (isWddx(c.packet)) {
@@ -338,12 +314,12 @@
 		return history;
 	}
 
-	public struct function search(required any wiki, required string q) {
+	public struct function search(required string q) {
 		var searchResults = {};
 		var searchStatus = {};
 
-		if (ARGUMENTS.wiki.getUseIndex()) {
-			var temp = collectionSearch('Murawiki_#ARGUMENTS.Wiki.getContentID()#', ARGUMENTS.q);
+		if (getContentBean().getUseIndex()) {
+			var temp = collectionSearch('Murawiki_#getContentBean().getContentID()#', ARGUMENTS.q);
 			searchStatus = temp.searchStatus;
 			searchResults = temp.searchResults;
 			queryAddColumn(searchResults, 'Label', 'VarChar', []);
@@ -356,7 +332,7 @@
 			}
 			return {searchResults = searchResults, searchStatus = searchStatus};
 		} else {
-			searchResults = getAllPages(ARGUMENTS.Wiki, 'lastupdate', 'desc', [], false, [], true);
+			searchResults = getAllPages('lastupdate', 'desc', [], false, [], true);
 			queryAddColumn(searchResults, 'Rank', 'Integer', []);
 			queryAddColumn(searchResults, 'Summary', 'VarChar', []);
 			for (var p in searchResults) {
@@ -381,17 +357,17 @@
 		}
 	}
 
-	public array function getOrphan(required any wiki, array skipLabels=[]) {
+	public array function getOrphan(array skipLabels=[]) {
 		var allLinks = [];
 		var orphan = [];
 		var temp = {};
-		for (var label in ARGUMENTS.wiki.getWikiList()) {
-			for (var link in ARGUMENTS.wiki.getWikiList()[label]) {
+		for (var label in getWikiList()) {
+			for (var link in getWikiList()[label]) {
 				temp[link] = 1;
 			}
 		}
 		allLinks = StructKeyArray(temp);
-		for (var l in StructKeyArray(ARGUMENTS.wiki.getWikiList())) {
+		for (var l in StructKeyArray(getWikiList())) {
 			if (NOT ArrayFindNoCase(skipLabels, l) AND NOT ArrayFindNoCase(allLinks, l)) {
 				ArrayAppend(orphan, l);
 			}
@@ -399,7 +375,7 @@
 		return orphan;
 	}
 
-	public query function getAllPages(required any wiki, string sortfield='label', string sortorder='asc', array skipLabels=[], boolean includeRedirect=true, array limitLabels=[], boolean includeBlurb=false) {
+	public query function getAllPages(string sortfield='label', string sortorder='asc', array skipLabels=[], boolean includeRedirect=true, array limitLabels=[], boolean includeBlurb=false) {
 		var out = '';
 		if (!ArrayFindNoCase(['title','label','lastupdate'], ARGUMENTS.sortfield)) {
 			ARGUMENTS.sortfield = 'label';
@@ -463,13 +439,13 @@
 					) extendBlurb
 					ON (tcontent.ContentHistID = extendBlurb.baseID)
 				WHERE
-					tcontent.SiteID = '#ARGUMENTS.Wiki.getSiteID()#'
+					tcontent.SiteID = '#getContentBean().getSiteID()#'
 					AND
 					tcontent.Active = 1
 					AND
 					tcontent.subType = 'WikiPage'
 					AND
-					tcontent.ParentID = '#ARGUMENTS.Wiki.getContentID()#'
+					tcontent.ParentID = '#getContentBean().getContentID()#'
 					" &
 					(ArrayLen(skipLabels) ? "AND NOT extendatt.attributeValue in (#ListQualify(ArrayToList(skipLabels), "'")#)" : "") &
 					(includeRedirect ? "" : "AND (extendRedirect.redirectLabel = '' OR extendRedirect.redirectLabel is null)") &
@@ -480,7 +456,7 @@
 		return out;
 	}
 
-	public any function loadWikiList(required object Wiki) {
+	public any function loadWikiList() {
 		var temp = {};
 		var out = {};
 		var q = new Query (
@@ -500,13 +476,13 @@
 					RIGHT OUTER JOIN tcontent tcontent
 					ON (tcontent.ContentHistID = tclassextenddata.baseID)
 				WHERE
-					tcontent.SiteID = '#ARGUMENTS.Wiki.getSiteID()#'
+					tcontent.SiteID = '#getContentBean().getSiteID()#'
 					AND
 					tcontent.Active = 1
 					AND
 					tcontent.subType = 'WikiPage'
 					AND
-					tcontent.ParentID = '#ARGUMENTS.Wiki.getContentID()#'
+					tcontent.ParentID = '#getContentBean().getContentID()#'
 					AND
 					(tclassextendattributes.name IN ('Label', 'OutLinks') OR tclassextendattributes.name IS NULL)
 				ORDER BY tcontent.ContentID ASC
@@ -524,7 +500,7 @@
 		return out;
 	}
 
-	public array function loadTags(required any wiki) {
+	public array function loadTags() {
 		var out = {};
 		var q = new Query(
 			sql="
@@ -543,13 +519,13 @@
 					RIGHT OUTER JOIN tcontent tcontent
 					ON (tcontent.ContentHistID = tclassextenddata.baseID)
 				WHERE
-					tcontent.SiteID = '#ARGUMENTS.Wiki.getSiteID()#'
+					tcontent.SiteID = '#getContentBean().getSiteID()#'
 					AND
 					tcontent.Active = 1
 					AND
 					tcontent.subType = 'WikiPage'
 					AND
-					tcontent.ParentID = '#ARGUMENTS.Wiki.getContentID()#'
+					tcontent.ParentID = '#getContentBean().getContentID()#'
 					AND
 					tclassextendattributes.name = 'Label'
 				ORDER BY tcontent.ContentID ASC
@@ -565,15 +541,13 @@
 	}
 
 	public string function outLinks(required any wikiPage, required any ContRend) {
-		var wiki = getBeanFactory().getBean('WikiManagerService').getWiki(ARGUMENTS.wikiPage.getParentID());
 		return ArrayToList(
-			wiki.getEngine().renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), Wiki.getWikiList(), wiki.getFileName(), ContRend ).OutLinks
+			getEngine().renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), getWikiList(), getContentBean().getFileName(), ContRend ).OutLinks
 		);
 	}
 
 	public string function renderHTML(required any wikiPage, required any ContRend) {
-		var wiki = getBeanFactory().getBean('WikiManagerService').getWiki(ARGUMENTS.wikiPage.getParentID());
-		return wiki.getEngine().renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), Wiki.getWikiList(), wiki.getFileName(), ContRend ).blurb;
+		return getEngine().renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), getWikiList(), getContentBean().getFileName(), ContRend ).blurb;
 	}
 </cfscript>
 </cfcomponent>

@@ -21,14 +21,14 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 			}
 			for (var ll in StructSort(temp, 'numeric', 'asc', 'RandomSort')) {
 				$.redirect(
-					location = $.createHREF(filename='#rc.wiki.getFilename()#/#ll#/', querystring='undefined=1'),
+					location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#ll#/', querystring='undefined=1'),
 					statusCode = '302'
 				);
 				abort;
 			}
 		} else {
 			$.redirect(
-				location = $.createHREF(filename='#rc.wiki.getFilename()#/#rc.rb.getKey('maintUndefinedLabel')#/'),
+				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.rb.getKey('maintUndefinedLabel')#/'),
 				statusCode = '302'
 			);
 		}
@@ -41,7 +41,7 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 			rc.rb.getKey('SearchResultsLabel'),
 			rc.rb.getKey('maintHistoryLabel'),
 			rc.rb.getKey('mainthomeLabel'),
-			rc.wiki.getHome(),
+			rc.wiki.getContentBean().getHome(),
 			rc.rb.getKey('tagsLabel')
 		];
 		var orphan = rc.Wiki.getOrphan(skipLabels);
@@ -52,7 +52,7 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 				temp[l].RandomSort = Rand();
 			}
 			for (var l in StructSort(temp, 'numeric', 'asc', 'RandomSort')) {
-				var wikipage = $.getBean('content').loadBy(SiteID=rc.wiki.getSiteID(), filename='#rc.Wiki.getFilename()#/#l#/');
+				var wikipage = $.getBean('content').loadBy(SiteID=rc.wiki.getContentBean().getSiteID(), filename='#rc.wiki.getContentBean().getFilename()#/#l#/');
 				$.redirect(
 					location = $.createHREF(filename='#wikipage.getFilename()#', querystring='orphan=1'),
 					statusCode = '302'
@@ -60,7 +60,7 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 			}
 		} else {
 			$.redirect(
-				location = $.createHREF(filename='#rc.wiki.getFilename()#/#rc.rb.getKey('maintOrphanLabel')#/'),
+				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.rb.getKey('maintOrphanLabel')#/'),
 				statusCode = '302'
 			);
 		}
@@ -82,11 +82,11 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 		]);
 		var older = $.getBean('feed')
 			.setMaxItems(10)
-			.setSiteID( rc.Wiki.getSiteID() )
+			.setSiteID( rc.wiki.getContentBean().getSiteID() )
 			.addParam(
 				field='parentid',
 				condition='EQUALS',
-				criteria=rc.Wiki.getContentID(),
+				criteria=rc.wiki.getContentBean().getContentID(),
 				dataType='varchar'
 			)
 			.addParam(
@@ -118,7 +118,7 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 		}
 		for (var ContentID in StructSort(temp, 'numeric', 'asc', 'RandomSort')) {
 			$.redirect(
-				location = $.createHREF(filename='#rc.Wiki.getFilename()#/#$.getBean('content').loadBy(ContentID=ContentID, SiteID = rc.Wiki.getSiteID()).getLabel()#', querystring='older=1'),
+				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#$.getBean('content').loadBy(ContentID=ContentID, SiteID = rc.wiki.getContentBean().getSiteID()).getLabel()#', querystring='older=1'),
 				statusCode = '302'
 			);
 		}

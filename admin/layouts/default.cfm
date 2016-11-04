@@ -34,7 +34,7 @@ https://github.com/stevewithington/MuraFW1
 	wikiList = {};
 	for (ContentID in structKeyArray(rc.wikis)) {
 		// wikiList[w.getSiteID()][w.getFileName()] = w;
-		wikiList[rc.wikis[ContentID].getSiteID()][rc.wikis[ContentID].getFileName()] = rc.wikis[ContentID];
+		wikiList[rc.wikis[ContentID].getContentBean().getSiteID()][rc.wikis[ContentID].getContentBean().getFileName()] = rc.wikis[ContentID];
 	}
 </cfscript>
 <cfsavecontent variable="local.newBody">
@@ -52,8 +52,8 @@ https://github.com/stevewithington/MuraFW1
 							</li>
 							<cfloop index="SiteID" array="#StructKeyArray(wikiList)#">
 								<cfloop index="wiki" array="#StructKeyArray(wikiList[SiteId])#">
-								<li class="<cfif rc.action eq 'admin:edit.default' AND rc.wiki EQ wikiList[SiteId][wiki].getContentID()>active</cfif>">
-									<a href="#buildURL(action='admin:edit.default', queryString='wiki=#wikiList[SiteId][wiki].getContentID()#')#"><i class="icon-book"></i> #wiki# (#SiteID#)</a>
+								<li class="<cfif rc.action eq 'admin:edit.default' AND rc.wiki EQ wikiList[SiteId][wiki].getContentBean().getContentID()>active</cfif>">
+									<a href="#buildURL(action='admin:edit.default', queryString='wiki=#wikiList[SiteId][wiki].getContentBean().getContentID()#')#"><i class="icon-book"></i> #wiki# (#SiteID#)</a>
 								</li>
 								</cfloop>
 							</cfloop>

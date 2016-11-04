@@ -29,7 +29,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			searchResults = rc.Wiki.search(rc.q);
 			searchResults.searchResults = searchResults.searchResults;
 			for (var p in searchResults.searchResults) {
-				p.Filename = $.CreateHREF(filename='#rc.wiki.getFilename()#/#p.Label#/');
+				p.Filename = $.CreateHREF(filename='#rc.wiki.getContentBean().getFilename()#/#p.Label#/');
 			}
 			rc.searchStatus = searchResults.searchStatus;
 			rc.listingIterator = $.getBean('contentIterator')
@@ -94,7 +94,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			rc.rb.getKey('SearchResultsLabel'),
 			rc.rb.getKey('tagsLabel'),
 			rc.rb.getKey('instructionsLabel'),
-			rc.wiki.getHome()
+			rc.wiki.getContentBean().getHome()
 		];
 		rc.orphan = rc.Wiki.getOrphan(skipLabels);
 		ArrayAppend(rc.orphan, CreateUUID());

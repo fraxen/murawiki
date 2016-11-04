@@ -36,7 +36,7 @@
 								#rbFactory.getResourceBundle().messageFormat($.rbKey('tagcloud.itemis'), args)#
 							</cfif>
 						</span>
-						<a href="#$.createHREF(filename='#rc.wiki.getFilename()#/#rc.rb.getKey('tagsLabel')#/')#?tag=#urlEncodedFormat(tags.tag)#" class="tag">#HTMLEditFormat(tags.tag)#</a>
+						<a href="#$.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.rb.getKey('tagsLabel')#/')#?tag=#urlEncodedFormat(tags.tag)#" class="tag">#HTMLEditFormat(tags.tag)#</a>
 					</li>
 				</cfloop>
 			</ol>

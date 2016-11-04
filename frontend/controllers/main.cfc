@@ -10,12 +10,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	public void function wikiPage() {
 		if( $.content().getRedirect() != '' ) {
 			$.redirect(
-				location = "#$.createHREF(filename='#rc.wiki.getFilename()#/#$.content().getRedirect()#/', querystring='redirectfrom=#$.content().getLabel()#')#"
+				location = "#$.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#$.content().getRedirect()#/', querystring='redirectfrom=#$.content().getLabel()#')#"
 				, statusCode = '301'
 			);
 			return;
 		}
-		var history = StructKeyExists(COOKIE, '#rc.wiki.getContentID()#history') ? Cookie['#rc.wiki.getContentID()#history'] : '';
+		var history = StructKeyExists(COOKIE, '#rc.wiki.getContentBean().getContentID()#history') ? Cookie['#rc.wiki.getContentBean().getContentID()#history'] : '';
 		var label = $.content().getLabel();
 		if (!ArrayFindNoCase([rc.rb.getKey('SearchResultsLabel')], label)) {
 			while(ListFindNoCase(history, label)) {
@@ -25,7 +25,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				history = ListDeleteAt(history, 10);
 			}
 			history = '#label#,#history#';
-			Cookie['#rc.wiki.getContentID()#history'] = history;
+			Cookie['#rc.wiki.getContentBean().getContentID()#history'] = history;
 		}
 
 		if (!isObject(rc.wiki)) {
@@ -43,7 +43,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				type = 'Page',
 				subtype = 'WikiPage',
 				label = $.content().getLabel(),
-				parentid = rc.wiki.getContentID()
+				parentid = rc.wiki.getContentBean().getContentID()
 			});
 			rc.wikiPage.setIsNew(1);
 			framework.setView('main.undefined');
@@ -54,7 +54,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.blurb = rc.Wiki.renderHTML(rc.wikiPage, $.getContentRenderer());
 		rc.attachments = isJson(rc.wikiPage.getAttachments()) ? DeserializeJSON(rc.wikiPage.getAttachments()): {};
 		rc.tags = [];
-		if (rc.wiki.getUseTags()) {
+		if (rc.wiki.getContentBean().getUseTags()) {
 			rc.tags = ListToArray(rc.wikiPage.getTags());
 		}
 	}

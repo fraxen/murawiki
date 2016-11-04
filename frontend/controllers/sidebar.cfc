@@ -14,7 +14,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	public void function backlinks() {
 		var label = $.content().getLabel();
 		if (ArrayContains([
-			rc.wiki.getHome(),
+			rc.wiki.getContentBean().getHome(),
 			rc.rb.getKey('instructionsLabel'),
 			rc.rb.getKey('allpagesLabel'),
 			rc.rb.getKey('mainthomeLabel'),
@@ -60,8 +60,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 
 	public void function recents() {
 		rc.backlinks = [];
-		if (StructKeyExists(COOKIE, '#rc.wiki.getContentID()#history')) {
-			rc.backlinks = ListToArray(Cookie['#rc.wiki.getContentID()#history']);
+		if (StructKeyExists(COOKIE, '#rc.wiki.getContentBean().getContentID()#history')) {
+			rc.backlinks = ListToArray(Cookie['#rc.wiki.getContentBean().getContentID()#history']);
 			ArrayDelete(rc.backlinks, $.content().getLabel());
 		}
 		return;

@@ -27,8 +27,8 @@ component accessors="true" output="false" extends="mura.cfobject" {
 			metadesc = stripHTML( Wiki.renderHTML(wp, ContRend) ),
 			metakeywords = wp.getTags(),
 			outLinks = Wiki.outLinks(wp, ContRend),
-			isNav = wiki.getSiteNav(),
-			searchExclude = wiki.getSiteSearch() ? 0 : 1
+			isNav = wiki.getContentBean().getSiteNav(),
+			searchExclude = wiki.getContentBean().getSiteSearch() ? 0 : 1
 		});
 
 		// Update outgoing links
@@ -102,16 +102,16 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		var body = {};
 
 		// Remove any existing display objects
-		for (var r=1; r < APPLICATION.settingsManager.getSite(wiki.getSiteID()).getcolumnCount()+1; r++) {
-			for (var d in wiki.getDisplayRegion(r)) {
-				wiki.removeDisplayObject(r, d.object, d.objectid);
+		for (var r=1; r < APPLICATION.settingsManager.getSite(wiki.getContentBean().getSiteID()).getcolumnCount()+1; r++) {
+			for (var d in wiki.getContentBean().getDisplayRegion(r)) {
+				wiki.getContentBean().removeDisplayObject(r, d.object, d.objectid);
 			}
 		}
 
 		// Sidebar displayobjects
 		for (var name in ['ShortCutPanel','PageOperations', 'Attachments', 'Backlinks', 'RecentlyVisited', 'LatestUpdates']) {
-			wiki.addDisplayObject(
-				regionid = wiki.getRegionside(),
+			wiki.getContentBean().addDisplayObject(
+				regionid = wiki.getContentBean().getRegionside(),
 				object = 'plugin',
 				name = dspO[name].name,
 				objectID = dspO[name].ObjectID
@@ -121,11 +121,11 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		// Delete existing pages
 		for (var c in getBean('feed')
 			.setMaxItems(0)
-			.setSiteID( Wiki.getSiteID() )
+			.setSiteID( wiki.getContentBean().getSiteID() )
 			.addParam(
 				field='parentid',
 				condition='EQUALS',
-				criteria=Wiki.getContentID(),
+				criteria=wiki.getContentBean().getContentID(),
 				dataType='varchar'
 			)
 			.setSortBy('filename')
@@ -140,20 +140,20 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		blurb = Replace(engine.getResource().getKey('homeBody'), '\r', Chr(13), 'ALL');
 		blurb = Replace(blurb, 'SpecialInstructions', rb.getKey('instructionsLabel'));
 		blurb = getBean('content').set({
-			siteid = wiki.getSiteID(),
+			siteid = wiki.getContentBean().getSiteID(),
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('homeTitle'),
-			label = wiki.getHome(),
+			label = wiki.getContentBean().getHome(),
 			Blurb = blurb,
 			Notes = 'Initialized',
 			Tags = rb.getKey('homeTags'),
 			redirect = '',
-			parentid = wiki.getContentID()
+			parentid = wiki.getContentBean().getContentID()
 		}).save();
-		if (wiki.getUseTags()) {
+		if (wiki.getContentBean().getUseTags()) {
 			blurb.addDisplayObject(
-				regionid = wiki.getRegionMain(),
+				regionid = wiki.getContentBean().getRegionMain(),
 				object = 'plugin',
 				name = dspO['TagCloud'].name,
 				objectID = dspO['TagCloud'].ObjectID
@@ -163,7 +163,7 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		// Create history
 		blurb = Replace(engine.getResource().getKey('maintHistoryBody'), '\r', Chr(13), 'ALL');
 		getBean('content').set({
-			siteid = wiki.getSiteID(),
+			siteid = wiki.getContentBean().getSiteID(),
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('maintHistoryTitle'),
@@ -171,10 +171,10 @@ component accessors="true" output="false" extends="mura.cfobject" {
 			label = rb.getKey('maintHistoryLabel'),
 			Notes = 'Initialized',
 			redirect = '',
-			parentid = wiki.getContentID()
+			parentid = wiki.getContentBean().getContentID()
 		})
 			.addDisplayObject(
-				regionid = wiki.getRegionMain(),
+				regionid = wiki.getContentBean().getRegionMain(),
 				object = 'plugin',
 				name = dspO['History'].name,
 				objectID = dspO['History'].ObjectID
@@ -184,7 +184,7 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		// Create search results
 		blurb = Replace(engine.getResource().getKey('SpecialSearchBody'), '\r', Chr(13), 'ALL');
 		getBean('content').set({
-			siteid = wiki.getSiteID(),
+			siteid = wiki.getContentBean().getSiteID(),
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('searchResultsTitle'),
@@ -192,10 +192,10 @@ component accessors="true" output="false" extends="mura.cfobject" {
 			label = rb.getKey('searchResultsLabel'),
 			Notes = 'Initialized',
 			redirect = '',
-			parentid = wiki.getContentID()
+			parentid = wiki.getContentBean().getContentID()
 		})
 			.addDisplayObject(
-				regionid = wiki.getRegionMain(),
+				regionid = wiki.getContentBean().getRegionMain(),
 				object = 'plugin',
 				name = dspO['Search Results'].name,
 				objectID = dspO['Search Results'].ObjectID
@@ -205,7 +205,7 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		// Create Instructions
 		blurb = Replace(engine.getResource().getKey('instructionsBody'), '\r', Chr(13), 'ALL');
 		getBean('content').set({
-			siteid = wiki.getSiteID(),
+			siteid = wiki.getContentBean().getSiteID(),
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('instructionsTitle'),
@@ -214,13 +214,13 @@ component accessors="true" output="false" extends="mura.cfobject" {
 			Notes = 'Initialized',
 			redirect = '',
 			Tags = rb.getKey('instructionsTags'),
-			parentid = wiki.getContentID()
+			parentid = wiki.getContentBean().getContentID()
 		}).save();
 
 		// Create AllPages
 		blurb = Replace(engine.getResource().getKey('allpagesBody'), '\r', Chr(13), 'ALL');
 		getBean('content').set({
-			siteid = wiki.getSiteID(),
+			siteid = wiki.getContentBean().getSiteID(),
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('allpagesTitle'),
@@ -228,10 +228,10 @@ component accessors="true" output="false" extends="mura.cfobject" {
 			Blurb = blurb,
 			Notes = 'Initialized',
 			Tags = rb.getKey('allpagesTags'),
-			parentid = wiki.getContentID()
+			parentid = wiki.getContentBean().getContentID()
 		})
 			.addDisplayObject(
-				regionid = wiki.getRegionMain(),
+				regionid = wiki.getContentBean().getRegionMain(),
 				object = 'plugin',
 				name = dspO['AllPages'].name,
 				objectID = dspO['AllPages'].ObjectID
@@ -248,7 +248,7 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		blurb = Replace(blurb, 'SpecialOrphan', rb.getKey('maintorphanLabel'));
 		blurb = Replace(blurb, 'SpecialAllpages', rb.getKey('allpagesLabel'));
 		getBean('content').set({
-			siteid = wiki.getSiteID(),
+			siteid = wiki.getContentBean().getSiteID(),
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('mainthomeTitle'),
@@ -257,13 +257,13 @@ component accessors="true" output="false" extends="mura.cfobject" {
 			redirect = '',
 			Notes = 'Initialized',
 			Tags = rb.getKey('mainthomeTags'),
-			parentid = wiki.getContentID()
+			parentid = wiki.getContentBean().getContentID()
 		}).save();
 
 		// Create Maintenance Undefined
 		blurb = Replace(engine.getResource().getKey('maintundefinedBody'), '\r', Chr(13), 'ALL');
 		getBean('content').set({
-			siteid = wiki.getSiteID(),
+			siteid = wiki.getContentBean().getSiteID(),
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('maintundefinedTitle'),
@@ -272,10 +272,10 @@ component accessors="true" output="false" extends="mura.cfobject" {
 			Notes = 'Initialized',
 			redirect = '',
 			Tags = rb.getKey('maintundefinedTags'),
-			parentid = wiki.getContentID()
+			parentid = wiki.getContentBean().getContentID()
 		})
 			.addDisplayObject(
-				regionid = wiki.getRegionMain(),
+				regionid = wiki.getContentBean().getRegionMain(),
 				object = 'plugin',
 				name = dspO['MaintenanceUndefined'].name,
 				objectID = dspO['MaintenanceUndefined'].ObjectID
@@ -285,7 +285,7 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		// Create Maintenance Orphan
 		blurb = Replace(engine.getResource().getKey('maintorphanBody'), '\r', Chr(13), 'ALL');
 		getBean('content').set({
-			siteid = wiki.getSiteID(),
+			siteid = wiki.getContentBean().getSiteID(),
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('maintorphanTitle'),
@@ -294,10 +294,10 @@ component accessors="true" output="false" extends="mura.cfobject" {
 			Notes = 'Initialized',
 			redirect = '',
 			Tags = rb.getKey('maintorphanTags'),
-			parentid = wiki.getContentID()
+			parentid = wiki.getContentBean().getContentID()
 		})
 			.addDisplayObject(
-				regionid = wiki.getRegionMain(),
+				regionid = wiki.getContentBean().getRegionMain(),
 				object = 'plugin',
 				name = dspO['MaintenanceOrphan'].name,
 				objectID = dspO['MaintenanceOrphan'].ObjectID
@@ -307,7 +307,7 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		// Create Maintenance Old
 		blurb = Replace(engine.getResource().getKey('maintoldBody'), '\r', Chr(13), 'ALL');
 		getBean('content').set({
-			siteid = wiki.getSiteID(),
+			siteid = wiki.getContentBean().getSiteID(),
 			type = 'Page',
 			subType = 'WikiPage',
 			title = rb.getKey('maintoldTitle'),
@@ -316,10 +316,10 @@ component accessors="true" output="false" extends="mura.cfobject" {
 			Notes = 'Initialized',
 			redirect = '',
 			Tags = rb.getKey('maintoldTags'),
-			parentid = wiki.getContentID()
+			parentid = wiki.getContentBean().getContentID()
 		})
 			.addDisplayObject(
-				regionid = wiki.getRegionMain(),
+				regionid = wiki.getContentBean().getRegionMain(),
 				object = 'plugin',
 				name = dspO['MaintenanceOld'].name,
 				objectID = dspO['MaintenanceOld'].ObjectID
@@ -327,10 +327,10 @@ component accessors="true" output="false" extends="mura.cfobject" {
 			.save();
 
 		// Create Tag
-		if (wiki.getUseTags()) {
+		if (wiki.getContentBean().getUseTags()) {
 			blurb = Replace(engine.getResource().getKey('tagsBody'), '\r', Chr(13), 'ALL');
 			getBean('content').set({
-				siteid = wiki.getSiteID(),
+				siteid = wiki.getContentBean().getSiteID(),
 				type = 'Page',
 				subType = 'WikiPage',
 				title = rb.getKey('tagsTitle'),
@@ -339,10 +339,10 @@ component accessors="true" output="false" extends="mura.cfobject" {
 				Notes = 'Initialized',
 				redirect = '',
 				Tags = rb.getKey('tagsTags'),
-				parentid = wiki.getContentID()
+				parentid = wiki.getContentBean().getContentID()
 			})
 				.addDisplayObject(
-					regionid = wiki.getRegionMain(),
+					regionid = wiki.getContentBean().getRegionMain(),
 					object = 'plugin',
 					name = dspO['AllTags'].name,
 					objectID = dspO['AllTags'].ObjectID
