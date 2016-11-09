@@ -111,7 +111,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 							approved = 1,
 							display = 1,
 							isnew = 0,
-							template = wiki.getContentBean().getChildTemplate() != '' ? wiki.getContentBean().getChildTemplate() : wiki.getContentBean().getTemplate(),
+							template = wiki.getChildTemplate() != '' ? wiki.getChildTemplate() : wiki.getTemplate(),
 							parentid = w.ContentID
 						})
 					);
