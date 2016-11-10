@@ -1,12 +1,13 @@
 <cfscript>
 component displayname="frontend" persistent="false" accessors="true" output="false" extends="controller" {
+	property name='statusManager';
 
 	public any function before(required struct rc) {
 		SUPER.before(rc);
 		if (!rc.authEdit) {
 			$.redirect(
-				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#$.content().getLabel()#', querystring='notauth=1')
-				, statusCode = '302'
+				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#$.content().getLabel()#', querystring='notauth=1'),
+				statusCode = '302'
 			);
 		}
 	}
@@ -15,9 +16,13 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=$.event('siteID'));
 		rc.wiki = getWikiManagerService().getWiki(rc.wikiPage.getParentID());
 		rc.wikiPage.save();
+		getStatusManager().addStatus(
+			rc.wiki.getContentBean().getContentID(),
+			getBeanFactory().getBean('status', {class:'ok', message:rc.wiki.getRb().getKey('touchedMessage')})
+		);
 		$.redirect(
-			location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#', querystring='touched=1')
-			, statusCode = '302'
+			location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
+			statusCode = '302'
 		);
 	}
 
@@ -26,8 +31,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=rc.SiteID);
 		rc.wikiPage.delete();
 		$.redirect(
-			location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#')
-			, statusCode = '302'
+			location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
+			statusCode = '302'
 		);
 	}
 
@@ -40,8 +45,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			notes= '#rc.rb.getKey('reverted')# #DateFormat(rc.wikiPage.getLastUpdate(), 'yyyy-mm-dd')# #TimeFormat(rc.wikiPage.getLastUpdate(), 'HH:mm')#'
 		}).save();
 		$.redirect(
-			location = $.createHREF(filename=rc.wikiPage.getFilename())
-			, statusCode = '302'
+			location = $.createHREF(filename=rc.wikiPage.getFilename()),
+			statusCode = '302'
 		);
 	}
 
@@ -77,8 +82,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			notes= rc.rb.getKey('redirectNote')
 		}).save();
 		$.redirect(
-			location = $.createHREF(filename=rc.wikiPage.getFilename())
-			, statusCode = '302'
+			location = $.createHREF(filename=rc.wikiPage.getFilename()),
+			statusCode = '302'
 		);
 	}
 
@@ -168,8 +173,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		});
 		rc.wikiPage.save();
 		$.redirect(
-			location = $.createHREF(filename=rc.wikiPage.getFilename())
-			, statusCode = '302'
+			location = $.createHREF(filename=rc.wikiPage.getFilename()),
+			statusCode = '302'
 		);
 		return;
 	}

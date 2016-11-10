@@ -112,3 +112,27 @@ div.code, div.wiki_code{
 	padding: 5px;
 	background-color: #EEEEEE;
 }
+/* {{{ STATUS MESSAGE STUFF */
+#status>div {
+	TEXT-ALIGN: Center;
+	BORDER: 2px solid #AAA;
+	BORDER-RADIUS: 5px;
+	WIDTH: 80%;
+	MARGIN: 1em auto 1em auto;
+	PADDING: 2em;
+	BACKGROUND: #EEE;
+}
+#status>div.warn {
+	BORDER: 2px solid #D99;
+	BACKGROUND: #FBB;
+}
+#status>div.ok {
+	TEXT-ALIGN: Center;
+	BORDER: 2px solid #ADA;
+	BORDER-RADIUS: 5px;
+	WIDTH: 80%;
+	MARGIN: 1em auto 1em auto;
+	PADDING: 2em;
+	BACKGROUND: #DFD;
+}
+/* }}} */

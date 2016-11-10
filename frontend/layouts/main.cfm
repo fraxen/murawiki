@@ -24,55 +24,7 @@
 	ArraySort(wikiList, 'text');
 </cfscript>
 <cfoutput>
-<cfif structKeyExists(URL, 'undefined')>
-	<div class="message" id="undefined">
-		<p>#rc.rb.getKey('undefinedMessage')#</p>
-	</div>
-</cfif>
-<cfif structKeyExists(URL, 'older')>
-	<div class="message" id="older">
-		<p>#rc.rb.getKey('oldMessage')#</p>
-	</div>
-</cfif>
-<cfif structKeyExists(URL, 'touched')>
-	<div class="message" id="touched">
-		<p>#rc.rb.getKey('touchedMessage')#</p>
-	</div>
-</cfif>
-<cfif structKeyExists(URL, 'orphan')>
-	<div class="message" id="orphan">
-		<p>#rc.rb.getKey('orphanMessage')#</p>
-	</div>
-</cfif>
-<cfif structKeyExists(URL, 'version') AND rc.wikiPage.getIsActive() NEQ 1>
-	<div class="message" id="version">
-		#ReReplace(rc.rb.getKey('versionNote'), '{versiondate}', '#DateFormat(rc.wikiPage.getLastUpdate(), 'yyyy-mm-dd')# #TimeFormat(rc.wikiPage.getLastUpdate(), 'HH:mm')#')#<br>
-		<a href="#$.createHREF(filename=rc.wikiPage.getFilename())#">#rc.rb.getKey('versionNoteLink')#</a><br/>
-		<strong><a href="#BuildURL(action='frontend:ops.revert', querystring='version=#rc.version#')#">#rc.rb.getKey('versionNoteRevert')#</a></strong>
-		<p><em>#rc.wikiPage.getNotes()# (#rc.wikiPage.getLastUpdateBy()#)</em></p>
-	</div>
-</cfif>
-<cfif structKeyExists(URL, 'redirectfrom')>
-	<div class="message" id="redirectfrom">
-		#rc.rb.getKey('redirectStatus')# <strong><cfif rc.dispEditLinks><a href="##"></cfif>#rc.redirectfrom#<cfif rc.dispEditLinks></a></cfif></strong>
-	</div>
-	<div id="removeredirectModal" class="modal fade" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal">&times;</button>
-			<h4 class="modal-title">#rc.rb.getKey('redirectRemove')# <em>#rc.redirectfrom#</em></h4>
-		</div>
-		<div class="modal-body">
-			<form id="editform" class="mura-form-builder" method="post" action="#BuildURL('frontend:ops.redirectremove')#" onsubmit="return validateForm(this);">
-				<input type="hidden" name="ParentID" value="#rc.wiki.getContentBean().getContentID()#" />
-				<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />
-				<input type="hidden" name="labelfrom" value="#rc.redirectfrom#" />
-				<div >
-					<br/><input type="submit" class="btn btn-default" value="#rc.rb.getKey('submit')#" /><br/>
-				</div>
-			</form>
-		</div>
-	</div></div></div>
-</cfif>
+<div id="status"></div>
 #body#
 <div id="editModal" class="modal fade" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content">
 	<div class="modal-header">
@@ -294,5 +246,26 @@
 		</cfif>
 	});
 	})();
+
+	<!--- STATUS STUFF --->
+	function addStatus(sClass, sMessage) {
+		$('<div/>')
+			.addClass(sClass)
+			.html(sMessage)
+			.hide()
+			.appendTo($('#status'))
+			.slideDown('slow');
+		return true;
+	}
+
+	(function() {
+		<cfoutput>
+		var statusQueue = #SerializeJson(rc.statusQueue())#;
+		</cfoutput>
+		statusQueue.forEach(function(sm) {
+			addStatus(sm.class, sm.message);
+		});
+	})();
+	<!--- }}} --->
 </script>
 
