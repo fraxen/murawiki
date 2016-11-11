@@ -9,7 +9,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function wikiPage() {
-		rc.statusQueue = function() {return getStatusManager().getStatusPop(rc.wiki.getContentBean().getContentID())};
+		rc.statusQueue = function() {return getStatusManager().getStatusPop(rc.wiki.getContentBean().getContentID());};
 		if( $.content().getRedirect() != '' ) {
 			// TODO - this should be a view...
 			var statusMessage = '#rc.rb.getKey('redirectStatus')# <strong>' &

@@ -6,7 +6,7 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		return application.serviceFactory.getBean('muraScope').init('default').currentUser();
 	}
 
-	public any function addStatus(required string WikiId, required object statusBean) {
+	public any function addStatus(required string WikiId, required any statusBean) {
 		var cUser = getCurrentUser();
 		var queue = cUser.getMuraWikiStatusQueue();
 		if (!IsStruct(queue)) {
@@ -15,7 +15,7 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		if (!StructKeyExists(queue, ARGUMENTS.WikiId)) {
 			queue[ARGUMENTS.WikiId] = [];
 		}
-		queue[ARGUMENTS.WikiId].append(ARGUMENTS.statusBean);
+		ArrayAppend(queue[ARGUMENTS.WikiId], ARGUMENTS.statusBean);
 		cUser.setMuraWikiStatusQueue(queue);
 		return THIS;
 	}
