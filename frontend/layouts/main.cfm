@@ -255,6 +255,13 @@
 
 	<!--- STATUS STUFF --->
 	function addStatus(sClass, sMessage) {
+		sMessage = sMessage.replace(
+			/{([^}]+)}/,
+			function($0,$1) {
+				var ts = new Date($1);
+				return ('00' + ts.getHours()).slice(-2) + ':' + ('00' + ts.getMinutes()).slice(-2);
+			}
+		);
 		$('<div/>')
 			.addClass(sClass)
 			.html(sMessage)

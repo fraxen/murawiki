@@ -1,6 +1,7 @@
 <cfscript>
 component displayname="frontend" persistent="false" accessors="true" output="false" extends="controller" {
 	property name='statusManager';
+	property name='lockManager';
 
 	public any function before(required struct rc) {
 		SUPER.before(rc);
@@ -15,11 +16,23 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	public void function touch() {
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=$.event('siteID'));
 		rc.wiki = getWikiManagerService().getWiki(rc.wikiPage.getParentID());
-		rc.wikiPage.save();
-		getStatusManager().addStatus(
-			rc.wiki.getContentBean().getContentID(),
-			getBeanFactory().getBean('status', {class:'ok', message:rc.wiki.getRb().getKey('touchedMessage')})
-		);
+		var lock = getLockManager().request(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
+		if (!lock.locked) {
+			var message = rc.wiki.getRb().getKey('lockFailOp');
+			message = Replace(message, '{username}', $.getBean('user').loadBy(UserID = lock.lock.getUserID(), SiteID=$.event('SiteID')).getUserName());
+			message = Replace(message, '{locktime}', '{#lock.lock.getExpirationIso()#}');
+			getStatusManager().addStatus(
+				rc.wiki.getContentBean().getContentID(),
+				getBeanFactory().getBean('status', {class:'warn', message: message})
+			);
+		} else {
+			rc.wikiPage.save();
+			getLockManager().release(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
+			getStatusManager().addStatus(
+				rc.wiki.getContentBean().getContentID(),
+				getBeanFactory().getBean('status', {class:'ok', message:rc.wiki.getRb().getKey('touchedMessage')})
+			);
+		}
 		$.redirect(
 			location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
 			statusCode = '302'
