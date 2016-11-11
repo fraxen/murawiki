@@ -168,6 +168,12 @@
 		return false;
 	}
 	$(document).ready(function() {
+		<cfoutput>
+		var statusQueue = #SerializeJson(rc.statusQueue())#;
+		</cfoutput>
+		statusQueue.forEach(function(sm) {
+			addStatus(sm.class, sm.message);
+		});
 		if (window.location.search.match(/\?notauth=1/)) {
 			$('#notauthModal').modal('show');
 		}
@@ -257,15 +263,6 @@
 			.slideDown('slow');
 		return true;
 	}
-
-	(function() {
-		<cfoutput>
-		var statusQueue = #SerializeJson(rc.statusQueue())#;
-		</cfoutput>
-		statusQueue.forEach(function(sm) {
-			addStatus(sm.class, sm.message);
-		});
-	})();
 	<!--- }}} --->
 </script>
 
