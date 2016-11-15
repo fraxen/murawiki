@@ -9,6 +9,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function wikiPage() {
+		param rc.edit = false;
+		if (!IsBoolean(rc.edit)) {rc.edit = true;}
 		rc.statusQueue = function() {return getStatusManager().getStatusPop(rc.wiki.getContentBean().getContentID());};
 		if( $.content().getRedirect() != '' ) {
 			// TODO - this should be a view...
@@ -95,6 +97,15 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.tags = [];
 		if (rc.wiki.getContentBean().getUseTags()) {
 			rc.tags = ListToArray(rc.wikiPage.getTags());
+		}
+		if (rc.edit) {
+			if ($.currentUser().getIsLoggedIn() && rc.authedit) {
+				framework.setView('main.edit');
+			} else {
+				// TODO Status message
+				writedump(CGI);
+				abort;
+			}
 		}
 	}
 

@@ -3,7 +3,7 @@
 	<h3>#rc.rb.getKey('sidebarPageopsTitle')#</h3>
 	<ul>
 		<li><a
-			id="pageedit" class="pageedit" href="##"
+			id="pageedit" class="pageedit" href="#$.CreateHREF(filename=$.content().getFilename(), querystring='edit')#"
 			<cfif StructKeyExists(URL, 'version')>disabled="disabled"</cfif>
 			<cfif rc.isUndefined>
 				accesskey="#rc.rb.getKey('sidebarPageopsEditAccessKey')#"
