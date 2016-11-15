@@ -6,6 +6,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	public any function before(required struct rc) {
 		SUPER.before(rc);
 		if (!rc.authEdit) {
+			// TODO status bean message instead
 			$.redirect(
 				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#$.content().getLabel()#', querystring='notauth=1'),
 				statusCode = '302'
