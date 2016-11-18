@@ -14,6 +14,36 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		}
 	}
 
+	public void function releaselock() {
+		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.wikiPageID, SiteID=$.event('siteID'));
+		rc.wiki = getWikiManagerService().getWiki(rc.wikiPage.getParentID());
+		getLockManager().release(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
+		getStatusManager().addStatus(
+			rc.wiki.getContentBean().getContentID(),
+			getBeanFactory().getBean('status', {class:'ok', message:rc.wiki.getRb().getKey('lockRelease')})
+		);
+		$.redirect(
+			location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
+			statusCode = '302'
+		);
+	}
+
+	public void function releaselockajax() {
+		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.wikiPageID, SiteID=$.event('siteID'));
+		rc.wiki = getWikiManagerService().getWiki(rc.wikiPage.getParentID());
+		getLockManager().release(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
+		getStatusManager().addStatus(
+			rc.wiki.getContentBean().getContentID(),
+			getBeanFactory().getBean(
+				'status',
+				{
+					class:'ok',
+					message: REReplace(rc.wiki.getRb().getKey('lockReleaseLabelname'), '{label}', '<a href="#$.createHREF(filename=rc.wikiPage.getFilename())#">#rc.wikiPage.getLabel()#</a>')
+				}
+			)
+		);
+	}
+
 	public void function touch() {
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=$.event('siteID'));
 		rc.wiki = getWikiManagerService().getWiki(rc.wikiPage.getParentID());

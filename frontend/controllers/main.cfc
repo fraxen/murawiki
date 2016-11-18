@@ -1,6 +1,7 @@
 ﻿<cfscript>
 component displayname="frontend" persistent="false" accessors="true" output="false" extends="controller" {
 	property name='statusManager';
+	property name='lockManager';
 
 	public void function default() {
 		framework.setView('main.blank');
@@ -9,12 +10,14 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	}
 
 	public void function wikiPage() {
+		var lock = {};
+		var statusMessage = '';
 		param rc.edit = false;
 		if (!IsBoolean(rc.edit)) {rc.edit = true;}
 		rc.statusQueue = function() {return getStatusManager().getStatusPop(rc.wiki.getContentBean().getContentID());};
 		if( $.content().getRedirect() != '' ) {
 			// TODO - this should be a view...
-			var statusMessage = '#rc.rb.getKey('redirectStatus')# <strong>' &
+			statusMessage = '#rc.rb.getKey('redirectStatus')# <strong>' &
 				(rc.dispEditLinks ? '<span id="redirectfrom"><a href="##">' : '') &
 				$.content().getLabel() &
 				(rc.dispEditLinks ? '</a></span>' : '') &
@@ -81,7 +84,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			rc.wikiPage = $.getBean('content').loadBy(ContentHistID=rc.version);
 			if (rc.wikiPage.getIsActive() != 1) {
 				// TODO - this should be a view...
-				var statusMessage = ReReplace(rc.rb.getKey('versionNote'), '{versiondate}', '#DateFormat(rc.wikiPage.getLastUpdate(), 'yyyy-mm-dd')# #TimeFormat(rc.wikiPage.getLastUpdate(), 'HH:mm')#') &
+				statusMessage = ReReplace(rc.rb.getKey('versionNote'), '{versiondate}', '#DateFormat(rc.wikiPage.getLastUpdate(), 'yyyy-mm-dd')# #TimeFormat(rc.wikiPage.getLastUpdate(), 'HH:mm')#') &
 					'<br />' &
 					'<a href="#$.createHREF(filename=rc.wikiPage.getFilename())#">#rc.rb.getKey('versionNoteLink')#</a><br/>' &
 					'<strong><a href="#framework.BuildURL(action='frontend:ops.revert', querystring='version=#rc.version#')#">#rc.rb.getKey('versionNoteRevert')#</a></strong>' &
@@ -100,11 +103,39 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		}
 		if (rc.edit) {
 			if ($.currentUser().getIsLoggedIn() && rc.authedit) {
-				framework.setView('main.edit');
+				lock = getLockManager().request(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
+				if (!lock.locked) {
+					statusMessage = rc.wiki.getRb().getKey('lockFailOp');
+					statusMessage  = Replace(statusMessage , '{username}', $.getBean('user').loadBy(UserID = lock.lock.getUserID(), SiteID=$.event('SiteID')).getUserName());
+					statusMessage  = Replace(statusMessage , '{locktime}', '{#lock.lock.getExpirationIso()#}');
+					getStatusManager().addStatus(
+						rc.wiki.getContentBean().getContentID(),
+						getBeanFactory().getBean('status', {class:'warn', message: statusMessage })
+					);
+				} else {
+					statusMessage = ReReplace(rc.rb.getKey('lockSuccess'), '{locktime}', '{#lock.lock.getExpirationIso()#}');
+					statusMessage = ReReplace(statusMessage, '{lockreleaselink}', framework.BuildURL(action='frontend:ops.releaselock', querystring="wikipageid=#rc.wikiPage.getContentID()#"))
+					getStatusManager().addStatus(
+						rc.wiki.getContentBean().getContentID(),
+						getBeanFactory().getBean('status', {class:'ok', message: statusMessage})
+					);
+					framework.setView('main.edit');
+				}
 			} else {
 				// TODO Status message
 				writedump(CGI);
 				abort;
+			}
+		} else {
+			lock = getLockManager().check(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel());
+			if (lock.locked) {
+				statusMessage = rc.wiki.getRb().getKey('lockInfo');
+				statusMessage  = Replace(statusMessage , '{username}', $.getBean('user').loadBy(UserID = lock.lock.getUserID(), SiteID=$.event('SiteID')).getUserName());
+				statusMessage  = Replace(statusMessage , '{locktime}', '{#lock.lock.getExpirationIso()#}');
+				getStatusManager().addStatus(
+					rc.wiki.getContentBean().getContentID(),
+					getBeanFactory().getBean('status', {class:'info', message: statusMessage })
+				);
 			}
 		}
 	}

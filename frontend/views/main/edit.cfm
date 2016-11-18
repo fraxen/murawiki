@@ -83,17 +83,46 @@
 	(function() {
 		$(document).ready(function() {
 			$('#editform select.s2').select2();
-			$('#attachAdd').click(function() {
+			$('#attachAdd').on('click', function() {
 				var lastAttach = $('#editform input[type="file"]').last();
 				var i = +lastAttach.attr('name').replace('attachment', '') + 1;
 				lastAttach.clone().attr('name', 'attachment' + i).insertAfter(lastAttach);
 				return false;
 			});
-			$('a.attachRemove').click(function() {
+			$('a.attachRemove').on('click', function() {
 				$(this).parent().parent()
 					.css('display', 'none')
 					.find('input').attr('value', '{}');
 				return false;
+			});
+			$(window).on('beforeunload', function() {
+				addStatus('info', '<cfoutput>#rc.rb.getKey('lockReleaseSpinner')#</cfoutput>');
+				$.ajax({
+					type : 'GET',
+					url : '<cfoutput>#BuildURL(action='frontend:ops.releaselockajax', querystring='wikipageid=#rc.wikiPage.getContentID()#')#</cfoutput>',  //loading a simple text file for sample.
+					cache : false,
+					global : false,
+					async : false,
+					success : function(data) {
+						return null;
+					}
+				});
+				return undefined;
+			});
+			$('#editform').on('submit', function() {
+				$(window).off('beforeunload');
+				return true;
+			});
+			$(document).on('addedStatus', function() {
+				$('a[data-lockrelease="1"]').on('click', function() {
+					$(window).off('beforeunload');
+					return true;
+				});
+			});
+			$('a.pageedit').attr('disabled', 'disabled');
+			$('a.delete, a.redirect, a.touch').on('click', function() {
+				$(window).off('beforeunload');
+				return true;
 			});
 		});
 	})();

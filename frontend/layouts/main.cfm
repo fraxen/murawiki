@@ -165,6 +165,7 @@
 			.hide()
 			.appendTo($('#status'))
 			.slideDown('slow');
+		$.event.trigger({type:'addedStatus'});
 		return true;
 	}
 	<!--- }}} --->
