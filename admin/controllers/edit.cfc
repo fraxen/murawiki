@@ -78,7 +78,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 			getWikiManagerService()
 				.Initialize(wiki, rb, framework, $.CreateHREF(filename=wiki.getContentBean().getFilename(), complete=true));
 		} 
-		wiki.setIsInit(True).save();
+		wiki.getContentBean().setIsInit(True).save();
 		framework.redirect(action='admin:edit', querystring='wiki=#rc.ContentID#');
 	}
 
