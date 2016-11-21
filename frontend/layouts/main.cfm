@@ -60,15 +60,6 @@
 		</form>
 	</div>
 </div></div></div>
-<div id="notauthModal" class="modal fade" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal">&times;</button>
-		<h4 class="modal-title">#rc.rb.getKey('notauthTitle')#</h4>
-	</div>
-	<div class="modal-body center">
-		#rc.rb.getKey('notauthBody')#
-	</div>
-</div></div></div>
 </cfoutput>
 <script type="text/javascript">
 	(function() {
@@ -79,10 +70,6 @@
 		statusQueue.forEach(function(sm) {
 			addStatus(sm.class, sm.message);
 		});
-		if (window.location.search.match(/\?notauth=1/)) {
-			// TODO status bean instead
-			$('#notauthModal').modal('show');
-		}
 		<cfif $.currentUser().getIsLoggedIn() && rc.authedit>
 			$('a.redirect').click(function() {
 				if ($(this).attr('disabled') != 'disabled') {
@@ -106,21 +93,13 @@
 				return false;
 			});
 		<cfelseif  $.currentUser().getIsLoggedIn() && !rc.authedit>
-			$('a.pageedit').click(function() {
-				$('#notauthModal').modal('show');
-				return false;
-			});
-			$('#panelPageOperations a').click(function() {
-				$('#notauthModal').modal('show');
-				return false;
-			});
-			$('#redirectfrom a').click(function() {
-				$('#notauthModal').modal('show');
+			$('a.pageedit, #panelPageOperations a, #redirectform a').click(function() {
+				notAuthMessage();
 				return false;
 			});
 			$('a').filter(function() { return $(this).attr('href').match('frontend:ops');}).each(function() {
 				$(this).click(function() {
-					$('#notauthModal').modal('show');
+					notAuthMessage();
 					return false;
 				})
 			})
@@ -151,6 +130,12 @@
 	})();
 
 	<!--- STATUS STUFF --->
+	function notAuthMessage() {
+		<cfoutput>
+		addStatus('warn', '<strong>#rc.rb.getKey('notauthTitle')#</strong><br/><em>#rc.rb.getKey('notauthBody')#</em>');
+		</cfoutput>
+	}
+
 	function addStatus(sClass, sMessage) {
 		sMessage = sMessage.replace(
 			/{([^}]+)}/,
