@@ -93,7 +93,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 					);
 				} else {
 					statusMessage = ReReplace(rc.rb.getKey('lockSuccess'), '{locktime}', '{#lock.lock.getExpirationIso()#}');
-					statusMessage = ReReplace(statusMessage, '{lockreleaselink}', framework.BuildURL(action='frontend:ops.releaselock', querystring="wikipageid=#rc.wikiPage.getContentID()#"))
+					statusMessage = ReReplace(statusMessage, '{lockreleaselink}', framework.BuildURL(action='frontend:ops.releaselock', querystring="wikipageid=#rc.wikiPage.getContentID()#"));
 					getStatusManager().addStatus(
 						rc.wiki.getContentBean().getContentID(),
 						getBeanFactory().getBean('status', {class:'ok', message: statusMessage})
@@ -103,7 +103,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			} else {
 				getStatusManager().addStatus(
 					rc.wiki.getContentBean().getContentID(),
-					getBeanFactory().getBean('status', {class:'warn', message: notauthBody })
+					getBeanFactory().getBean('status', {class:'warn', message: rc.rb.getKey('notauthBody') })
 				);
 			}
 		} else {
