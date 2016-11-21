@@ -107,6 +107,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 							label = ListLast(cf, '/'),
 							title = ListLast(cf, '/'),
 							htmltitle = ListLast(cf, '/'),
+							filename = '#wiki.getFilename()#/#ListLast(cf, '/')#',
 							menutitle = ListLast(cf, '/'),
 							approved = 1,
 							display = 1,
