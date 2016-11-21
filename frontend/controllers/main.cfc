@@ -16,27 +16,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		if (!IsBoolean(rc.edit)) {rc.edit = true;}
 		rc.statusQueue = function() {return getStatusManager().getStatusPop(rc.wiki.getContentBean().getContentID());};
 		if( $.content().getRedirect() != '' ) {
-			// TODO - this should be a view...
-			statusMessage = '#rc.rb.getKey('redirectStatus')# <strong>' &
-				(rc.dispEditLinks ? '<span id="redirectfrom"><a href="##">' : '') &
-				$.content().getLabel() &
-				(rc.dispEditLinks ? '</a></span>' : '') &
-				'</strong>' &
-				'<div id="removeredirectModal" class="modal fade" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content">' &
-					'<div class="modal-header">' &
-						'<button type="button" class="close" data-dismiss="modal">&times;</button>' &
-						'<h4 class="modal-title">#rc.rb.getKey('redirectRemove')# <em>#$.content().getLabel()#</em></h4>' &
-					'</div>' &
-					'<div class="modal-body">' &
-						'<form id="editform" class="mura-form-builder" method="post" action="#framework.BuildURL('frontend:ops.redirectremove')#" onsubmit="return validateForm(this);">' &
-						'<input type="hidden" name="ParentID" value="#rc.wiki.getContentBean().getContentID()#" />' &
-						'<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />' &
-						'<input type="hidden" name="labelfrom" value="#$.content().getLabel()#" />' &
-						'<div>' &
-							'<br/><input type="submit" class="btn btn-default" value="#rc.rb.getKey('submit')#" /><br/>' &
-						'</div>' &
-						'</form>' &
-				'</div></div></div></div>';
+			savecontent variable='statusMessage' {
+				include '../views/status/redirect.cfm';
+			}
 			getStatusManager().addStatus(
 				rc.wiki.getContentBean().getContentID(),
 				getBeanFactory().getBean('status', {class:'info', message:statusMessage})
@@ -83,12 +65,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		if (StructKeyExists(URL, 'version')) {
 			rc.wikiPage = $.getBean('content').loadBy(ContentHistID=rc.version);
 			if (rc.wikiPage.getIsActive() != 1) {
-				// TODO - this should be a view...
-				statusMessage = ReReplace(rc.rb.getKey('versionNote'), '{versiondate}', '#DateFormat(rc.wikiPage.getLastUpdate(), 'yyyy-mm-dd')# #TimeFormat(rc.wikiPage.getLastUpdate(), 'HH:mm')#') &
-					'<br />' &
-					'<a href="#$.createHREF(filename=rc.wikiPage.getFilename())#">#rc.rb.getKey('versionNoteLink')#</a><br/>' &
-					'<strong><a href="#framework.BuildURL(action='frontend:ops.revert', querystring='version=#rc.version#')#">#rc.rb.getKey('versionNoteRevert')#</a></strong>' &
-					'<p><em>#rc.wikiPage.getNotes()# (#rc.wikiPage.getLastUpdateBy()#)</em></p>';
+				savecontent variable='statusMessage' {
+					include '../views/status/version.cfm';
+				}
 				getStatusManager().addStatus(
 					rc.wiki.getContentBean().getContentID(),
 					getBeanFactory().getBean('status', {class:'info', message:statusMessage})
@@ -122,9 +101,10 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 					framework.setView('main.edit');
 				}
 			} else {
-				// TODO Status message
-				writedump(CGI);
-				abort;
+				getStatusManager().addStatus(
+					rc.wiki.getContentBean().getContentID(),
+					getBeanFactory().getBean('status', {class:'warn', message: notauthBody })
+				);
 			}
 		} else {
 			lock = getLockManager().check(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel());

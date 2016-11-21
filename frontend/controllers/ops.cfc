@@ -6,9 +6,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	public any function before(required struct rc) {
 		SUPER.before(rc);
 		if (!rc.authEdit) {
-			// TODO status bean message instead
+			getStatusManager().addStatus(
+				rc.wiki.getContentBean().getContentID(),
+				getBeanFactory().getBean('status', {class:'warn', message:'<strong>#rc.rb.getKey('notauthTitle')#</strong><br/><em>#rc.rb.getKey('notauthBody')#</em>'})
+			);
 			$.redirect(
-				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#$.content().getLabel()#', querystring='notauth=1'),
+				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#$.content().getLabel()#'),
 				statusCode = '302'
 			);
 		}
