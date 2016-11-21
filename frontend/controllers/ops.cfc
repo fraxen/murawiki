@@ -73,7 +73,33 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 	public void function delete() {
 		rc.wiki = getWikiManagerService().getWiki(rc.parentid);
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=rc.SiteID);
+		var lock = getLockManager().request(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
+		if (!lock.locked) {
+			var message = rc.wiki.getRb().getKey('lockFailOp');
+			message = Replace(message, '{username}', $.getBean('user').loadBy(UserID = lock.lock.getUserID(), SiteID=$.event('SiteID')).getUserName());
+			message = Replace(message, '{locktime}', '{#lock.lock.getExpirationIso()#}');
+			getStatusManager().addStatus(
+				rc.wiki.getContentBean().getContentID(),
+				getBeanFactory().getBean('status', {class:'warn', message: message})
+			);
+			$.redirect(
+				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
+				statusCode = '302'
+			);
+			abort;
+		}
 		rc.wikiPage.delete();
+		getLockManager().release(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
+		getStatusManager().addStatus(
+			rc.wiki.getContentBean().getContentID(),
+			getBeanFactory().getBean(
+				'status',
+				{
+					class:'ok',
+					message: REReplace(rc.wiki.getRb().getKey('statusDeleted'), '{label}', rc.wikiPage.getLabel())
+				}
+			)
+		);
 		$.redirect(
 			location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
 			statusCode = '302'
@@ -84,10 +110,36 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.wikiPage = $.getBean('content').loadBy(contentHistID = rc.version);
 		rc.wiki = getWikiManagerService().getWiki(rc.wikiPage.getParentID());
 		rc.rb = rc.wiki.getRb();
+		var lock = getLockManager().request(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
+		if (!lock.locked) {
+			var message = rc.wiki.getRb().getKey('lockFailOp');
+			message = Replace(message, '{username}', $.getBean('user').loadBy(UserID = lock.lock.getUserID(), SiteID=$.event('SiteID')).getUserName());
+			message = Replace(message, '{locktime}', '{#lock.lock.getExpirationIso()#}');
+			getStatusManager().addStatus(
+				rc.wiki.getContentBean().getContentID(),
+				getBeanFactory().getBean('status', {class:'warn', message: message})
+			);
+			$.redirect(
+				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
+				statusCode = '302'
+			);
+			abort;
+		}
 		rc.wikiPage.set({
 			active=1,
 			notes= '#rc.rb.getKey('reverted')# #DateFormat(rc.wikiPage.getLastUpdate(), 'yyyy-mm-dd')# #TimeFormat(rc.wikiPage.getLastUpdate(), 'HH:mm')#'
 		}).save();
+		getLockManager().release(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
+		getStatusManager().addStatus(
+			rc.wiki.getContentBean().getContentID(),
+			getBeanFactory().getBean(
+				'status',
+				{
+					class:'ok',
+					message: REReplace(rc.wiki.getRb().getKey('statusReverted'), '{label}', rc.wikiPage.getLabel())
+				}
+			)
+		);
 		$.redirect(
 			location = $.createHREF(filename=rc.wikiPage.getFilename()),
 			statusCode = '302'
@@ -99,10 +151,36 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.wiki = getWikiManagerService().getWiki(rc.parentid);
 		rc.wikiPage = $.getBean('content').loadBy(filename='#rc.wiki.getContentBean().getFileName()#/#rc.labelfrom#', SiteID=rc.SiteID);
 		rc.rb = rc.wiki.getRb();
+		var lock = getLockManager().request(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
+		if (!lock.locked) {
+			var message = rc.wiki.getRb().getKey('lockFailOp');
+			message = Replace(message, '{username}', $.getBean('user').loadBy(UserID = lock.lock.getUserID(), SiteID=$.event('SiteID')).getUserName());
+			message = Replace(message, '{locktime}', '{#lock.lock.getExpirationIso()#}');
+			getStatusManager().addStatus(
+				rc.wiki.getContentBean().getContentID(),
+				getBeanFactory().getBean('status', {class:'warn', message: message})
+			);
+			$.redirect(
+				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
+				statusCode = '302'
+			);
+			abort;
+		}
 		rc.wikiPage.set({
 			redirect='',
 			notes= rc.rb.getKey('redirectRemoveNote')
 		}).save();
+		getLockManager().release(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
+		getStatusManager().addStatus(
+			rc.wiki.getContentBean().getContentID(),
+			getBeanFactory().getBean(
+				'status',
+				{
+					class:'ok',
+					message: rc.wiki.getRb().getKey('redirectRemovenote')
+				}
+			)
+		);
 		$.redirect(
 			location = $.createHREF(filename=rc.wikiPage.getFilename())
 			, statusCode = '302'
@@ -115,6 +193,21 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=rc.SiteID);
 		rc.wiki = getWikiManagerService().getWiki(rc.parentid);
 		rc.rb = rc.wiki.getRb();
+		var lock = getLockManager().request(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
+		if (!lock.locked) {
+			var message = rc.wiki.getRb().getKey('lockFailOp');
+			message = Replace(message, '{username}', $.getBean('user').loadBy(UserID = lock.lock.getUserID(), SiteID=$.event('SiteID')).getUserName());
+			message = Replace(message, '{locktime}', '{#lock.lock.getExpirationIso()#}');
+			getStatusManager().addStatus(
+				rc.wiki.getContentBean().getContentID(),
+				getBeanFactory().getBean('status', {class:'warn', message: message})
+			);
+			$.redirect(
+				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
+				statusCode = '302'
+			);
+			abort;
+		}
 		rc.wikiPage.set({
 			type="Page",
 			subtype="WikiPage",
@@ -125,6 +218,17 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			title=rc.fromlabel,
 			notes= rc.rb.getKey('redirectNote')
 		}).save();
+		getLockManager().release(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
+		getStatusManager().addStatus(
+			rc.wiki.getContentBean().getContentID(),
+			getBeanFactory().getBean(
+				'status',
+				{
+					class:'ok',
+					message: rc.wiki.getRb().getKey('redirectNote')
+				}
+			)
+		);
 		$.redirect(
 			location = $.createHREF(filename=rc.wikiPage.getFilename()),
 			statusCode = '302'
@@ -139,6 +243,22 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		rc.wiki = getWikiManagerService().getWiki(rc.parentid);
 		rc.rb = rc.wiki.getRb();
 		rc.blurb = REReplace(rc.blurb,'(#Chr(13)##Chr(10)#|#Chr(10)#|#Chr(13)#)', '#Chr(13)#', 'all');
+
+		var lock = getLockManager().request(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
+		if (!lock.locked) {
+			var message = rc.wiki.getRb().getKey('lockFailOp');
+			message = Replace(message, '{username}', $.getBean('user').loadBy(UserID = lock.lock.getUserID(), SiteID=$.event('SiteID')).getUserName());
+			message = Replace(message, '{locktime}', '{#lock.lock.getExpirationIso()#}');
+			getStatusManager().addStatus(
+				rc.wiki.getContentBean().getContentID(),
+				getBeanFactory().getBean('status', {class:'warn', message: message})
+			);
+			$.redirect(
+				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
+				statusCode = '302'
+			);
+			abort;
+		}
 
 		var i=1;
 		var attachments={};
@@ -216,6 +336,17 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			attachments = SerializeJson(attachments)
 		});
 		rc.wikiPage.save();
+		getLockManager().release(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
+		getStatusManager().addStatus(
+			rc.wiki.getContentBean().getContentID(),
+			getBeanFactory().getBean(
+				'status',
+				{
+					class:'ok',
+					message: REReplace(rc.wiki.getRb().getKey('statusPageSave'), '{label}', rc.wikiPage.getLabel())
+				}
+			)
+		);
 		$.redirect(
 			location = $.createHREF(filename=rc.wikiPage.getFilename()),
 			statusCode = '302'
