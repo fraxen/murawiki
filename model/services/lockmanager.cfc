@@ -31,7 +31,7 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		return outLocks;
 	}
 
-	private object function getLocksByWikiIdLabel(required string WikiId, required string Label) {
+	private struct function getLocksByWikiIdLabel(required string WikiId, required string Label) {
 		if (StructKeyExists(VARIABLES.locks, ARGUMENTS.WikiID) && StructKeyExists(VARIABLES.locks[ARGUMENTS.WikiID], ARGUMENTS.Label)) {
 			return VARIABLES.locks[ARGUMENTS.WikiID][ARGUMENTS.Label];
 		}

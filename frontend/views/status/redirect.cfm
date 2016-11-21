@@ -17,7 +17,7 @@
 		<div class="modal-body">
 			<form id="editform" class="mura-form-builder" method="post" action="#framework.BuildURL('frontend:ops.redirectremove')#" onsubmit="return validateForm(this);">
 			<input type="hidden" name="ParentID" value="#rc.wiki.getContentBean().getContentID()#" />
-			<input type="hidden" name="SiteID" value="#rc.wikiPage.getSiteID()#" />
+			<input type="hidden" name="SiteID" value="#rc.wiki.getContentBean().getSiteID()#" />
 			<input type="hidden" name="labelfrom" value="#$.content().getLabel()#" />
 			<div>
 				<br/><input type="submit" class="btn btn-default" value="#rc.rb.getKey('submit')#" /><br/>
