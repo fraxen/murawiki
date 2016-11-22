@@ -23,7 +23,12 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 			for (var ll in StructSort(temp, 'numeric', 'asc', 'RandomSort')) {
 				getStatusManager().addStatus(
 					rc.wiki.getContentBean().getContentID(),
-					getBeanFactory().getBean('status', {class:'info', message:rc.wiki.getRb().getKey('undefinedMessage')})
+					getBeanFactory().getBean('status', {
+						key: 'undefinedquick',
+						class: 'info',
+						message: rc.wiki.getRb().getKey('undefinedMessage'),
+						label: ll
+					})
 				);
 				$.redirect(
 					location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#ll#/'),
@@ -60,7 +65,12 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 				var wikipage = $.getBean('content').loadBy(SiteID=rc.wiki.getContentBean().getSiteID(), filename='#rc.wiki.getContentBean().getFilename()#/#l#/');
 				getStatusManager().addStatus(
 					rc.wiki.getContentBean().getContentID(),
-					getBeanFactory().getBean('status', {class:'info', message:rc.wiki.getRb().getKey('orphanMessage')})
+					getBeanFactory().getBean('status', {
+						key: 'orphanquick',
+						class: 'info',
+						message: rc.wiki.getRb().getKey('orphanMessage'),
+						label: WikiPage.getLabel()
+					})
 				);
 				$.redirect(
 					location = $.createHREF(filename='#wikipage.getFilename()#'),
@@ -126,12 +136,18 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 			temp[p.ContentID].RandomSort = Rand();
 		}
 		for (var ContentID in StructSort(temp, 'numeric', 'asc', 'RandomSort')) {
+			var wikiPage = $.getBean('content').loadBy(ContentID=ContentID, SiteID = rc.wiki.getContentBean().getSiteID());
 			getStatusManager().addStatus(
 				rc.wiki.getContentBean().getContentID(),
-				getBeanFactory().getBean('status', {class:'info', message:rc.rb.getKey('oldMessage')})
+				getBeanFactory().getBean('status', {
+					key: 'oldquick',
+					class: 'info',
+					message: rc.wiki.getRb().getKey('oldMessage'),
+					label: wikiPage.getLabel()
+				})
 			);
 			$.redirect(
-				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#$.getBean('content').loadBy(ContentID=ContentID, SiteID = rc.wiki.getContentBean().getSiteID()).getLabel()#'),
+				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#wikiPage.getLabel()#'),
 				statusCode = '302'
 			);
 		}

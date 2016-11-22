@@ -8,7 +8,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		if (!rc.authEdit) {
 			getStatusManager().addStatus(
 				rc.wiki.getContentBean().getContentID(),
-				getBeanFactory().getBean('status', {class:'warn', message:'<strong>#rc.rb.getKey('notauthTitle')#</strong><br/><em>#rc.rb.getKey('notauthBody')#</em>'})
+				getBeanFactory().getBean('status', {
+					key: 'notauth',
+					class: 'warn',
+					message: '<strong>#rc.rb.getKey('notauthTitle')#</strong><br/><em>#rc.rb.getKey('notauthBody')#</em>',
+					label: ''
+				})
 			);
 			$.redirect(
 				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#$.content().getLabel()#'),
@@ -23,7 +28,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		getLockManager().release(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
 		getStatusManager().addStatus(
 			rc.wiki.getContentBean().getContentID(),
-			getBeanFactory().getBean('status', {class:'ok', message:rc.wiki.getRb().getKey('lockRelease')})
+			getBeanFactory().getBean('status', {
+				key: 'lockrelease',
+				class: 'ok',
+				message: rc.wiki.getRb().getKey('lockRelease'),
+				label: rc.wikiPage.getLabel()
+			})
 		);
 		$.redirect(
 			location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
@@ -41,7 +51,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				'status',
 				{
 					class:'ok',
-					message: REReplace(rc.wiki.getRb().getKey('lockReleaseLabelname'), '{label}', '<a href="#$.createHREF(filename=rc.wikiPage.getFilename())#">#rc.wikiPage.getLabel()#</a>')
+					message: REReplace(rc.wiki.getRb().getKey('lockReleaseLabelname'), '{label}', '<a href="#$.createHREF(filename=rc.wikiPage.getFilename())#">#rc.wikiPage.getLabel()#</a>'),
+					key: 'lockrelease',
+					label: rc.wikiPage.getLabel()
 				}
 			)
 		);
@@ -57,14 +69,24 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			message = Replace(message, '{locktime}', '{#lock.lock.getExpirationIso()#}');
 			getStatusManager().addStatus(
 				rc.wiki.getContentBean().getContentID(),
-				getBeanFactory().getBean('status', {class:'warn', message: message})
+				getBeanFactory().getBean('status', {
+					key: 'lockfailop',
+					class: 'warn',
+					message: message,
+					label: rc.wikiPage.getLabel()
+				})
 			);
 		} else {
 			rc.wikiPage.save();
 			getLockManager().release(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
 			getStatusManager().addStatus(
 				rc.wiki.getContentBean().getContentID(),
-				getBeanFactory().getBean('status', {class:'ok', message:rc.wiki.getRb().getKey('touchedMessage')})
+				getBeanFactory().getBean('status', {
+					key: 'touched',
+					class: 'ok',
+					message: rc.wiki.getRb().getKey('touchedMessage'),
+					label: rc.wikiPage.getLabel()
+				})
 			);
 		}
 		$.redirect(
@@ -83,7 +105,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			message = Replace(message, '{locktime}', '{#lock.lock.getExpirationIso()#}');
 			getStatusManager().addStatus(
 				rc.wiki.getContentBean().getContentID(),
-				getBeanFactory().getBean('status', {class:'warn', message: message})
+				getBeanFactory().getBean('status', {
+					key: 'lockfailop',
+					class: 'warn',
+					message: message,
+					label: rc.wikiPage.getLabel()
+				})
 			);
 			$.redirect(
 				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
@@ -99,6 +126,8 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				'status',
 				{
 					class:'ok',
+					key:'deleted',
+					label: rc.wikiPage.getLabel(),
 					message: REReplace(rc.wiki.getRb().getKey('statusDeleted'), '{label}', rc.wikiPage.getLabel())
 				}
 			)
@@ -120,7 +149,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			message = Replace(message, '{locktime}', '{#lock.lock.getExpirationIso()#}');
 			getStatusManager().addStatus(
 				rc.wiki.getContentBean().getContentID(),
-				getBeanFactory().getBean('status', {class:'warn', message: message})
+				getBeanFactory().getBean('status', {
+					key: 'lockfailop',
+					class: 'warn',
+					message: message,
+					label: rc.wikiPage.getLabel()
+				})
 			);
 			$.redirect(
 				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
@@ -139,7 +173,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				'status',
 				{
 					class:'ok',
-					message: REReplace(rc.wiki.getRb().getKey('statusReverted'), '{label}', rc.wikiPage.getLabel())
+					message: REReplace(rc.wiki.getRb().getKey('statusReverted'), '{label}', rc.wikiPage.getLabel()),
+					key: 'reverted',
+					label: rc.wikiPage.getLabel()
 				}
 			)
 		);
@@ -161,7 +197,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			message = Replace(message, '{locktime}', '{#lock.lock.getExpirationIso()#}');
 			getStatusManager().addStatus(
 				rc.wiki.getContentBean().getContentID(),
-				getBeanFactory().getBean('status', {class:'warn', message: message})
+				getBeanFactory().getBean('status', {
+					key: 'lockfailop',
+					class: 'warn',
+					message: message,
+					label: rc.wikiPage.getLabel()
+				})
 			);
 			$.redirect(
 				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
@@ -180,7 +221,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				'status',
 				{
 					class:'ok',
-					message: rc.wiki.getRb().getKey('redirectRemovenote')
+					message: rc.wiki.getRb().getKey('redirectRemovenote'),
+					key: 'redirectremove',
+					label: rc.wikiPage.getLabel()
 				}
 			)
 		);
@@ -203,7 +246,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			message = Replace(message, '{locktime}', '{#lock.lock.getExpirationIso()#}');
 			getStatusManager().addStatus(
 				rc.wiki.getContentBean().getContentID(),
-				getBeanFactory().getBean('status', {class:'warn', message: message})
+				getBeanFactory().getBean('status', {
+					key: 'lockfailop',
+					class: 'warn',
+					message: message,
+					label: rc.wikiPage.getLabel()
+				})
 			);
 			$.redirect(
 				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
@@ -228,7 +276,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				'status',
 				{
 					class:'ok',
-					message: rc.wiki.getRb().getKey('redirectNote')
+					message: rc.wiki.getRb().getKey('redirectNote'),
+					key: 'redirect',
+					label: rc.wikiPage.getLabel()
 				}
 			)
 		);
@@ -254,7 +304,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			message = Replace(message, '{locktime}', '{#lock.lock.getExpirationIso()#}');
 			getStatusManager().addStatus(
 				rc.wiki.getContentBean().getContentID(),
-				getBeanFactory().getBean('status', {class:'warn', message: message})
+				getBeanFactory().getBean('status', {
+					key: 'lockfailop',
+					class: 'warn',
+					message: message,
+					label: rc.wikiPage.getLabel()
+				})
 			);
 			$.redirect(
 				location = $.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#rc.wikiPage.getLabel()#'),
@@ -346,7 +401,9 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				'status',
 				{
 					class:'ok',
-					message: REReplace(rc.wiki.getRb().getKey('statusPageSave'), '{label}', rc.wikiPage.getLabel())
+					message: REReplace(rc.wiki.getRb().getKey('statusPageSave'), '{label}', rc.wikiPage.getLabel()),
+					key: 'saved',
+					label: rc.wikiPage.getLabel()
 				}
 			)
 		);

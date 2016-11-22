@@ -21,7 +21,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			}
 			getStatusManager().addStatus(
 				rc.wiki.getContentBean().getContentID(),
-				getBeanFactory().getBean('status', {class:'info', message:statusMessage})
+				getBeanFactory().getBean('status', {
+					key: 'redirected',
+					class: 'info',
+					message: statusMessage,
+					label: $.content().getLabel()
+				})
 			);
 			$.redirect(
 				location = "#$.createHREF(filename='#rc.wiki.getContentBean().getFilename()#/#$.content().getRedirect()#/')#",
@@ -70,7 +75,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				}
 				getStatusManager().addStatus(
 					rc.wiki.getContentBean().getContentID(),
-					getBeanFactory().getBean('status', {class:'info', message:statusMessage})
+					getBeanFactory().getBean('status', {
+						key: 'version',
+						class: 'info',
+						message: statusMessage,
+						label: label
+					})
 				);
 			}
 		}
@@ -89,21 +99,36 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 					statusMessage  = Replace(statusMessage , '{locktime}', '{#lock.lock.getExpirationIso()#}');
 					getStatusManager().addStatus(
 						rc.wiki.getContentBean().getContentID(),
-						getBeanFactory().getBean('status', {class:'warn', message: statusMessage })
+						getBeanFactory().getBean('status', {
+							key: 'lockFail',
+							class: 'warn',
+							message: statusMessage,
+							label: label
+						})
 					);
 				} else {
 					statusMessage = ReReplace(rc.rb.getKey('lockSuccess'), '{locktime}', '{#lock.lock.getExpirationIso()#}');
 					statusMessage = ReReplace(statusMessage, '{lockreleaselink}', framework.BuildURL(action='frontend:ops.releaselock', querystring="wikipageid=#rc.wikiPage.getContentID()#"));
 					getStatusManager().addStatus(
 						rc.wiki.getContentBean().getContentID(),
-						getBeanFactory().getBean('status', {class:'ok', message: statusMessage})
+						getBeanFactory().getBean('status', {
+							key: 'locked',
+							class: 'ok',
+							message: statusMessage,
+							label: label
+						})
 					);
 					framework.setView('main.edit');
 				}
 			} else {
 				getStatusManager().addStatus(
 					rc.wiki.getContentBean().getContentID(),
-					getBeanFactory().getBean('status', {class:'warn', message: rc.rb.getKey('notauthBody') })
+					getBeanFactory().getBean('status', {
+						key: 'notauth',
+						class: 'warn',
+						message: '<strong>#rc.rb.getKey('notauthTitle')#</strong><br/><em>#rc.rb.getKey('notauthBody')#</em>',
+						label: label
+					})
 				);
 			}
 		} else {
@@ -114,7 +139,12 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				statusMessage  = Replace(statusMessage , '{locktime}', '{#lock.lock.getExpirationIso()#}');
 				getStatusManager().addStatus(
 					rc.wiki.getContentBean().getContentID(),
-					getBeanFactory().getBean('status', {class:'info', message: statusMessage })
+					getBeanFactory().getBean('status', {
+						key: 'lockinfo',
+						class: 'info',
+						message: statusMessage,
+						label: label
+					})
 				);
 			}
 		}
