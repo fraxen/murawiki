@@ -137,16 +137,31 @@
 	}
 
 	function addStatus(sClass, sMessage) {
-		sMessage = sMessage.replace(
-			/{([^}]+)}/,
-			function($0,$1) {
-				var ts = new Date($1);
-				return ('00' + ts.getHours()).slice(-2) + ':' + ('00' + ts.getMinutes()).slice(-2);
-			}
-		);
-		$('<div/>')
+		var thisStatus,
+			existingStatus = $('#status>div'),
+			newStatus = $('<div/>')
 			.addClass(sClass)
-			.html(sMessage)
+			.html(
+				sMessage.replace(
+					/{([^}]+)}/,
+					function($0,$1) {
+						var ts = new Date($1);
+						return ('00' + ts.getHours()).slice(-2) + ':' + ('00' + ts.getMinutes()).slice(-2);
+					}
+				)
+			);
+		for (var i=0; i<existingStatus.length; i++) {
+			thisStatus = $(existingStatus[i]);
+			if (
+				thisStatus.attr('class') == sClass
+				&&
+				thisStatus.html() == newStatus.html()
+			) {
+				thisStatus.fadeTo('slow', 0.5).fadeTo('slow', 1.0);
+				return true;
+			}
+		}
+		newStatus
 			.hide()
 			.appendTo($('#status'))
 			.slideDown('slow');
