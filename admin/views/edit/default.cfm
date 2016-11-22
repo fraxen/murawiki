@@ -112,7 +112,7 @@
 		<dl class="dl-horizontal">
 		<dt><label for="editlinksanon">Display edit links for anonymous (not logged in users)</label><em>Only applies if view of access to the wiki is not restricted</em></dt>
 		<dd>
-		<input type="checkbox" id="editlinksanon" name="editlinksanon" value="1" <cfif rc.wikiedit.getContentBean().getUseEditLinksAnon() EQ 1>checked="checked"</cfif> />
+		<input type="checkbox" id="editlinksanon" name="editlinksanon" value="1" <cfif rc.wikiedit.getContentBean().getEditLinksAnon() EQ 1>checked="checked"</cfif> />
 		</dd>
 		</dl>
 	</div>
