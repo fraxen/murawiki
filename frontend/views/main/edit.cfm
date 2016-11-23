@@ -16,7 +16,7 @@
 	ArraySort(thisTags, 'text');
 </cfscript>
 <cfoutput>
-	<h4 class="modal-title">#rc.rb.getKey('wikiPageEditTitle')# <em>#rc.wikiPage.getLabel()#</em></h4>
+	<h4 class="modal-title">#rc.rb.getKey('wikiPageEditTitle')#</h4>
 	<form id="editform" class="mura-form-builder" method="post" enctype="multipart/form-data" action="#BuildURL('frontend:ops.page')#" onsubmit="return validateForm(this);">
 		<input type="hidden" name="ParentID" value="#rc.wiki.getContentBean().getContentID()#" />
 		<input type="hidden" name="ContentID" value="#rc.wikiPage.getContentID()#" />
@@ -72,59 +72,95 @@
 			<input type="text" name="notes" value="" class="form-control" placeholder="#rc.rb.getKey('notesPlaceholder')#" />
 		</div>
 		<div >
+			<br/><input id="preview" type="button" class="btn btn-default" value="Preview" />
 			<br/><input type="submit" class="btn btn-default" value="#rc.rb.getKey('submit')#" /><br/>
 		</div>
 		<div>
 			#rc.wiki.getEngine().getResource().getKey('editInstructions')#
 		</div>
 	</form>
+<div id="previewModal" class="modal fade" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h4 class="modal-title">#rc.rb.getKey('previewTitle')# <em>#rc.wikiPage.getLabel()#</em></h4>
+	</div>
+	<div class="modal-body" style="PADDING: 2em;">
+	</div>
+</div></div></div>
 </cfoutput>
 <script type="text/javascript">
-	(function() {
-		$(document).ready(function() {
-			$('#editform select.s2').select2();
-			$('#attachAdd').on('click', function() {
-				var lastAttach = $('#editform input[type="file"]').last();
-				var i = +lastAttach.attr('name').replace('attachment', '') + 1;
-				lastAttach.clone().attr('name', 'attachment' + i).insertAfter(lastAttach);
-				return false;
+	$(document).ready(function() {
+		$('#editform select.s2').select2();
+		$('#attachAdd').on('click', function() {
+			var lastAttach = $('#editform input[type="file"]').last();
+			var i = +lastAttach.attr('name').replace('attachment', '') + 1;
+			lastAttach.clone().attr('name', 'attachment' + i).insertAfter(lastAttach);
+			return false;
+		});
+		$('a.attachRemove').on('click', function() {
+			$(this).parent().parent()
+				.css('display', 'none')
+				.find('input').attr('value', '{}');
+			return false;
+		});
+		$(window).on('beforeunload', function() {
+			murawiki.dispStatus('info', '<cfoutput>#rc.rb.getKey('lockReleaseSpinner')#</cfoutput>');
+			$.ajax({
+				type : 'GET',
+				url : '<cfoutput>#BuildURL(action='frontend:ops.releaselockajax', querystring='wikipageid=#rc.wikiPage.getContentID()#')#</cfoutput>',  //loading a simple text file for sample.
+				cache : false,
+				global : false,
+				async : false,
+				success : function(data) {
+					return null;
+				}
 			});
-			$('a.attachRemove').on('click', function() {
-				$(this).parent().parent()
-					.css('display', 'none')
-					.find('input').attr('value', '{}');
-				return false;
-			});
-			$(window).on('beforeunload', function() {
-				addStatus('info', '<cfoutput>#rc.rb.getKey('lockReleaseSpinner')#</cfoutput>');
-				$.ajax({
-					type : 'GET',
-					url : '<cfoutput>#BuildURL(action='frontend:ops.releaselockajax', querystring='wikipageid=#rc.wikiPage.getContentID()#')#</cfoutput>',  //loading a simple text file for sample.
-					cache : false,
-					global : false,
-					async : false,
-					success : function(data) {
-						return null;
-					}
-				});
-				return undefined;
-			});
-			$('#editform').on('submit', function() {
-				$(window).off('beforeunload');
-				return true;
-			});
-			$(document).on('addedStatus', function() {
-				$('a[data-lockrelease="1"]').on('click', function() {
-					$(window).off('beforeunload');
-					return true;
-				});
-			});
-			$('a.pageedit').attr('disabled', 'disabled');
-			$('a.delete, a.redirect, a.touch').on('click', function() {
+			return undefined;
+		});
+		$('#editform').on('submit', function() {
+			$(window).off('beforeunload');
+			return true;
+		});
+		$(document).on('addedStatus', function() {
+			$('a[data-lockrelease="1"]').on('click', function() {
 				$(window).off('beforeunload');
 				return true;
 			});
 		});
-	})();
+		$('a.pageedit').attr('disabled', 'disabled');
+		$('a.delete, a.redirect, a.touch').on('click', function() {
+			$(window).off('beforeunload');
+			return true;
+		});
+		$('#preview').on('click', function() {
+			$('#previewModal').modal('show');
+			$('#previewModal div.modal-body').html('<div style="text-align:center; MARGIN: 2em;"><i class="fa fa-spinner fa-spin" style="font-size:48px"></div>')
+			<cfoutput>
+			$.ajax({
+				type: 'POST',
+				url: '#BuildURL(action='frontend:ops.preview')#',
+				data: {
+					wikiid: '#rc.wiki.getContentBean().getContentID()#',
+					contentid: '#rc.wikiPage.getContentID()#',
+					blurb: $('textarea[name="blurb"]').val()
+				},
+				cache: false,
+				global: false,
+				async: true,
+				success: function(data, textStatus, jqXHR) {
+					$('##previewModal div.modal-body').html(
+						'<h4>' + $('input[name="title"]').val() + '</h4>' +
+						data['BODY']
+					);
+					$('##previewModal div.modal-body a').each(function() {$(this).attr('target', '_blank')});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$('##previewModal').modal('hide');
+					murawiki.addStatus('warn', '#rc.rb.getKey('previewFail')#')
+				}
+			});
+			</cfoutput>
+		});
+	});
 </script>
 
