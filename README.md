@@ -62,11 +62,14 @@ See the _credits_ section for parts inherited/included from other pieces.
 
 ## Future
 ###Highest priority
-* [Implement locking to prevent simultaneous editing of a page](https://github.com/fraxen/murawiki/issues/24)
-* [Full Mura 7 compatibility](https://github.com/fraxen/murawiki/issues/25)
-* [Lucee 5 testing](https://github.com/fraxen/murawiki/issues/28)
-* [HTML renderer, to allow for full WYSIWYG editing](https://github.com/fraxen/murawiki/issues/30)
+* [x] [Implement locking to prevent simultaneous editing of a page](https://github.com/fraxen/murawiki/issues/24)
+* [ ] [Full Mura 7 compatibility](https://github.com/fraxen/murawiki/issues/25)
+* [ ] [Lucee 5 testing](https://github.com/fraxen/murawiki/issues/28)
+* [ ] [HTML renderer, to allow for full WYSIWYG editing](https://github.com/fraxen/murawiki/issues/30)
+* [ ] [Preview pane, to inspect how the wiki code will render](https://github.com/fraxen/murawiki/issues/33)
+* [ ] [Links that easily inserts attachment/image/thumbnail into the editing box](https://github.com/fraxen/murawiki/issues/34)
+
 ### Other
-* [Markdown renderer](https://github.com/fraxen/murawiki/issues/31)
-* [Sections](https://github.com/fraxen/murawiki/issues/32) - to group content, would also allow a separate _Special_ section, templates and permission set by section.
-* [PostgreSQL compatibility](https://github.com/fraxen/murawiki/issues/27) and [Oracle compatibility](https://github.com/fraxen/murawiki/issues/26)
+* [ ] [Markdown renderer](https://github.com/fraxen/murawiki/issues/31)
+* [ ] [Sections](https://github.com/fraxen/murawiki/issues/32) - to group content, would also allow a separate _Special_ section, templates and permission set by section.
+* [ ] [PostgreSQL compatibility](https://github.com/fraxen/murawiki/issues/27) and [Oracle compatibility](https://github.com/fraxen/murawiki/issues/26)
