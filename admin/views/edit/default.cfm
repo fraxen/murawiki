@@ -26,7 +26,6 @@
 	</div>
 	<div class="mura-form-dropdown form-group">
 		<label for="language">Language for user interface (does not impact content)</label>
-		<!--- TODO Dynamically select here... --->
 		<select id="language" name="language" class="form-control" data-placeholder="Select language" data-allow-clear="false">
 			<cfloop index="l" array="#rc.language#">
 				<option value="#l#" <cfif rc.wikiedit.getContentBean().getLanguage() EQ l>selected="selected"</cfif>>#l#</option>
@@ -113,13 +112,12 @@
 		<dl class="dl-horizontal">
 		<dt><label for="editlinksanon">Display edit links for anonymous (not logged in users)</label><em>Only applies if view of access to the wiki is not restricted</em></dt>
 		<dd>
-		<input type="checkbox" id="editlinksanon" name="editlinksanon" value="1" <cfif rc.wikiedit.getContentBean().getUseEditLinksAnon() EQ 1>checked="checked"</cfif> />
+		<input type="checkbox" id="editlinksanon" name="editlinksanon" value="1" <cfif rc.wikiedit.getContentBean().getEditLinksAnon() EQ 1>checked="checked"</cfif> />
 		</dd>
 		</dl>
 	</div>
 	<div class="mura-form-dropdown form-group control-group">
 		<label for="wikiengine">Wiki engine</label>
-		<!--- TODO Dynamically select here... --->
 		<select id="wikiengine" name="wikiengine" class="form-control" data-placeholder="Select engine" data-allow-clear="false" <cfif rc.wikiedit.getContentBean().getIsInit()>disabled="disabled"</cfif>>
 			<cfloop index="e" array="#StructKeyArray(rc.engines)#">
 				<option value="#e#" <cfif rc.wikiedit.getContentBean().getWikiEngine() EQ e>selected="selected"</cfif>>#e#</option>

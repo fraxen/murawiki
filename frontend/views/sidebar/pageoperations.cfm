@@ -3,7 +3,7 @@
 	<h3>#rc.rb.getKey('sidebarPageopsTitle')#</h3>
 	<ul>
 		<li><a
-			id="pageedit" class="pageedit" href="##"
+			id="pageedit" class="pageedit" href="#$.CreateHREF(filename=rc.wikiPage.getFilename(), querystring='edit')#"
 			<cfif StructKeyExists(URL, 'version')>disabled="disabled"</cfif>
 			<cfif rc.isUndefined>
 				accesskey="#rc.rb.getKey('sidebarPageopsEditAccessKey')#"
@@ -36,6 +36,7 @@
 		</a></li>
 		<li><a
 			href="#buildURL(action='frontend:ops.touch', querystring='contentid=#rc.wikiPage.getContentID()#')#"
+			class="touch"
 			<cfif !rc.isUndefined>accesskey="#rc.rb.getKey('sidebarPageopsTouchAccessKey')#"</cfif>
 			<cfif rc.isUndefined || StructKeyExists(URL, 'version')>disabled="disabled"</cfif>
 		>

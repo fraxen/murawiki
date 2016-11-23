@@ -27,6 +27,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 		param rc.SiteNav=0;
 		param rc.SiteSearch=0;
 		param rc.useIndex=0;
+		param rc.editLinksAnon=0;
 		param rc.collectionpath='';
 		param rc.WikiEngine = wiki.getContentBean().getWikiEngine();
 		param rc.regionmain = wiki.getContentBean().getRegionmain();
@@ -67,6 +68,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 			, SiteSearch = rc.SiteSearch
 			, useIndex   = rc.UseIndex
 			, engineOpts = SerializeJson(rc.engineopts)
+			, editLinksAnon = rc.editLinksAnon
 			, collectionpath = rc.CollectionPath
 		}).save();
 
@@ -78,7 +80,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 			getWikiManagerService()
 				.Initialize(wiki, rb, framework, $.CreateHREF(filename=wiki.getContentBean().getFilename(), complete=true));
 		} 
-		wiki.setIsInit(True).save();
+		wiki.getContentBean().setIsInit(True).save();
 		framework.redirect(action='admin:edit', querystring='wiki=#rc.ContentID#');
 	}
 
