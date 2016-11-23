@@ -62,13 +62,12 @@
 </div></div></div>
 </cfoutput>
 <script type="text/javascript">
-	(function() {
 	$(document).ready(function() {
 		<cfoutput>
 		var statusQueue = #SerializeJson(rc.statusQueue())#;
 		</cfoutput>
 		statusQueue.forEach(function(sm) {
-			addStatus(sm.class, sm.message);
+			murawiki.dispStatus(sm.class, sm.message);
 		});
 		<cfif $.currentUser().getIsLoggedIn() && rc.authedit>
 			$('a.redirect').click(function() {
@@ -127,47 +126,47 @@
 			})
 		</cfif>
 	});
-	})();
-
-	<!--- STATUS STUFF --->
-	function notAuthMessage() {
-		<cfoutput>
-		addStatus('warn', '<strong>#rc.rb.getKey('notauthTitle')#</strong><br/><em>#rc.rb.getKey('notauthBody')#</em>');
-		</cfoutput>
-	}
-
-	function addStatus(sClass, sMessage) {
-		var thisStatus,
-			existingStatus = $('#status>div'),
-			newStatus = $('<div/>')
-			.addClass(sClass)
-			.html(
-				sMessage.replace(
-					/{([^}]+)}/,
-					function($0,$1) {
-						var ts = new Date($1);
-						return ('00' + ts.getHours()).slice(-2) + ':' + ('00' + ts.getMinutes()).slice(-2);
+	var murawiki = (function() {
+		return {
+			notAuthMessage: function() {
+				<cfoutput>
+				murawiki.dispStatus('warn', '<strong>#rc.rb.getKey('notauthTitle')#</strong><br/><em>#rc.rb.getKey('notauthBody')#</em>');
+				</cfoutput>
+			},
+			dispStatus: function(sClass, sMessage) {
+				var thisStatus,
+					existingStatus = $('#status>div'),
+					newStatus = $('<div/>')
+					.addClass(sClass)
+					.html(
+						sMessage.replace(
+							/{([^}]+)}/,
+							function($0,$1) {
+								var ts = new Date($1);
+								return ('00' + ts.getHours()).slice(-2) + ':' + ('00' + ts.getMinutes()).slice(-2);
+							}
+						)
+					);
+				for (var i=0; i<existingStatus.length; i++) {
+					thisStatus = $(existingStatus[i]);
+					if (
+						thisStatus.attr('class') == sClass
+						&&
+						thisStatus.html() == newStatus.html()
+					) {
+						thisStatus.fadeTo('slow', 0.5).fadeTo('slow', 1.0);
+						return true;
 					}
-				)
-			);
-		for (var i=0; i<existingStatus.length; i++) {
-			thisStatus = $(existingStatus[i]);
-			if (
-				thisStatus.attr('class') == sClass
-				&&
-				thisStatus.html() == newStatus.html()
-			) {
-				thisStatus.fadeTo('slow', 0.5).fadeTo('slow', 1.0);
+				}
+				newStatus
+					.hide()
+					.appendTo($('#status'))
+					.slideDown('slow');
+				$.event.trigger({type:'addedStatus'});
 				return true;
 			}
 		}
-		newStatus
-			.hide()
-			.appendTo($('#status'))
-			.slideDown('slow');
-		$.event.trigger({type:'addedStatus'});
-		return true;
-	}
+	})();
 	<!--- }}} --->
 </script>
 
