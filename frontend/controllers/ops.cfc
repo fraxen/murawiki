@@ -22,6 +22,19 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		}
 	}
 
+	public void function preview() {
+		// TODO - need to fix this for ACF
+		rc.wiki = getWikiManagerService().getWiki(rc.WikiId);
+		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentId, SiteID=$.event('siteID'));
+		var out = {status: 'ok', body: ''};
+		rc.wikiPage.setBlurb(rc.blurb);
+		out.body = rc.Wiki.renderHTML(rc.wikiPage, $.getContentRenderer());
+		content reset='true';
+		header name='Content-Type' value='application/json';
+		writeOutput(SerializeJson(out));
+		abort;
+	}
+
 	public void function releaselock() {
 		rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.wikiPageID, SiteID=$.event('siteID'));
 		rc.wiki = getWikiManagerService().getWiki(rc.wikiPage.getParentID());
