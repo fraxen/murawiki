@@ -37,7 +37,7 @@
 				name="blurb"
 				class="form-control"
 				data-required="false"
-				>#REReplace(rc.wikiPage.getBlurb(),'(#Chr(13)##Chr(10)#|#Chr(10)#|#Chr(13)#)', '#Chr(13)#', 'all')#</textarea>
+				>#REReplace(rc.wikiPage.getBlurb(),'(#Chr(13)##Chr(10)#|#Chr(10)#|#Chr(13)#)', Chr(13), 'all')#</textarea>
 		</div>
 		<div class="mura-form-textfield form-group control-group attachments">
 			<label>#rc.rb.getKey('sidebarAttachmentTitle')#</label>
@@ -150,13 +150,13 @@
 				success: function(data, textStatus, jqXHR) {
 					$('##previewModal div.modal-body').html(
 						'<h4>' + $('input[name="title"]').val() + '</h4>' +
-						data['BODY']
+						data.BODY
 					);
 					$('##previewModal div.modal-body a').each(function() {$(this).attr('target', '_blank')});
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
 					$('##previewModal').modal('hide');
-					murawiki.addStatus('warn', '#rc.rb.getKey('previewFail')#')
+					murawiki.dispStatus('warn', '#rc.rb.getKey('previewFail')#')
 				}
 			});
 			</cfoutput>
