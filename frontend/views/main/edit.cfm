@@ -71,9 +71,9 @@
 			<label for="notes">#rc.rb.getKey('notes')#</label>
 			<input type="text" name="notes" value="" class="form-control" placeholder="#rc.rb.getKey('notesPlaceholder')#" />
 		</div>
-		<div >
-			<br/><input id="preview" type="button" class="btn btn-default" value="Preview" />
-			<br/><input type="submit" class="btn btn-default" value="#rc.rb.getKey('submit')#" /><br/>
+		<div class="buttons">
+			<button id="preview" type="button" class="btn btn-default">Preview</button>
+			<button type="submit" class="btn btn-default">#rc.rb.getKey('submit')#</button>
 		</div>
 		<div>
 			#rc.wiki.getEngine().getResource().getKey('editInstructions')#

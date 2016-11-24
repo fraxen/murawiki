@@ -30,7 +30,11 @@ a .uline {TEXT-DECORATION: Underline;}
 div.panel ul {LIST-STYLE-TYPE: None; PADDING: 0;}
 div.panel ul li {PADDING: 0 0 0 1em;}
 
-#editform .btn { MARGIN: 0 auto; WIDTH: 80%; DISPLAY: Block;}
+#editform div.buttons {
+	TEXT-ALIGN: Center;
+	MARGIN: 1em auto 1em auto;
+}
+#editform button { WIDTH: 49%; FONT-WEIGHT: bold; DISPLAY: Inline-Block; MARGIN: 0;}
 #editform textarea {HEIGHT: 20em;}
 #editform .attachments li span { DISPLAY: Inline-Block; FLOAT: Right;}
 
