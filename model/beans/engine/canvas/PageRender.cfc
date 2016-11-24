@@ -469,6 +469,7 @@
 		<!--- use a template so the user can easily edit what it says --->
 		<cfset body="{{NoContentYet}}">
 	</cfif>
+
 	
 	<cfloop index="x" from="1" to="#arrayLen(variables.renderMethodsSorted)#">
 		<cfinvoke method="#variables.renderMethodsSorted[x]#" string="#body#" webpath="#arguments.webpath#" returnVariable="body">
@@ -1308,71 +1309,6 @@ See documentation for help.
 	<cfreturn arguments.string>
 </cffunction>
 
-<!--- Removed from v2 
-<cffunction name="render_headers" output="false" returnType="string" priority="3" hint="Use [h]...[/h] for headers. Example: [h]Foo[/h]. To create an smaller headers, you can add more Hs, for up to 6. So for a &lt;h3&gt; tag, use [hhh]">
-	<cfargument name="string" type="string" required="true">
-	<cfargument name="webpath" type="string" required="true">
-
-	<cfset arguments.string =  rereplaceNoCase(arguments.string,"\[h\](.*?)\[/h\]", "<a name=""\1""></a><h1>\1</h1>", "all")>
-	<cfset arguments.string =  rereplaceNoCase(arguments.string,"\[hh\](.*?)\[/hh\]", "<a name=""\1""></a><h2>\1</h2>", "all")>
-	<cfset arguments.string =  rereplaceNoCase(arguments.string,"\[hhh\](.*?)\[/hhh\]", "<a name=""\1""></a><h3>\1</h3>", "all")>
-	<cfset arguments.string =  rereplaceNoCase(arguments.string,"\[hhhh\](.*?)\[/hhhh\]", "<a name=""\1""></a><h4>\1</h4>", "all")>
-	<cfset arguments.string =  rereplaceNoCase(arguments.string,"\[hhhhh\](.*?)\[/hhhhh\]", "<a name=""\1""></a><h5>\1</h5>", "all")>
-	<cfset arguments.string =  rereplaceNoCase(arguments.string,"\[hhhhhh\](.*?)\[/hhhhhh\]", "<a name=""\1""></a><h6>\1</h6>", "all")>
-	
-	<cfreturn arguments.string>	
-</cffunction>
-
-<cffunction name="render_bold" output="false" returnType="string" priority="3" hint="Use [b]...[/b] for bold. Example: [b]Foo[/b].">
-	<cfargument name="string" type="string" required="true">
-	<cfargument name="webpath" type="string" required="true">
-
-	<cfset arguments.string =  rereplaceNoCase(arguments.string,"\[b\](.*?)\[/b\]", "<b>\1</b>", "all")>
-	
-	<cfreturn arguments.string>	
-</cffunction>
-
-<cffunction name="render_italics" output="true" returnType="string" priority="3" hint="Use [i]...[/i] for italics. Example: [i]Foo[/i].">
-	<cfargument name="string" type="string" required="true">
-	<cfargument name="webpath" type="string" required="true">
-
-	<cfset arguments.string =  rereplaceNoCase(arguments.string,"\[i\](.*?)\[/i\]", "<i>\1</i>", "all")>
-
-	<cfreturn arguments.string>	
-</cffunction>
-
-<cffunction name="render_code" output="false" returnType="string" priority="2" 
-		hint="Use '[code]' for code. Example: [code]&lt;!-- Foo--&gt;[/code]">
-	<cfargument name="string" type="string" required="true">
-	<cfargument name="webpath" type="string" required="true">
-	<cfset var match = 0 />
-	<cfset var strMatch = "" />
-	
-	<cfloop condition="true">
-		<!--- find the next code block in the string --->
-		<cfset match = reFindNoCase("(?m)(\[code\])(.*?)(\[/code\])", arguments.string, 0, true) />
-		
-		<!--- if no matches, break --->
-		<cfif NOT match.len[1]>
-			<cfbreak />
-		</cfif>
-		
-		<!--- don't trim because we want to preserve white space --->
-		<!---<cfset strMatch = Trim(Mid(arguments.string, match.pos[3], match.len[3])) /> --->
-		<cfset strMatch = Mid(arguments.string, match.pos[3], match.len[3]) />
-		<cfset strMatch = replace(strMatch, "<", "&lt;", "all") />
-		<cfset strMatch = replace(strMatch, ">", "&gt;", "all") />
-		<!--- don't use a <br> tag b/c we are using preformatted text in the CSS --->
-		<!---<cfset strMatch = replace(strMatch, chr(13), "<br>", "all") /> --->
-		
-		<cfset arguments.string = Mid(arguments.string, 1, match.pos[1] - 1)&  chr(13) & variables.WIKI_CODE_BLOCK_START  & strMatch & variables.WIKI_CODE_BLOCK_END & chr(13) & Mid(arguments.string, match.pos[4] + match.len[4], Len(arguments.string) - match.pos[4] + match.len[4]) />
-		<!---<cfset arguments.string = Mid(arguments.string, 1, match.pos[1] - 1) & "<div class=""code"">" & strMatch & "</div>" & Mid(arguments.string, match.pos[4] + match.len[4], Len(arguments.string) - match.pos[4] + match.len[4]) /> --->
-		
-	</cfloop>
-	
-	<cfreturn arguments.string>
-</cffunction>
---->
 <cffunction name="render_bullets" output="false" returnType="string" priority="5" hint="Bulleted lists can be created using an asterisk: *">
 	<cfargument name="string" type="string" required="true">
 	<cfargument name="webpath" type="string" required="true">
