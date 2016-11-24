@@ -46,7 +46,8 @@ component persistent="false" accessors="true" output="false" {
 		var temp = '';
 		var label = '';
 		var link = '';
-		page.setBody(blurb);
+		ARGUMENTS.blurb = REReplace(ARGUMENTS.blurb, '(#Chr(13)##Chr(10)#|#Chr(10)#|#Chr(13)#)', '#Chr(13)##Chr(10)#', 'all');
+		page.setBody(ARGUMENTS.blurb);
 		temp = getRenderer().renderbody_normal_mura(page, '#chr(9)#', ARGUMENTS.blurb);
 		for (var t in ListToArray(temp, 'href="#chr(9)#/', false, true)) {
 			label = '';
@@ -54,10 +55,10 @@ component persistent="false" accessors="true" output="false" {
 			if (Left(t, 10) == 'index.cfm/') {
 				label = REReplace(t, '^index.cfm/([^"]*)".*', '\1', 'ONE');
 				ArrayAppend(outLinks, label);
-				if (StructKeyExists(wikiList, label)) {
-					link = ContentRenderer.createHREF(filename='#parentpath#/#LCase(label)#');
+				if (StructKeyExists(ARGUMENTS.wikiList, label)) {
+					link = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#LCase(label)#');
 				} else {
-					link = ContentRenderer.createHREF(filename='#parentpath#/#label#') & '" class="undefined';
+					link = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#label#') & '" class="undefined';
 				}
 				outHTML = outHTML & 'href="#REReplace(t, '^index.cfm/#label#', link, 'ONE')#';
 			} else {
