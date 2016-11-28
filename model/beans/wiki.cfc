@@ -539,7 +539,7 @@
 			}
 		}
 		out = StructKeyArray(out);
-		ArraySort(out, 'text', 'asc');
+		ArraySort(out, 'textnocase', 'asc');
 		return out;
 	}
 

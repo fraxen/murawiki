@@ -132,7 +132,7 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 			}
 		}
 		rc.undefined = StructKeyArray(temp);
-		ArraySort(rc.undefined, 'text', 'asc');
+		ArraySort(rc.undefined, 'textnocase', 'asc');
 		framework.setLayout('default');
 		return;
 	}

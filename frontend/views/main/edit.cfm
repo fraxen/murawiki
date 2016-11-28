@@ -13,7 +13,7 @@
 			ArrayAppend(thisTags, t);
 		}
 	}
-	ArraySort(thisTags, 'text');
+	ArraySort(thisTags, 'textnocase');
 </cfscript>
 <cfoutput>
 	<h4 class="modal-title">#rc.rb.getKey('wikiPageEditTitle')# <em>#rc.wikiPage.getLabel()#</em></h4>
