@@ -125,14 +125,16 @@
 			)
 		);
 		if (getContentBean().getUseIndex() && getContentBean().getIsInit()) {
-			var allPages = getAllPages('Label', 'Asc', [], false, [], true);
-			for (var r=1; r <= allPages.RecordCount; r++) {
-				if (allPages.Title[r] != allPages.Label[r]) {
-					allPages.Title[r] = '#allPages.Title[r]# (#allPages.Label[r]#)';
+			thread action='run' priority='low' name='murawiki_#ARGUMENTS.ContentID#_indexrefresh_#CreateUUID()#' {
+				var allPages = getAllPages('Label', 'Asc', [], false, [], true);
+				for (var r=1; r <= allPages.RecordCount; r++) {
+					if (allPages.Title[r] != allPages.Label[r]) {
+						allPages.Title[r] = '#allPages.Title[r]# (#allPages.Label[r]#)';
+					}
+					allPages.Body[r] = '#getBeanFactory().getBean('WikiManagerService').stripHTML(allPages.Body[r])# #allPages.tags[r]# #allPages.title[r]#';
 				}
-				allPages.Body[r] = '#getBeanFactory().getBean('WikiManagerService').stripHTML(allPages.Body[r])# #allPages.tags[r]# #allPages.title[r]#';
+				indexRefresh(collection='Murawiki_#getContentBean().getContentID()#',query=allPages,key='Label',title='Title',body='Body');
 			}
-			indexRefresh(collection='Murawiki_#getContentBean().getContentID()#',query=allPages,key='Label',title='Title',body='Body');
 		}
 		// }}}
 
