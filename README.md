@@ -68,6 +68,7 @@ See the _credits_ section for parts inherited/included from other pieces.
 * [ ] [HTML renderer, to allow for full WYSIWYG editing](https://github.com/fraxen/murawiki/issues/30)
 * [ ] [Preview pane, to inspect how the wiki code will render](https://github.com/fraxen/murawiki/issues/33)
 * [ ] [Links that easily inserts attachment/image/thumbnail into the editing box](https://github.com/fraxen/murawiki/issues/34)
+* [ ] [A decent print stylesheet](https://github.com/fraxen/murawiki/issues/36)
 
 ### Other
 * [ ] [Markdown renderer](https://github.com/fraxen/murawiki/issues/31)
