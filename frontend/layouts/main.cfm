@@ -6,7 +6,7 @@
 		');
 	}
 	wikiList = StructKeyArray(rc.wiki.getWikiList());
-	ArraySort(wikiList, 'text');
+	ArraySort(wikiList, 'textnocase');
 </cfscript>
 <cfoutput>
 <div id="status"></div>

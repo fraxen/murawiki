@@ -125,14 +125,16 @@
 			)
 		);
 		if (getContentBean().getUseIndex() && getContentBean().getIsInit()) {
-			var allPages = getAllPages('Label', 'Asc', [], false, [], true);
-			for (var r=1; r <= allPages.RecordCount; r++) {
-				if (allPages.Title[r] != allPages.Label[r]) {
-					allPages.Title[r] = '#allPages.Title[r]# (#allPages.Label[r]#)';
+			thread action='run' priority='low' name='murawiki_#ARGUMENTS.ContentID#_indexrefresh_#CreateUUID()#' {
+				var allPages = getAllPages('Label', 'Asc', [], false, [], true);
+				for (var r=1; r <= allPages.RecordCount; r++) {
+					if (allPages.Title[r] != allPages.Label[r]) {
+						allPages.Title[r] = '#allPages.Title[r]# (#allPages.Label[r]#)';
+					}
+					allPages.Body[r] = '#getBeanFactory().getBean('WikiManagerService').stripHTML(allPages.Body[r])# #allPages.tags[r]# #allPages.title[r]#';
 				}
-				allPages.Body[r] = '#getBeanFactory().getBean('WikiManagerService').stripHTML(allPages.Body[r])# #allPages.tags[r]# #allPages.title[r]#';
+				indexRefresh(collection='Murawiki_#getContentBean().getContentID()#',query=allPages,key='Label',title='Title',body='Body');
 			}
-			indexRefresh(collection='Murawiki_#getContentBean().getContentID()#',query=allPages,key='Label',title='Title',body='Body');
 		}
 		// }}}
 
@@ -484,7 +486,7 @@
 					AND
 					tcontent.ParentID = '#getContentBean().getContentID()#'
 					AND
-					(tclassextendattributes.name IN ('Label', 'OutLinks') OR tclassextendattributes.name IS NULL)
+					(tclassextendattributes.name IN ('Label', 'OutLinks', 'Redirect') OR tclassextendattributes.name IS NULL)
 				ORDER BY tcontent.ContentID ASC
 		").execute().getResult();
 		var temp = {};
@@ -495,6 +497,9 @@
 			out[temp[p].Label] = [];
 			if (StructKeyExists(temp[p], 'OutLinks')) {
 				out[temp[p].Label] = ListToArray(temp[p].OutLinks);
+			}
+			if (StructKeyExists(temp[p], 'Redirect') && temp[p].Redirect != '') {
+				out[temp[p].Label] = [temp[p].Redirect];
 			}
 		}
 		return out;
@@ -536,7 +541,7 @@
 			}
 		}
 		out = StructKeyArray(out);
-		ArraySort(out, 'text', 'asc');
+		ArraySort(out, 'textnocase', 'asc');
 		return out;
 	}
 

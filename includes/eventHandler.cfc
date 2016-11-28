@@ -68,6 +68,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		// trigger FW/1 to reload
 		lock scope='application' type='exclusive' timeout=30 {
 			getApplication().setupApplicationWrapper(); // this ensures the appCache is cleared as well
+			getModel().getBean('wikiManagerService').loadWikis();
 		};
 
 		// register this file as a Mura eventHandler
