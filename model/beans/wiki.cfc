@@ -484,7 +484,7 @@
 					AND
 					tcontent.ParentID = '#getContentBean().getContentID()#'
 					AND
-					(tclassextendattributes.name IN ('Label', 'OutLinks') OR tclassextendattributes.name IS NULL)
+					(tclassextendattributes.name IN ('Label', 'OutLinks', 'Redirect') OR tclassextendattributes.name IS NULL)
 				ORDER BY tcontent.ContentID ASC
 		").execute().getResult();
 		var temp = {};
@@ -495,6 +495,9 @@
 			out[temp[p].Label] = [];
 			if (StructKeyExists(temp[p], 'OutLinks')) {
 				out[temp[p].Label] = ListToArray(temp[p].OutLinks);
+			}
+			if (StructKeyExists(temp[p], 'Redirect') && temp[p].Redirect != '') {
+				out[temp[p].Label] = [temp[p].Redirect];
 			}
 		}
 		return out;
