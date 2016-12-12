@@ -12,7 +12,7 @@ component persistent="false" accessors="true" output="false" {
 			hint: 'Locate links using the defined regular expression pattern, e.g. CamelCase wiki links (1/0)'
 		},
 		'wikiPattern' : {
-			val: '([^[:space:]|[:punct:]]*[[:upper:]][^[:space:]]*[[:upper:]][^[:space:]|^[:punct:]]*)',
+			val: '([^[:space:]|[:punct:]]*[[:upper:]][[:word:]]*[[:upper:]][^[:space:]|^[:punct:]]*)',
 			hint: 'Pattern for finding wiki links, e.g. CamelCase links (Regular Expression)'
 		}
 	};
