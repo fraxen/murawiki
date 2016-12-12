@@ -18,7 +18,7 @@ component persistent="false" accessors="true" output="false" extends="mura.cfobj
 		}
 
 		// We do this on every request to the admin, just to make sure that everything is current...
-		rc.wikis = getWikiManagerService().loadWikis();
+		rc.wikis = getWikiManagerService().loadWikis().getWikis();
 	}
 
 }

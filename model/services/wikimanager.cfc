@@ -61,7 +61,7 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		setWikis(wikis);
 		setLastReload(Now());
 		}
-		return wikis;
+		return THIS;
 	}
 
 	public any function getWiki(required string ContentID='') {
