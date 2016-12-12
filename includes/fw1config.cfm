@@ -38,6 +38,7 @@ https://github.com/stevewithington/MuraFW1
 	variables.framework.diConfig = {
 		strict: true,
 		transients: ['engine'],
+		initMethod: 'loadWikis',
 		constants: {lockTime: 15}
 	};
 	variables.framework.diComponent = variables.framework.package & '.includes.fw1.ioc';

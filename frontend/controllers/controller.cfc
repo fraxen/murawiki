@@ -35,11 +35,5 @@ component persistent="false" accessors="true" output="false" extends="mura.cfobj
 			framework.abortController();
 		}
 	}
-
-	public void function loadWikis() {
-		getWikiManagerService().loadWikis();
-		framework.setView('main.blank');
-		return;
-	}
 }
 </cfscript>
