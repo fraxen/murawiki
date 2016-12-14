@@ -47,7 +47,7 @@
 				<cfloop index="a" array="#StructKeyArray(rc.attachments)#">
 					<li name="attachment#attachCount#">
 						<input type="hidden" name="attachment#attachCount#" value='#SerializeJson({'#a#': rc.attachments[a]})#' />
-						#rc.attachments[a].title#<span><a href="##" class="attachRemove" data-attachcount="#attachCount#"><i class="fa fa-trash" aria-hidden="true"></i> remove</a>
+						#rc.attachments[a].title#<span><a href="##" class="attachRemove" data-attachcount="#attachCount#"><i class="fa fa-trash" aria-hidden="true"></i> #rc.rb.getKey('wikiPageEditAttachmentRemove')#</a>
 					</li>
 					<cfset attachCount = attachCount + 1 />
 				</cfloop>
@@ -55,7 +55,7 @@
 			</cfif>
 			<input type="file" name="attachment#attachCount#" class="form-control" />
 			<br/>
-			<div class="center"><a href="##" id="attachAdd">Add another attachment</a></div>
+			<div class="center"><a href="##" id="attachAdd">#rc.rb.getKey('wikiPageEditAddAnotherAttachment')#</a></div>
 		</div>
 		<cfif rc.wiki.getContentBean().getUseTags()> 
 		<div class="mura-form-textfield form-group control-group">
