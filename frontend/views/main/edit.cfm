@@ -92,9 +92,10 @@
 	$(document).ready(function() {
 		$('#editform select.s2').select2();
 		$('#attachAdd').on('click', function() {
-			var lastAttach = $('#editform input[type="file"]').last();
-			var i = +lastAttach.attr('name').replace('attachment', '') + 1;
-			lastAttach.clone().attr('name', 'attachment' + i).insertAfter(lastAttach);
+			var lastAttach = $('#editform input[type="file"]').last(),
+				i = +lastAttach.attr('name').replace('attachment', '') + 1,
+				newAttach = $('<input type="file" name="attachment' + i + '" class="form-control" />');
+			newAttach.insertAfter(lastAttach);
 			return false;
 		});
 		$('a.attachRemove').on('click', function() {
