@@ -385,9 +385,13 @@ public void function page() {
 				}).save();
 				thisFile.setFileID(fb.getFileID());
 				thisFile.save();
-				attachments[thisFile.getContentID()] = {};
-				attachments[thisFile.getContentID()].filename = thisFile.getFilename();
-				attachments[thisFile.getContentID()].title = thisFile.getTitle();
+				attachments[thisFile.getContentID()] = {
+					filename: thisFile.getFilename(),
+					title: thisFile.getTitle(),
+					fileext: thisFile.getFileExt(),
+					contenttype: thisFile.getContentType(),
+					contentsubtype: thisFile.getContentSubType()
+				};
 			}
 		}
 		i = i+1;
