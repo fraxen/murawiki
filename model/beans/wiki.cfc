@@ -552,7 +552,13 @@
 	}
 
 	public string function renderHTML(required any wikiPage, required any ContRend) {
-		return getEngine().renderHTML( ARGUMENTS.wikiPage.getBlurb(), ListLast(ARGUMENTS.wikiPage.getFilename(), '/'), getWikiList(), getContentBean().getFileName(), ContRend ).blurb;
+		return getEngine().renderHTML(
+			ARGUMENTS.wikiPage.getBlurb(),
+			ListLast(ARGUMENTS.wikiPage.getFilename(), '/'),
+			getWikiList(),
+			getContentBean().getFileName(),
+			ContRend,
+		).blurb;
 	}
 </cfscript>
 </cfcomponent>
