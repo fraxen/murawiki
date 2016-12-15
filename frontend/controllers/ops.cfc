@@ -344,8 +344,14 @@ public void function page() {
 		var thisFile = {};
 		if (rc['attachment#i#'] != '') {
 			try {
-				thisFile = DeserializeJSON(rc['attachment#i#']);
-				if (ArrayLen(StructKeyArray(DeserializeJSON(rc['attachment#i#'])))) {
+				var thisFile = DeserializeJSON(rc['attachment#i#']);
+				if (ArrayLen(StructKeyArray(thisFile))) {
+					// We update the data model here, if needed
+					if (!StructKeyExists(thisFile[StructKeyArray(thisFile)[1]], 'fileid')) {
+						var f = $.getBean('content').loadBy(ContentID=StructKeyArray(thisFile)[1], SiteID=rc.SiteID);
+						thisFile[StructKeyArray(thisFile)[1]].assocfilename = f.getAssocfilename();
+						thisFile[StructKeyArray(thisFile)[1]].fileid = f.getFileID();
+					}
 					attachments.append(thisFile);
 				}
 			}
