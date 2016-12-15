@@ -120,7 +120,7 @@ component persistent="false" accessors="true" output="false" {
 						) 
 					) {
 						if (StructKeyExists(ARGUMENTS.attach[f], 'fileid')) {
-							tuckedawayStrings.images[i] = '<img src="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid)#" alt="#s[2]#" title="#s[2]#" />';
+							tuckedawayStrings.images[i] = '<a href="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" data-rel="shadowbox[body]"><img src="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" alt="#s[2]#" title="#s[2]#"/></a>';
 						}
 					}
 				}
