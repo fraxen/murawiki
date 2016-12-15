@@ -389,6 +389,8 @@ public void function page() {
 					filename: thisFile.getFilename(),
 					title: thisFile.getTitle(),
 					fileext: thisFile.getFileExt(),
+					fileid: thisFile.getFileID(),
+					assocfilename: thisFile.getAssocfilename(),
 					contenttype: thisFile.getContentType(),
 					contentsubtype: thisFile.getContentSubType()
 				};
