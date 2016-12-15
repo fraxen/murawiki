@@ -2,6 +2,16 @@
 component displayname="frontend" persistent="false" accessors="true" output="false" extends="controller" {
 	property name='WikimanagerService';
 
+	public any function before(required struct rc) {
+		super.before(rc);
+		if ($.content().getSubType() != 'WikiPage') {
+			framework.setView('main.blank');
+			framework.abortController();
+			dump('hej');
+		}
+		return;
+	}
+
 	public void function default() {
 		framework.setView('main.blank');
 		return;
