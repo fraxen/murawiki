@@ -97,6 +97,32 @@ component persistent="false" accessors="true" output="false" {
 			// {{{ Deal with media links (file/thumb/image)
 			temp = tuckAway (thisBlurb = thisBlurb, token= '<attachmentfile>', blockStart= '[[attachment:', blockEnd=']]', include=true);
 			tuckedawayStrings.attachments = temp.formattedStrings;
+			for (var i=1; i<=ArrayLen(tuckedawayStrings.attachments); i++) {
+				var s = tuckedawayStrings.attachments[i];
+				s = listToArray(ReReplace(s, '\[\[attachment:(.*?)\]\]', '\1'), '|');
+				if (ArrayLen(s) == 1) {
+					arrayAppend(s, s[1]);
+				}
+				for (var f in ARGUMENTS.attach) {
+					if (
+						(
+							StructKeyExists(ARGUMENTS.attach[f], 'assocfilename')
+							AND
+							ARGUMENTS.attach[f].assocfilename == s[1]
+						) OR (
+							ARGUMENTS.attach[f].title == s[1]
+						) OR (
+							ListLast(ARGUMENTS.attach[f].filename, '/') == s[1]
+						) 
+					) {
+						if (StructKeyExists(ARGUMENTS.attach[f],'contenttype') && ARGUMENTS.attach[f].contenttype == 'image' && StructKeyExists(ARGUMENTS.attach[f], 'fileid')) {
+							tuckedawayStrings.attachments[i] = '<a href="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" target="_blank">#s[2]#</a>';
+						} else {
+							tuckedawayStrings.attachments[i] = '<a href="#ARGUMENTS.ContentRenderer.createHREF(filename=ARGUMENTS.attach[f].filename)#" target="_blank">#s[2]#</a>';
+						}
+					}
+				}
+			}
 			thisBlurb = temp.Blurb;
 
 			temp = tuckAway (thisBlurb = thisBlurb, token= '<attachmentimage>', blockStart= '[[image:', blockEnd=']]', include=true);
@@ -129,6 +155,30 @@ component persistent="false" accessors="true" output="false" {
 
 			temp = tuckAway (thisBlurb = thisBlurb, token= '<attachmentthumb>', blockStart= '[[thumb:', blockEnd=']]', include=true);
 			tuckedawayStrings.thumbs = temp.formattedStrings;
+			for (var i=1; i<=ArrayLen(tuckedawayStrings.thumbs); i++) {
+				var s = tuckedawayStrings.thumbs[i];
+				s = listToArray(ReReplace(s, '\[\[thumb:(.*?)\]\]', '\1'), '|');
+				if (ArrayLen(s) == 1) {
+					arrayAppend(s, s[1]);
+				}
+				for (var f in ARGUMENTS.attach) {
+					if (
+						(
+							StructKeyExists(ARGUMENTS.attach[f], 'assocfilename')
+							AND
+							ARGUMENTS.attach[f].assocfilename == s[1]
+						) OR (
+							ARGUMENTS.attach[f].title == s[1]
+						) OR (
+							ListLast(ARGUMENTS.attach[f].filename, '/') == s[1]
+						) 
+					) {
+						if (StructKeyExists(ARGUMENTS.attach[f], 'fileid')) {
+							tuckedawayStrings.thumbs[i] = '<a href="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" data-rel="shadowbox[body]"><img src="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='small')#" alt="#s[2]#" title="#s[2]#"/></a>';
+						}
+					}
+				}
+			}
 			thisBlurb = temp.Blurb;
 			// }}}
 
