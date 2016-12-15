@@ -558,6 +558,7 @@
 			getWikiList(),
 			getContentBean().getFileName(),
 			ContRend,
+			DeserializeJSON(ARGUMENTS.WikiPage.getAttachments())
 		).blurb;
 	}
 </cfscript>

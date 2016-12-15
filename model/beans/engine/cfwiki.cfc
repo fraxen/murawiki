@@ -68,7 +68,7 @@ component persistent="false" accessors="true" output="false" {
 		return getEngineOpts();
 	}
 
-	public any function renderHTML(required string blurb, required string label, required struct wikiList, required string parentpath, required any ContentRenderer) {
+	public any function renderHTML(required string blurb, required string label, required struct wikiList, required string parentpath, required any ContentRenderer, struct attach={}) {
 		var thisBlurb = '#ARGUMENTS.blurb##Chr(10)#';
 		var temp = 0;
 		var tuckedawayStrings = {};
@@ -88,9 +88,47 @@ component persistent="false" accessors="true" output="false" {
 			thisBlurb = temp.Blurb;
 			// }}}
 
-			// {{{ Tuck away any text in enclosed in ¤¤ away so it's not formatted as links
+			// {{{ Tuck away any text in enclosed in [nolink] away so it's not formatted as links
 			temp = tuckAway (thisBlurb = thisBlurb, token= '<nolink>', blockStart= '[nolink]', blockEnd='[/nolink]');
 			tuckedawayStrings.nolink = temp.formattedStrings;
+			thisBlurb = temp.Blurb;
+			// }}}
+
+			// {{{ Deal with media links (file/thumb/image)
+			temp = tuckAway (thisBlurb = thisBlurb, token= '<attachmentfile>', blockStart= '[[attachment:', blockEnd=']]', include=true);
+			tuckedawayStrings.attachments = temp.formattedStrings;
+			thisBlurb = temp.Blurb;
+
+			temp = tuckAway (thisBlurb = thisBlurb, token= '<attachmentimage>', blockStart= '[[image:', blockEnd=']]', include=true);
+			tuckedawayStrings.images = temp.formattedStrings;
+			for (var i=1; i<ArrayLen(tuckedawayStrings.images); i++) {
+				var s = tuckedawayStrings.images[i];
+				s = listToArray(ReReplace(s, '\[\[image:(.*?)\]\]', '\1'), '|');
+				if (ArrayLen(s) == 1) {
+					arrayAppend(s, s[1]);
+				}
+				for (var f in ARGUMENTS.attach) {
+					if (
+						(
+							StructKeyExists(ARGUMENTS.attach[f], 'assocfilename')
+							AND
+							ARGUMENTS.attach[f].assocfilename == s[1]
+						) OR (
+							ARGUMENTS.attach[f].title == s[1]
+						) OR (
+							ListLast(ARGUMENTS.attach[f].filename, '/') == s[1]
+						) 
+					) {
+						if (StructKeyExists(ARGUMENTS.attach[f], 'fileid')) {
+							tuckedawayStrings.images[i] = '<img src="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid)#" alt="#s[2]#" title="#s[2]#" />';
+						}
+					}
+				}
+			}
+			thisBlurb = temp.Blurb;
+
+			temp = tuckAway (thisBlurb = thisBlurb, token= '<attachmentthumb>', blockStart= '[[thumb:', blockEnd=']]', include=true);
+			tuckedawayStrings.thumbs = temp.formattedStrings;
 			thisBlurb = temp.Blurb;
 			// }}}
 
@@ -227,6 +265,21 @@ component persistent="false" accessors="true" output="false" {
 					link = ContentRenderer.CreateHREF(filename='#parentpath#/#LCase(link)#');
 				};
 				thisBlurb = Replace(thisBlurb, '<bracketlink>', '<a href="#link#"#cssClass#>#linkName#</a>', 'ONE');
+			}
+
+			// attachment images
+			for (var s in tuckedawayStrings.images) {
+				thisBlurb = replace(thisBlurb, '<attachmentimage>', s, 'ONE');
+			}
+
+			// attachment thumb
+			for (var s in tuckedawayStrings.thumbs) {
+				thisBlurb = replace(thisBlurb, '<attachmentthumb>', s, 'ONE');
+			}
+
+			// attachment download
+			for (var s in tuckedawayStrings.attachments) {
+				thisBlurb = replace(thisBlurb, '<attachmentfile>', s, 'ONE');
 			}
 		// }}}
 
