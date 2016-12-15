@@ -101,7 +101,7 @@ component persistent="false" accessors="true" output="false" {
 
 			temp = tuckAway (thisBlurb = thisBlurb, token= '<attachmentimage>', blockStart= '[[image:', blockEnd=']]', include=true);
 			tuckedawayStrings.images = temp.formattedStrings;
-			for (var i=1; i<ArrayLen(tuckedawayStrings.images); i++) {
+			for (var i=1; i<=ArrayLen(tuckedawayStrings.images); i++) {
 				var s = tuckedawayStrings.images[i];
 				s = listToArray(ReReplace(s, '\[\[image:(.*?)\]\]', '\1'), '|');
 				if (ArrayLen(s) == 1) {
