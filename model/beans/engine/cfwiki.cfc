@@ -120,6 +120,7 @@ component persistent="false" accessors="true" output="false" {
 						} else {
 							tuckedawayStrings.attachments[i] = '<a href="#ARGUMENTS.ContentRenderer.createHREF(filename=ARGUMENTS.attach[f].filename)#" target="_blank">#s[2]#</a>';
 						}
+						break;
 					}
 				}
 			}
@@ -148,6 +149,7 @@ component persistent="false" accessors="true" output="false" {
 						if (StructKeyExists(ARGUMENTS.attach[f], 'fileid')) {
 							tuckedawayStrings.images[i] = '<a href="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" data-rel="shadowbox[body]"><img src="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" alt="#s[2]#" title="#s[2]#"/></a>';
 						}
+						break;
 					}
 				}
 			}
@@ -176,6 +178,7 @@ component persistent="false" accessors="true" output="false" {
 						if (StructKeyExists(ARGUMENTS.attach[f], 'fileid')) {
 							tuckedawayStrings.thumbs[i] = '<a href="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" data-rel="shadowbox[body]"><img src="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='small')#" alt="#s[2]#" title="#s[2]#"/></a>';
 						}
+						break;
 					}
 				}
 			}
