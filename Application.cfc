@@ -23,7 +23,6 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 	include '../mappings.cfm';
 
 	variables.fw1Keys = 'SERVICEEXECUTIONCOMPLETE,LAYOUTS,CONTROLLEREXECUTIONCOMPLETE,VIEW,SERVICES,CONTROLLERS,CONTROLLEREXECUTIONSTARTED';
-	application.initTime = 0;
 
 	public string function doAction(string action='') {
 		var p = variables.framework.package; 
@@ -93,7 +92,6 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 
 	public void function setupApplication() {
 		var local = {};
-		application.inittime = Now();
 
 		if ( !StructKeyExists(application, 'pluginManager') ) {
 			location(url='/', addtoken=false);
@@ -140,9 +138,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		request.context.isFrontEndRequest = isFrontEndRequest();
 		
 		if ( StructKeyExists(url, application.configBean.getAppReloadKey()) ) { 
-		// if ( DateDiff('s',application.inittime, Now()) GT 10 OR StructKeyExists(url, application.configBean.getAppReloadKey()) ) { 
 			setupApplication();
-			//setupApplicationWrapper();
 		}
 
 		if ( Len(Trim(request.context.siteid)) && ( session.siteid != request.context.siteid) ) {
