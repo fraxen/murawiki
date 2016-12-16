@@ -38,28 +38,28 @@ component accessors="true" output="false" extends="mura.cfobject" {
 
 	public any function loadWikis() {
 		lock scope='application' type='exclusive' timeout=120 {
-		var wikis = {};
-		var siteIds = getBean('pluginManager')
-			.getAssignedSites(application.murawiki.pluginconfig.getModuleID());
-		siteIds = (ValueList(siteIds.SiteID));
+			var wikis = {};
+			var siteIds = getBean('pluginManager')
+				.getAssignedSites(application.murawiki.pluginconfig.getModuleID());
+			siteIds = (ValueList(siteIds.SiteID));
 
-		var q = getBean('feed')
-			.setMaxItems(0)
-			.setShowNavOnly(0)
-			.setShowExcludeSearch(1)
-			.setSiteID(siteIds)
-			.addParam(
-				field='subtype',
-				condition='EQUALS',
-				criteria='Wiki',
-				dataType='varchar'
-			)
-			.getQuery();
-		for (w in q) {
-			wikis[w.ContentID] = getBeanFactory().getBean('Wiki', {ContentID: w.ContentID, SiteID: w.SiteID});
-		}
-		setWikis(wikis);
-		setLastReload(Now());
+			var q = getBean('feed')
+				.setMaxItems(0)
+				.setShowNavOnly(0)
+				.setShowExcludeSearch(1)
+				.setSiteID(siteIds)
+				.addParam(
+					field='subtype',
+					condition='EQUALS',
+					criteria='Wiki',
+					dataType='varchar'
+				)
+				.getQuery();
+			for (w in q) {
+				wikis[w.ContentID] = getBeanFactory().getBean('Wiki', {ContentID: w.ContentID, SiteID: w.SiteID});
+			}
+			setWikis(wikis);
+			setLastReload(Now());
 		}
 		return THIS;
 	}
