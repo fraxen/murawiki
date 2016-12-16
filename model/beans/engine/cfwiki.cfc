@@ -95,11 +95,11 @@ component persistent="false" accessors="true" output="false" {
 			// }}}
 
 			// {{{ Deal with media links (file/thumb/image)
-			temp = tuckAway (thisBlurb = thisBlurb, token= '<attachmentfile>', blockStart= '[[attachment:', blockEnd=']]', include=true);
+			temp = tuckAway (thisBlurb = thisBlurb, token= '<attachmentfile>', blockStart= '[[file:', blockEnd=']]', include=true);
 			tuckedawayStrings.attachments = temp.formattedStrings;
 			for (var i=1; i<=ArrayLen(tuckedawayStrings.attachments); i++) {
 				var s = tuckedawayStrings.attachments[i];
-				s = listToArray(ReReplace(s, '\[\[attachment:(.*?)\]\]', '\1'), '|');
+				s = listToArray(ReReplace(s, '\[\[file:(.*?)\]\]', '\1'), '|');
 				if (ArrayLen(s) == 1) {
 					arrayAppend(s, s[1]);
 				}
