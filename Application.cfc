@@ -121,6 +121,15 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		setBeanFactory(local.beanFactory);
 	}
 
+	public void function onRequestStart(tpath) {
+		if (StructKeyExists(REQUEST, 'murawiki_loaded')) {
+			variables.framework.reloadApplicationOnEveryRequest = false;
+		} else {
+			REQUEST.murawiki_loaded = true;
+		}
+		super.onRequestStart(ARGUMENTS.tpath);
+	}
+
 	public void function setupRequest() {
 		var local = {};
 
