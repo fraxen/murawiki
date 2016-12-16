@@ -47,7 +47,11 @@
 				<cfloop index="a" array="#StructKeyArray(rc.attachments)#">
 					<li name="attachment#attachCount#">
 						<input type="hidden" name="attachment#attachCount#" value='#SerializeJson({'#a#': rc.attachments[a]})#' />
-						#rc.attachments[a].title#<span><a href="##" class="attachRemove" data-attachcount="#attachCount#"><i class="fa fa-trash" aria-hidden="true"></i> #rc.rb.getKey('wikiPageEditAttachmentRemove')#</a>
+						#rc.attachments[a].title#
+						<span>
+							<a href="##" class="attachInsert" data-attachcount="#attachCount#"><i class="fa fa-plus" aria-hidden="true"></i> #rc.rb.getKey('wikiPageEditAttachmentInsert')#</a>&nbsp;&nbsp;
+							<a href="##" class="attachRemove" data-attachcount="#attachCount#"><i class="fa fa-trash" aria-hidden="true"></i> #rc.rb.getKey('wikiPageEditAttachmentRemove')#</a>
+						</span>
 					</li>
 					<cfset attachCount = attachCount + 1 />
 				</cfloop>
@@ -85,6 +89,20 @@
 		<h4 class="modal-title">#rc.rb.getKey('previewTitle')# <em>#rc.wikiPage.getLabel()#</em></h4>
 	</div>
 	<div class="modal-body" style="PADDING: 2em;">
+	</div>
+</div></div></div>
+<div id="attachImageModal" class="modal fade" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h4 class="modal-title">#rc.rb.getKey('wikiPageEditAttachmentImageHeader')#</h4>
+	</div>
+	<div class="modal-body" style="PADDING: 2em;">
+		#rc.rb.getKey('wikiPageEditAttachmentImageTop')#
+		<ul>
+			<li><a href="##" data-type="file">#rc.rb.getKey('wikiPageEditAttachmentImageFile')#</a></li>
+			<li><a href="##" data-type="thumb">#rc.rb.getKey('wikiPageEditAttachmentImageThumb')#</a></li>
+			<li><a href="##" data-type="image">#rc.rb.getKey('wikiPageEditAttachmentImageImage')#</a></li>
+		</ul>
 	</div>
 </div></div></div>
 </cfoutput>
@@ -162,6 +180,7 @@
 			});
 			</cfoutput>
 		});
+		<cfoutput>#rc.wiki.getEngine().insertAttachmentJs()#</cfoutput>
 	});
 </script>
 

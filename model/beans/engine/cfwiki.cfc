@@ -347,5 +347,53 @@ component persistent="false" accessors="true" output="false" {
 		return renderHTML(ARGUMENTS.blurb, ARGUMENTS.label)['outLinks'];
 	}
 
+	public string function insertAttachmentJs() {
+		var outScript = '';
+		savecontent variable='outScript' {
+			writeOutput("
+				function insertText(addText) {
+					var cursorPos = $('textarea[name=""blurb""]').prop('selectionStart'),
+						v = $('textarea[name=""blurb""]').val(),
+						textBefore = v.substring(0, cursorPos),
+						textAfter = v.substring(cursorPos, v.length);
+					$('textarea[name=""blurb""]').val(textBefore + addText + textAfter);
+					$('textarea[name=""blurb""]').prop('selectionStart', cursorPos);
+					$('textarea[name=""blurb""]').prop('selectionEnd', cursorPos);
+				}
+
+				$('a.attachInsert').on('click', function() {
+					var attach = JSON.parse( $(this).parent().parent().find('input').val() ),
+						fn = '';
+					attach = attach[Object.keys(attach)[0]];
+					if ('ASSOCFILENAME' in attach) {
+						fn = attach.ASSOCFILENAME;
+					} else {
+						fn = attach.FILENAME.split('/').pop()
+					}
+					if ('CONTENTTYPE' in attach && attach.CONTENTTYPE == 'image') {
+						$('##attachImageModal').modal('show');
+						$('##attachImageModal').attr('data-attach', fn);
+					} else {
+						insertText('[[file:' + fn + '|' + fn + ']]');
+					}
+					return false;
+				});
+
+				$('##attachImageModal a').on('click', function() {
+					var fn = $('##attachImageModal').attr('data-attach');
+						types = {
+						'file': '[[file:' + fn + '|' + fn + ']]',
+						'thumb': '[[thumb:' + fn + '|' + fn + ']]',
+						'image': '[[image:' + fn + '|' + fn + ']]'
+					};
+					insertText(types[$(this).attr('data-type')]);
+					$('##attachImageModal').modal('hide');
+					return false;
+				});
+			");
+		}
+		return outScript;
+	}
+
 }
 </cfscript>
