@@ -7,7 +7,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 		if ($.content().getSubType() != 'WikiPage') {
 			framework.setView('main.blank');
 			framework.abortController();
-			dump('hej');
 		}
 		return;
 	}
