@@ -352,7 +352,7 @@ public void function page() {
 						thisFile[StructKeyArray(thisFile)[1]].assocfilename = f.getAssocfilename();
 						thisFile[StructKeyArray(thisFile)[1]].fileid = f.getFileID();
 					}
-					attachments.append(thisFile);
+					StructInsert(attachments, StructKeyArray(thisFile)[1], thisFile[StructKeyArray(thisFile)[1]]);
 				}
 			}
 			catch(any e) {
