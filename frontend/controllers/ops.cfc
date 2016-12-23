@@ -340,6 +340,29 @@ public void function page() {
 
 	var i=1;
 	var attachments={};
+	param rc.tags = '';
+	if (rc.notes == '') {
+		StructDelete(rc, 'notes');
+	}
+	param rc.notes = rc.wikiPage.getIsNew() ? rc.rb.getKey('NoteCreate') : rc.rb.getKey('NoteEdit');
+	rc.wikiPage.setParentID(rc.parentid);
+	body = rc.Wiki.renderHTML(rc.wikiPage, $.getContentRenderer());
+	rc.wikiPage.set({
+		siteid = rc.wiki.getContentBean().getSiteID(),
+		type = 'Page',
+		subType = 'WikiPage',
+		title = rc.Title,
+		menutitle = rc.Title,
+		htmltitle = rc.Title,
+		label = rc.Label,
+		Blurb = rc.blurb,
+		Notes = rc.Notes,
+		Tags = rc.tags,
+		parentid = rc.wiki.getContentBean().getContentID()
+	});
+	if (rc.wikiPage.getIsNew()) {
+		rc.wikiPage.save();
+	}
 	while(StructKeyExists(rc,'attachment#i#')) {
 		var thisFile = {};
 		if (rc['attachment#i#'] != '') {
@@ -374,7 +397,6 @@ public void function page() {
 					urltitle = '',
 					htmltitle = '',
 					summary = fname,
-					filename = fname,
 					fileext = ListLast(fname, '.'),
 					parentid = rc.wikiPage.getContentID(),
 					approved=1,
@@ -404,27 +426,7 @@ public void function page() {
 		}
 		i = i+1;
 	}
-	param rc.tags = '';
-	if (rc.notes == '') {
-		StructDelete(rc, 'notes');
-	}
-	param rc.notes = rc.wikiPage.getIsNew() ? rc.rb.getKey('NoteCreate') : rc.rb.getKey('NoteEdit');
-	rc.wikiPage.setParentID(rc.parentid);
-	body = rc.Wiki.renderHTML(rc.wikiPage, $.getContentRenderer());
-	rc.wikiPage.set({
-		siteid = rc.wiki.getContentBean().getSiteID(),
-		type = 'Page',
-		subType = 'WikiPage',
-		title = rc.Title,
-		menutitle = rc.Title,
-		htmltitle = rc.Title,
-		label = rc.Label,
-		Blurb = rc.blurb,
-		Notes = rc.Notes,
-		Tags = rc.tags,
-		parentid = rc.wiki.getContentBean().getContentID(),
-		attachments = SerializeJson(attachments)
-	});
+	rc.wikiPage.setAttachments(SerializeJson(attachments));
 	rc.wikiPage.save();
 	getLockManager().release(rc.wiki.getContentBean().getContentID(), rc.wikiPage.getLabel(), $.currentUser().getUserID());
 	getStatusManager().addStatus(
