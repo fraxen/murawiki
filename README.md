@@ -1,7 +1,7 @@
 # MuraWiki - Mura CMS plugin for Wiki
 A full wiki-implementation as a plugin for [Mura CMS 6.2](http://www.getmura.com/) - a CFML (Adobe ColdFusion/Lucee) content management system.
 
-<p align="center"><strong><a href="https://github.com/fraxen/mura500/releases">Download latest release</a></strong></p>
+<p align="center"><strong><a href="https://github.com/fraxen/murawiki/releases">Download latest release</a></strong></p>
 
 ## Status
 This projects is sort of at a beta/rc stage. Version 1.0 is feature complete and has been tested with various CFML engines (Adobe/Lucee), but it could use some more real-world testing. It is recommended that you start by deploying this on a development/staging server and reviewe it fully before putting into production.
