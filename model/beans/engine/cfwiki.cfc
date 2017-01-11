@@ -116,9 +116,9 @@ component persistent="false" accessors="true" output="false" {
 						) 
 					) {
 						if (StructKeyExists(ARGUMENTS.attach[f],'contenttype') && ARGUMENTS.attach[f].contenttype == 'image' && StructKeyExists(ARGUMENTS.attach[f], 'fileid')) {
-							tuckedawayStrings.attachments[i] = '<a href="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" target="_blank">#s[2]#</a>';
+							tuckedawayStrings.attachments[i] = '<a href="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" target="_blank" class="media">#s[2]#</a>';
 						} else {
-							tuckedawayStrings.attachments[i] = '<a href="#ARGUMENTS.ContentRenderer.createHREF(filename=ARGUMENTS.attach[f].filename)#" target="_blank">#s[2]#</a>';
+							tuckedawayStrings.attachments[i] = '<a href="#ARGUMENTS.ContentRenderer.createHREF(filename=ARGUMENTS.attach[f].filename)#" target="_blank" class="media">#s[2]#</a>';
 						}
 						break;
 					}
@@ -136,18 +136,18 @@ component persistent="false" accessors="true" output="false" {
 				}
 				for (var f in ARGUMENTS.attach) {
 					if (
-						(
-							StructKeyExists(ARGUMENTS.attach[f], 'assocfilename')
-							AND
-							ARGUMENTS.attach[f].assocfilename == s[1]
-						) OR (
-							ARGUMENTS.attach[f].title == s[1]
-						) OR (
-							ListLast(ARGUMENTS.attach[f].filename, '/') == s[1]
-						) 
-					) {
+							(
+							 StructKeyExists(ARGUMENTS.attach[f], 'assocfilename')
+							 AND
+							 ARGUMENTS.attach[f].assocfilename == s[1]
+							) OR (
+								ARGUMENTS.attach[f].title == s[1]
+								) OR (
+									ListLast(ARGUMENTS.attach[f].filename, '/') == s[1]
+									) 
+					   ) {
 						if (StructKeyExists(ARGUMENTS.attach[f], 'fileid')) {
-							tuckedawayStrings.images[i] = '<a href="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" data-rel="shadowbox[body]"><img src="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" alt="#s[2]#" title="#s[2]#"/></a>';
+							tuckedawayStrings.images[i] = '<a href="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" data-rel="shadowbox[body]" class="media"><img src="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" alt="#s[2]#" title="#s[2]#"/></a>';
 						}
 						break;
 					}
@@ -165,18 +165,18 @@ component persistent="false" accessors="true" output="false" {
 				}
 				for (var f in ARGUMENTS.attach) {
 					if (
-						(
-							StructKeyExists(ARGUMENTS.attach[f], 'assocfilename')
-							AND
-							ARGUMENTS.attach[f].assocfilename == s[1]
-						) OR (
-							ARGUMENTS.attach[f].title == s[1]
-						) OR (
-							ListLast(ARGUMENTS.attach[f].filename, '/') == s[1]
-						) 
-					) {
+							(
+							 StructKeyExists(ARGUMENTS.attach[f], 'assocfilename')
+							 AND
+							 ARGUMENTS.attach[f].assocfilename == s[1]
+							) OR (
+								ARGUMENTS.attach[f].title == s[1]
+								) OR (
+									ListLast(ARGUMENTS.attach[f].filename, '/') == s[1]
+									) 
+					   ) {
 						if (StructKeyExists(ARGUMENTS.attach[f], 'fileid')) {
-							tuckedawayStrings.thumbs[i] = '<a href="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" data-rel="shadowbox[body]"><img src="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='small')#" alt="#s[2]#" title="#s[2]#"/></a>';
+							tuckedawayStrings.thumbs[i] = '<a href="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" data-rel="shadowbox[body]" class="media"><img src="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='small')#" alt="#s[2]#" title="#s[2]#"/></a>';
 						}
 						break;
 					}
@@ -201,7 +201,7 @@ component persistent="false" accessors="true" output="false" {
 			// {{{ Create links out of URL's
 			thisBlurb=ReReplaceNoCase(thisBlurb,"(((mailto\:)|(([A-Za-z]+)\:\/\/))[^[:space:]|'|\|]+)", "<link>\1</link>","ALL");
 			thisBlurb=ReReplace(thisBlurb,'(,\)|\.\)|\.|\)|,)</link>', '</link>\1','ALL');
-			thisBlurb=ReReplace(thisBlurb,"<link>(.*?)</link>","<a href=""\1"" target=""_blank"">\1</a>","ALL");
+			thisBlurb=ReReplace(thisBlurb,"<link>(.*?)</link>","<a href=""\1"" class=""ext"" target=""_blank"">\1</a>","ALL");
 			thisBlurb=ReReplace(thisBlurb,'(<a href[^>]+>)([^<]{35,35})([^<]{1,9999})(....)(<.a>)','\1\2...\4\5','ALL');
 
 			// Tuck code in <a> tags away so URL's with CamelCase don't get wiki formatted
@@ -209,9 +209,9 @@ component persistent="false" accessors="true" output="false" {
 			tuckedawayStrings.ahr = temp.formattedStrings;
 			thisBlurb = temp.Blurb;
 			// }}}
-		// }}}
+			// }}}
 
-		// {{{ LOCATE WIKI LABELS
+			// {{{ LOCATE WIKI LABELS
 			// Convert words with multiple caps to document links
 			// prepare to check for wikinames
 			sTemp.startPos = 1;
@@ -237,26 +237,20 @@ component persistent="false" accessors="true" output="false" {
 					sTemp.stillChecking = 0;
 				}
 			}
-		// }}}
+			// }}}
 
-		outLinks = listToArray(sTemp.labelList);
+			outLinks = listToArray(sTemp.labelList);
 
-		// {{{ FORMAT LABELS
+			// {{{ FORMAT LABELS
 			// loop through list we just created until all list items are gone
 			while (listLen(sTemp.labelList)) {
 				// grab first item in list and check it against the structure
 				thisLabel = ListFirst(sTemp.labelList,",");
 				if (thisLabel != ARGUMENTS.Label) {
 					thisLink = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#thisLabel#');
-					if (StructKeyExists(ARGUMENTS.wikiList,ListFirst(sTemp.labelList,","))) {
-						// create a link to view the document and replace all Instances of that wikiname with the link
-						sTemp.labelLink = '<a href="#LCase(thisLink)#">#thisLabel#</a>';
-						thisBlurb = Replace(thisBlurb, '<wiki>#thisLabel#</wiki>', sTemp.LabelLink, 'ALL');
-					} else {		
-						// otherwise create a link to edit the document and replace all Instances of that wikiname with the link
-						sTemp.labelLink = '<a href="#thisLink#" class="undefined">#thisLabel#</a>';
-						thisBlurb = Replace(thisBlurb, '<wiki>#thisLabel#</wiki>', sTemp.LabelLink, 'ALL');
-					}
+					// otherwise create a link to edit the document and replace all Instances of that wikiname with the link
+					sTemp.labelLink = '<a href="#thisLink#" class="int" data-label="#thisLabel#">#thisLabel#</a>';
+					thisBlurb = Replace(thisBlurb, '<wiki>#thisLabel#</wiki>', sTemp.LabelLink, 'ALL');
 				} else {
 					thisBlurb = Replace(thisBlurb,'<wiki>#thisLabel#</wiki>', '<span class="thisLabel">#thisLabel#</span>','ALL');
 				}
@@ -314,10 +308,9 @@ component persistent="false" accessors="true" output="false" {
 				if (ReFind('^([A-Z]|[a-z]|[0-9]|_)*$', link, 1, False)) {
 					// this is an internal wiki link
 					ArrayAppend(outLinks, link);
-					cssClass = !StructKeyExists(wikiList, link) ? ' class="undefined"' : '';
 					link = ContentRenderer.CreateHREF(filename='#parentpath#/#LCase(link)#');
 				};
-				thisBlurb = Replace(thisBlurb, '<bracketlink>', '<a href="#link#"#cssClass#>#linkName#</a>', 'ONE');
+				thisBlurb = Replace(thisBlurb, '<bracketlink>', '<a href="#link#" class="int">#linkName#</a>', 'ONE');
 			}
 
 			// attachment images

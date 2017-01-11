@@ -61,10 +61,20 @@
 	</div>
 </div></div></div>
 </cfoutput>
+
 <script type="text/javascript">
 	$(document).ready(function() {
 		<cfoutput>
 		var statusQueue = #SerializeJson(rc.statusQueue())#;
+		var wikiList = #LCase(SerializeJson(wikiList))#;
+		$('.content a.int')
+			.filter(function() {
+				var thisLabel = $(this).attr('data-label');
+				return typeof thisLabel != 'undefined' && $.inArray( thisLabel.toLowerCase(), wikiList ) == -1;
+			})
+			.each(function() {
+				$(this).addClass('undefined');
+			});
 		</cfoutput>
 		statusQueue.forEach(function(sm) {
 			murawiki.dispStatus(sm.class, sm.message);

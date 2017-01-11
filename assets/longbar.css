@@ -1,13 +1,24 @@
-a.undefined:link {
-	COLOR: #555;
-	BORDER-BOTTOM: 1px dotted #555;
-}
-a.undefined:after {
-	font-family: FontAwesome;
-	top:0;
-	padding-left:0.1em;
-	content: "\f128"; 
-}
+/* {{{ LINKS */
+	.content a.undefined:link {
+		COLOR: #555;
+		BORDER-BOTTOM: 1px dotted #555;
+	}
+	.content a.undefined:after {
+		font-family: FontAwesome;
+		top:0;
+		padding-left:0.1em;
+		content: "\f128"; 
+	}
+	.content a[target="_blank"]:after {
+		font-family: FontAwesome;
+		top:0;
+		padding-left:0.1em;
+		font-size: 80%;
+		COLOR: #999;
+		content: "\f08e"; 
+	}
+/* }}} */
+
 div.panel {
 	PADDING: 0.5em;
 	BACKGROUND: #eee;
@@ -55,7 +66,7 @@ div.message {
 	BORDER: 2px solid #999;
 	MARGIN-BOTTOM: 2em;
 }
-a[disabled] {
+div.panel a[disabled] {
 	POINTER-EVENTS: none;
 	COLOR: Gray;
 }
