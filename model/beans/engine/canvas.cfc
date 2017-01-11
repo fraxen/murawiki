@@ -52,6 +52,10 @@ component persistent="false" accessors="true" output="false" {
 		page.setBody(ARGUMENTS.blurb);
 		temp = getRenderer().renderbody_normal_mura(page, '#chr(9)#', ARGUMENTS.blurb);
 				
+		// {{{ FIX EXTERNAL LINKS
+		temp = REReplace(temp, '<a (href="[^#Chr(9)#])', '<a target="_blank" class="ext" \1', 'ALL');
+		// }}}
+
 		for (var t in ListToArray(temp, 'href="#Chr(9)#/', false, true)) {
 			label = '';
 			link = '';
