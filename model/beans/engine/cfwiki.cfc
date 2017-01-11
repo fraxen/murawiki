@@ -304,13 +304,14 @@ component persistent="false" accessors="true" output="false" {
 				s = ReReplace(s, '\[\[(.*?)\]\]', '\1');
 				linkName = ListLast(s, '|');
 				link = ReReplace(ListFirst(s , '|'), ' ', '_', 'ALL');
-				cssClass = '';
+				cssClass = 'class="ext" target="_blank"';
 				if (ReFind('^([A-Z]|[a-z]|[0-9]|_)*$', link, 1, False)) {
 					// this is an internal wiki link
 					ArrayAppend(outLinks, link);
 					link = ContentRenderer.CreateHREF(filename='#parentpath#/#LCase(link)#');
+					cssClass = 'class="int"';
 				};
-				thisBlurb = Replace(thisBlurb, '<bracketlink>', '<a href="#link#" class="int">#linkName#</a>', 'ONE');
+				thisBlurb = Replace(thisBlurb, '<bracketlink>', '<a href="#link#" #cssClass#>#linkName#</a>', 'ONE');
 			}
 
 			// attachment images
