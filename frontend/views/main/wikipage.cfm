@@ -12,7 +12,7 @@
 	<cfif !ArrayFindNoCase(skipLabels, rc.wikiPage.getLabel())>
 		<div id="timestamp">#DateFormat(rc.wikiPage.getLastUpdate(), 'yyyy-mm-dd')# #TimeFormat(rc.wikiPage.getLastUpdate(), 'HH:mm')#</div>
 	</cfif>
-	#rc.blurb#
+	#rc.wikiPage.getBody()#
 	<cfif ArrayLen(rc.tags)>
 		<ul class="tags">
 			<cfloop index="t" array="#rc.tags#">
