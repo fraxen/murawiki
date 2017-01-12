@@ -33,7 +33,6 @@ public any function before(required struct rc) {
 }
 
 public void function preview() {
-	// TODO - need to fix this for ACF
 	rc.wiki = getWikiManagerService().getWiki(rc.WikiId);
 	rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentId, SiteID=$.event('siteID'));
 	var out = {status: 'ok', body: ''};
@@ -309,7 +308,6 @@ public void function redirect() {
 }
 
 public void function page() {
-	var body = '';
 	param rc.parentid = $.content().getParentID();
 	rc.title = rc.title == '' ? rc.label : rc.title;
 	rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentID, SiteID=rc.SiteID);
@@ -346,7 +344,6 @@ public void function page() {
 	}
 	param rc.notes = rc.wikiPage.getIsNew() ? rc.rb.getKey('NoteCreate') : rc.rb.getKey('NoteEdit');
 	rc.wikiPage.setParentID(rc.parentid);
-	body = rc.Wiki.renderHTML(rc.wikiPage, $.getContentRenderer());
 	rc.wikiPage.set({
 		siteid = rc.wiki.getContentBean().getSiteID(),
 		type = 'Page',
