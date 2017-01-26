@@ -142,6 +142,7 @@ component persistent="false" accessors="true" output="false" {
 		for (n in XmlSearch(thisBlurb, '//*[name()="a" and @href]')) {
 			if (ArrayFindNoCase(attachPaths, n.XmlAttributes.href)) {
 				addClass(n, 'media');
+				n.XmlAttributes['target'] = '_blank';
 			}
 		}
 
@@ -215,6 +216,7 @@ component persistent="false" accessors="true" output="false" {
 				addClass(n, 'int');
 				n.XmlAttributes['data-label'] = label;
 			} else {
+				n.XmlAttributes['target'] = '_blank';
 				addClass(n, 'ext');
 			}
 		}
