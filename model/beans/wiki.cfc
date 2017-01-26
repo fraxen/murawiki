@@ -551,6 +551,21 @@
 		);
 	}
 
+	public string function cleanupBlurb(required any wikiPage, required any ContRend) {
+		if (StructKeyExists(getEngine(), 'cleanup')) {
+			return getEngine().cleanup(
+				ARGUMENTS.wikiPage.getBlurb(),
+				ListLast(ARGUMENTS.wikiPage.getFilename(), '/'),
+				getWikiList(),
+				getContentBean().getFileName(),
+				ContRend,
+				ARGUMENTS.WikiPage.getAttachments() == '' ? {} : DeserializeJSON(ARGUMENTS.WikiPage.getAttachments())
+			);
+		} else {
+			return ARGUMENTS.wikiPage.getBlurb();
+		}
+	}
+
 	public string function renderHTML(required any wikiPage, required any ContRend) {
 		return getEngine().renderHTML(
 			ARGUMENTS.wikiPage.getBlurb(),

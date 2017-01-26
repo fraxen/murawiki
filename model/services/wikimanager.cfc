@@ -16,6 +16,7 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		// Triggered from event handler
 		var wp = ARGUMENTS.wikiPage;
 		var wiki = getWiki(wp.getParentID());
+		wp.setBlurb(Wiki.cleanupBlurb(wp, ContRend))
 		wp.set({
 			urltitle = LCase(wp.getLabel()),
 			mentitle = wp.getTitle(),
