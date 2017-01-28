@@ -37,6 +37,7 @@ public void function preview() {
 	rc.wikiPage = $.getBean('content').loadBy(ContentID=rc.ContentId, SiteID=$.event('siteID'));
 	var out = {status: 'ok', body: ''};
 	rc.wikiPage.setBlurb(rc.blurb);
+	rc.wikiPage.setBlurb(rc.wiki.cleanupBlurb(rc.wikiPage, $.getContentRenderer()));
 	out.body = rc.Wiki.renderHTML(rc.wikiPage, $.getContentRenderer());
 	outputJson(out);
 }
