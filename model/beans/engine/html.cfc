@@ -61,16 +61,16 @@ component persistent="false" accessors="true" output="false" {
 	}
 
 	public any function cleanup(required string blurb) {
-		var thisBlurb = parseHtml( ARGUMENTS.blurb );
+		var thisBlurb = parseHtml(ARGUMENTS.blurb);
 		var whitelist = 'not(name()=' & ListChangeDelims(ListQualify(VARIABLES.engineopts.tagwhitelist.val, '"'), ') and not(name()=') & ')';
 		var n = {};
 		var ne = {};
 		var allowedAttributes = [];
 		if (VARIABLES.engineopts.allowClass.val) {
-			ArrayAppend(allowedAttributes, 'class')
+			ArrayAppend(allowedAttributes, 'class');
 		}
 		if (VARIABLES.engineopts.allowStyle.val) {
-			ArrayAppend(allowedAttributes, 'style')
+			ArrayAppend(allowedAttributes, 'style');
 		}
 		var tagAllowedAttributes = {
 			'a': listToArray(ArrayToList(allowedAttributes) & ',href'),
