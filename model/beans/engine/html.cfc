@@ -32,18 +32,20 @@ component persistent="false" accessors="true" output="false" {
 	private any function parseHtml(htmlContent) {
 		ARGUMENTS.htmlContent = '<murawiki>' & ARGUMENTS.htmlContent & '</murawiki>';
 		var out = '';
-		var inputSource = createObject( 'java', 'org.xml.sax.InputSource' ).init(
-			createObject( 'java', 'java.io.StringReader' ).init( ARGUMENTS.htmlContent )
+		var inputSource = createObject('java', 'org.xml.sax.InputSource').init(
+			createObject('java', 'java.io.StringReader').init(ARGUMENTS.htmlContent)
 		);
-		var saxDomBuilder = createObject( 'java', 'com.sun.org.apache.xalan.internal.xsltc.trax.SAX2DOM' ).init(javacast('boolean', true));
-		var tagSoupParser = createObject( 'java', 'org.ccil.cowan.tagsoup.Parser' ).init();
+		var saxDomBuilder = createObject('java', 'com.sun.org.apache.xalan.internal.xsltc.trax.SAX2DOM').init(javacast('boolean', true));
+		var tagSoupParser = createObject('java', 'org.ccil.cowan.tagsoup.Parser').init();
 		tagSoupParser.setFeature(
 			tagSoupParser.namespacesFeature,
-			javaCast( 'boolean', false )
+			javaCast('boolean', false)
 		);
-		tagSoupParser.setContentHandler( saxDomBuilder );
-		tagSoupParser.parse( inputSource );
-		return saxDomBuilder.getDom();
+		tagSoupParser.setContentHandler(saxDomBuilder);
+		tagSoupParser.parse(inputSource);
+		out = xmlSearch(saxDomBuilder.getDom(), "/node()")[1];
+		out = XmlParse(ToString(out));
+		return out;
 	}
 
 	public any function setup(required struct engineopts) {
@@ -113,14 +115,14 @@ component persistent="false" accessors="true" output="false" {
 			}
 		}
 
-		return ReReplace(ToString(thisBlurb), '^<\?xml version="1.0" encoding="UTF-8"\?><murawiki xmlns:html="http://www.w3.org/1999/xhtml">(.*)<\/murawiki>$', '\1', 'ONE');
+		return ReReplace(ToString(thisBlurb), '^<\?xml version="1.0" encoding="UTF-8"\?.*?murawiki xmlns:html="http://www.w3.org/1999/xhtml">(.*)<\/murawiki>$', '\1', 'ONE');
 	}
 
 	public any function renderHTML(required string blurb, required string label, required struct wikiList, required string parentpath, required any ContentRenderer, struct attach={}) {
 		var thisBlurb = parseHtml(ARGUMENTS.blurb);
 		var outLinks = [];
 		var wikiPathMatch = '^(#ReReplace(ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/'), '\/', '\/', 'ALL')#\w+(\/$|$))|(#ReReplace(ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/', complete=true), '\/', '\/', 'ALL')#\w+(\/$|$))';
-		var label = '';
+		var lbl = '';
 		var n = {};
 		var ne = {};
 		var attachPaths = [];
@@ -211,17 +213,18 @@ component persistent="false" accessors="true" output="false" {
 		// fix wiki links
 		for (n in XmlSearch(thisBlurb, '//*[name()="a" and @href and not(contains(@class, "media"))]')) {
 			if (REFindNoCase(wikiPathMatch, n.XmlAttributes.href)) {
-				label = ListLast(n.XmlAttributes.href, '/');
-				n.XmlAttributes.href = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#label#');
+				lbl = ListLast(n.XmlAttributes.href, '/');
+				n.XmlAttributes.href = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#lbl#');
 				addClass(n, 'int');
-				n.XmlAttributes['data-label'] = label;
+				n.XmlAttributes['data-label'] = lbl;
+				ArrayAppend(outLinks, lbl);
 			} else {
 				n.XmlAttributes['target'] = '_blank';
 				addClass(n, 'ext');
 			}
 		}
 
-		thisBlurb = ReReplace(ToString(thisBlurb), '^<\?xml version="1.0" encoding="UTF-8"\?><murawiki xmlns:html="http://www.w3.org/1999/xhtml">(.*)<\/murawiki>$', '\1', 'ONE');
+		thisBlurb = ReReplace(ToString(thisBlurb), '^<\?xml version="1.0" encoding="UTF-8"\?.*?murawiki xmlns:html="http://www.w3.org/1999/xhtml">(.*)<\/murawiki>$', '\1', 'ONE');
 
 		return { blurb:thisBlurb, outLinks:outLinks };
 	}
