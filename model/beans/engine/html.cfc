@@ -20,11 +20,11 @@ component persistent="false" accessors="true" output="false" {
 			hint: 'Comma-separated list of allowed html tags'
 		},
 		'allowClass' : {
-			val: True,
+			val: false,
 			hint: 'Allow class attribute in html'
 		},
 		'allowStyle' : {
-			val: True,
+			val: false,
 			hint: 'Allow style attribute in html'
 		}
 	};
