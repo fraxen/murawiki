@@ -17,7 +17,6 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		var wp = ARGUMENTS.wikiPage;
 		var wiki = getWiki(wp.getParentID());
 		var rendered = '';
-		wp.setBlurb(Wiki.cleanupBlurb(wp, ContRend));
 		rendered = Wiki.renderHTML(wp, ContRend);
 		wp.set({
 			urltitle = LCase(wp.getLabel()),
@@ -25,6 +24,7 @@ component accessors="true" output="false" extends="mura.cfobject" {
 			active=1,
 			approved=1,
 			display=1,
+			blurb = rendered,
 			summary = rendered,
 			body = rendered,
 			metadesc = stripHTML( rendered ),
