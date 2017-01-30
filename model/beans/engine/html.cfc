@@ -101,8 +101,8 @@ component persistent="false" accessors="true" output="false" {
 		}
 
 		// Parse out tags, and any that are not in whitelist should be <pre> instead
-		while (ArrayLen(XmlSearch(thisBlurb, '//*[not(name()="body") and not(name()="html") and not(name()="murawiki") and #whitelist#]'))) {
-			n = XmlSearch(thisBlurb, '//*[not(name()="body") and not(name()="html") and not(name()="murawiki") and #whitelist#]')[1];
+		while (ArrayLen(XmlSearch(thisBlurb, '//*[not(name()="body") and not(name()="html") and not(name()="murawiki") and #whitelist# and not(ancestor::pre)]'))) {
+			n = XmlSearch(thisBlurb, '//*[not(name()="body") and not(name()="html") and not(name()="murawiki") and #whitelist# and not(ancestor::pre)]')[1];
 			preify(n, thisBlurb);
 		}
 
