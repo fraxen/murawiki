@@ -233,7 +233,25 @@ component persistent="false" accessors="true" output="false" {
 			}
 		}
 
+		// fix wiki links using pattern
+		if (getEngineOpts().usePattern.val) {
+			for (n in XmlSearch(thisBlurb, '//*[not(name()="a") and not(name()="pre") and not(name()="code") and not(name()="img")]')) {
+				if (StructKeyExists(n, 'XmlText') && n.XmlText != '' && REFind(getEngineOpts().wikiPattern.val, n.XmlText)) {
+					n.XmlText = ReReplace(n.XmlText, getEngineOpts().wikiPattern.val, '#Chr(26)#wikilink#Chr(26)#\1#Chr(1)#wikilink#Chr(1)#', 'ALL');
+				}
+			}
+		}
+
 		thisBlurb = ReReplace(ToString(thisBlurb), '^<\?xml version="1.0" encoding="UTF-8"\?.*?murawiki xmlns:html="http://www.w3.org/1999/xhtml">(.*)<\/murawiki>$', '\1', 'ONE');
+
+		if (getEngineOpts().usePattern.val) {
+			for (var l in listToArray(ReReplace(thisBlurb, '&##26;wikilink', Chr(26), 'ALL'), Chr(26))) {
+				if (REFind('^&##26;', l)) {
+					ArrayAppend(outLinks, ReReplace(l, '^&##26;(.*?)&##1;wikilink&##1;.*', '\1'));
+				}
+			}
+			thisBlurb = ReReplace(thisBlurb, '&##26;wikilink&##26;(.*?)&##1;wikilink&##1;', '<a href="#ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/\1')#" data-label="\1" class="int">\1</a>', 'ALL');
+		}
 
 		return { blurb:thisBlurb, outLinks:outLinks };
 	}
