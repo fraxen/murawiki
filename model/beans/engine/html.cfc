@@ -62,8 +62,8 @@ component persistent="false" accessors="true" output="false" {
 		return getEngineOpts();
 	}
 
-	public any function cleanup(required string blurb) {
-		var thisBlurb = parseHtml(ARGUMENTS.blurb);
+	private any function cleanup(required any blurb) {
+		var thisBlurb = ARGUMENTS.blurb;
 		var whitelist = 'not(name()=' & ListChangeDelims(ListQualify(VARIABLES.engineopts.tagwhitelist.val, '"'), ') and not(name()=') & ')';
 		var n = {};
 		var ne = {};
@@ -115,7 +115,7 @@ component persistent="false" accessors="true" output="false" {
 			}
 		}
 
-		return ReReplace(ToString(thisBlurb), '^<\?xml version="1.0" encoding="UTF-8"\?.*?murawiki xmlns:html="http://www.w3.org/1999/xhtml">(.*)<\/murawiki>$', '\1', 'ONE');
+		return thisBlurb;
 	}
 
 	public any function renderHTML(required string blurb, required string label, required struct wikiList, required string parentpath, required any ContentRenderer, struct attach={}) {
@@ -126,6 +126,8 @@ component persistent="false" accessors="true" output="false" {
 		var n = {};
 		var ne = {};
 		var attachPaths = [];
+
+		thisBlurb = cleanup(thisBlurb);
 
 		private void function addClass(n, newClass) {
 			if (!StructKeyExists(ARGUMENTS.n.XmlAttributes, 'class')) {
