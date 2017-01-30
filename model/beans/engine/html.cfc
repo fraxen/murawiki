@@ -86,11 +86,18 @@ component persistent="false" accessors="true" output="false" {
 					if (ARGUMENTS.n.XmlParent.XmlChildren[i] == ARGUMENTS.n) {
 						ne = XmlElemNew(ARGUMENTS.full, 'pre');
 						ne.XmlText = ReReplace(ToString(ARGUMENTS.n), '^<.xml version="1.0" encoding="UTF-8".>', '', 'ONE');
+						ne.XmlText = ReReplace(ne.XmlText, '^<pre>', '');
+						ne.XmlText = ReReplace(ne.XmlText, '<\/pre>$', '');
 						ARGUMENTS.n.XmlParent.XmlChildren[i] = ne;
 						break;
 					}
 				}
 			}
+		}
+
+		// Make sure that the inside of pre tags are escaped
+		for (n in XmlSearch(thisBlurb, '//*[name()="pre" and not(ancestor::pre)]')) {
+			preify(n, thisBlurb);
 		}
 
 		// Parse out tags, and any that are not in whitelist should be <pre> instead
