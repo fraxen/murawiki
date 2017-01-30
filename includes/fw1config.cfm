@@ -24,7 +24,7 @@ https://github.com/stevewithington/MuraFW1
 
 	variables.framework.debugMode = false; // if TRUE, then additional information is returned by the Application.onError() method
 
-	variables.framework.reloadApplicationOnEveryRequest = false; // change to TRUE if you're developing the plugin so you can see changes in your controllers, etc. ... otherwise, set to FALSE for production
+	variables.framework.reloadApplicationOnEveryRequest = true; // change to TRUE if you're developing the plugin so you can see changes in your controllers, etc. ... otherwise, set to FALSE for production
 
 	variables.framework.trace = false; // if true, will print out debugging/tracing info at the bottom of ea. page (within the Plugin's Administration area only)
 
