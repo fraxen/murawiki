@@ -82,13 +82,13 @@ component persistent="false" accessors="true" output="false" {
 
 		private void function preify(n, full) {
 			if (StructKeyExists(ARGUMENTS.n, 'XmlParent')) {
-				for (var i=1; i<=ArrayLen(ARGUMENTS.n.XmlParent.XmlChildren); i++) {
-					if (ARGUMENTS.n.XmlParent.XmlChildren[i] == ARGUMENTS.n) {
+				for (var i=1; i<=ArrayLen(ARGUMENTS.n.XmlParent.XmlNodes); i++) {
+					if (ARGUMENTS.n.XmlParent.XmlNodes[i] == ARGUMENTS.n) {
 						ne = XmlElemNew(ARGUMENTS.full, 'pre');
 						ne.XmlText = ReReplace(ToString(ARGUMENTS.n), '^<.xml version="1.0" encoding="UTF-8".>', '', 'ONE');
 						ne.XmlText = ReReplace(ne.XmlText, '^<pre>', '');
 						ne.XmlText = ReReplace(ne.XmlText, '<\/pre>$', '');
-						ARGUMENTS.n.XmlParent.XmlChildren[i] = ne;
+						ARGUMENTS.n.XmlParent.XmlNodes[i] = ne;
 						break;
 					}
 				}
@@ -170,14 +170,14 @@ component persistent="false" accessors="true" output="false" {
 				continue;
 			}
 			if (n.XmlParent.XmlName != 'a') {
-				for (var i=1; i<=ArrayLen(n.XmlParent.XmlChildren); i++) {
-					if (n.XmlParent.XmlChildren[i] == n) {
+				for (var i=1; i<=ArrayLen(n.XmlParent.XmlNodes); i++) {
+					if (n.XmlParent.XmlNodes[i] == n) {
 						ne = XmlElemNew(thisBlurb, 'a');
 						ne.XmlAttributes['href'] = n.XmlAttributes['src'];
 						ne.XmlAttributes['data-rel'] = 'shadowbox[body]';
-						ne.XmlChildren[1] = n;
+						ne.XmlNodes[1] = n;
 						addClass(ne, 'media');
-						n.XmlParent.XmlChildren[i] = ne;
+						n.XmlParent.XmlNodes[i] = ne;
 						break;
 					}
 				}
@@ -201,14 +201,14 @@ component persistent="false" accessors="true" output="false" {
 				continue;
 			}
 			if (n.XmlParent.XmlName != 'a') {
-				for (var i=1; i<=ArrayLen(n.XmlParent.XmlChildren); i++) {
-					if (n.XmlParent.XmlChildren[i] == n) {
+				for (var i=1; i<=ArrayLen(n.XmlParent.XmlNodes); i++) {
+					if (n.XmlParent.XmlNodes[i] == n) {
 						ne = XmlElemNew(thisBlurb, 'a');
 						ne.XmlAttributes['href'] = ARGUMENTS.ContentRenderer.createHREFForImage(fileid=attachPaths[n.XmlAttributes['src']], size='source');
 						ne.XmlAttributes['data-rel'] = 'shadowbox[body]';
-						ne.XmlChildren[1] = n;
+						ne.XmlNodes[1] = n;
 						addClass(ne, 'media');
-						n.XmlParent.XmlChildren[i] = ne;
+						n.XmlParent.XmlNodes[i] = ne;
 						break;
 					}
 				}
