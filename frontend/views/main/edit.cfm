@@ -35,8 +35,9 @@
 		<div class="mura-form-textfield form-group">
 			<label for="blurb">#rc.rb.getKey('blurb')#</label>
 			<textarea
+				id="blurb"
 				name="blurb"
-				class="form-control"
+				class="form-control<cfif rc.wiki.getContentBean().getWikiEngine() EQ 'html'> htmlEditor</cfif>"
 				data-required="false"
 				>#REReplace(rc.wikiPage.getBlurb(),'(#Chr(13)##Chr(10)#|#Chr(10)#|#Chr(13)#)', Chr(13), 'all')#</textarea>
 		</div>
