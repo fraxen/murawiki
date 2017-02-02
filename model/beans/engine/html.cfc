@@ -87,8 +87,8 @@ component persistent="false" accessors="true" output="false" {
 					if (ARGUMENTS.n.XmlParent.XmlNodes[i] == ARGUMENTS.n) {
 						ne = XmlElemNew(ARGUMENTS.full, 'pre');
 						ne.XmlText = ReReplace(ToString(ARGUMENTS.n), '^<.xml version="1.0" encoding="UTF-8".>', '', 'ONE');
-						ne.XmlText = ReReplace(ne.XmlText, '^<pre>', '');
-						ne.XmlText = ReReplace(ne.XmlText, '<\/pre>$', '');
+						ne.XmlText = ReReplace(ne.XmlText, '^<#ARGUMENTS.n.XmlName#>', '');
+						ne.XmlText = ReReplace(ne.XmlText, '<\/#ARGUMENTS.n.XmlName#>$', '');
 						ARGUMENTS.n.XmlParent.XmlNodes[i] = ne;
 						break;
 					}
@@ -97,13 +97,18 @@ component persistent="false" accessors="true" output="false" {
 		}
 
 		// Make sure that the inside of pre tags are escaped
-		for (n in XmlSearch(thisBlurb, '//*[name()="pre" and not(ancestor::pre)]')) {
-			preify(n, thisBlurb);
+		for (n in XmlSearch(thisBlurb, '//*[(name()="pre" or name()="code") and (not(ancestor::code) and not(ancestor::pre))]')) {
+			if(StructKeyExists(n, 'XmlChildren') && ArrayLen(n.XmlChildren)) {
+				n.XmlText = ReReplace(ToString(n), '^<.xml version="1.0" encoding="UTF-8".>', '', 'ONE');
+				n.XmlText = ReReplace(n.XmlText, '^<#n.XmlName#>', '');
+				n.XmlText = ReReplace(n.XmlText, '<\/#n.XmlName#>$', '');
+				structDelete(n, 'XmlChildren');
+			}
 		}
 
 		// Parse out tags, and any that are not in whitelist should be <pre> instead
-		while (ArrayLen(XmlSearch(thisBlurb, '//*[not(name()="body") and not(name()="html") and not(name()="murawiki") and #whitelist# and not(ancestor::pre)]'))) {
-			n = XmlSearch(thisBlurb, '//*[not(name()="body") and not(name()="html") and not(name()="murawiki") and #whitelist# and not(ancestor::pre)]')[1];
+		while (ArrayLen(XmlSearch(thisBlurb, '//*[not(name()="body") and not(name()="html") and not(name()="murawiki") and #whitelist# and (not(ancestor::code) and not(ancestor::pre))]'))) {
+			n = XmlSearch(thisBlurb, '//*[not(name()="body") and not(name()="html") and not(name()="murawiki") and #whitelist# and (not(ancestor::code) and not(ancestor::pre))]')[1];
 			preify(n, thisBlurb);
 		}
 
