@@ -68,6 +68,7 @@ component persistent="false" accessors="true" output="false" {
 		var n = {};
 		var ne = {};
 		var allowedAttributes = [];
+
 		if (VARIABLES.engineopts.allowClass.val) {
 			ArrayAppend(allowedAttributes, 'class');
 		}
@@ -76,7 +77,7 @@ component persistent="false" accessors="true" output="false" {
 		}
 		var tagAllowedAttributes = {
 			'a': listToArray(ArrayToList(allowedAttributes) & ',href'),
-			'img': listToArray(ArrayToList(allowedAttributes) & ',src,width,height')
+			'img': listToArray(ArrayToList(allowedAttributes) & ',src,width,height,alt')
 		};
 		var thisAllowedAttributes = [];
 
@@ -146,7 +147,7 @@ component persistent="false" accessors="true" output="false" {
 		}
 
 		// fix media links
-		for (var p in StructKeyArray(attach)) {
+		for (var p in StructKeyArray(ARGUMENTS.attach)) {
 			ArrayAppend(attachPaths, ARGUMENTS.ContentRenderer.createHREF(filename=ARGUMENTS.attach[p].filename));
 			ArrayAppend(attachPaths, ARGUMENTS.ContentRenderer.createHREF(filename=ARGUMENTS.attach[p].filename, complete=true));
 		}
@@ -158,16 +159,19 @@ component persistent="false" accessors="true" output="false" {
 		}
 
 		// fix image links
-		attachPaths = [];
-		for (var p in StructKeyArray(attach)) {
-			if (attach[p].contenttype == 'image') {
-				ArrayAppend(attachPaths, ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[p].fileid, size='source'));
-				ArrayAppend(attachPaths, ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[p].fileid, size='source', complete=true));
+		attachPaths = {};
+		for (var p in StructKeyArray(ARGUMENTS.attach)) {
+			if (ARGUMENTS.attach[p].contenttype == 'image') {
+				StructInsert(attachpaths, ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[p].fileid, size='source'), p);
+				StructInsert(attachpaths, ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[p].fileid, size='source', complete=true), p);
 			}
 		}
 		for (n in XmlSearch(thisBlurb, '//*[name()="img" and @src]')) {
-			if (!ArrayFindNoCase(attachPaths, n.XmlAttributes.src) || !StructKeyExists(n, 'XmlParent')) {
+			if (!ArrayFindNoCase(StructKeyArray(attachPaths), n.XmlAttributes.src) || !StructKeyExists(n, 'XmlParent')) {
 				continue;
+			}
+			if (!StructKeyExists(n.XmlAttributes, 'alt')) {
+				n.XmlAttributes['alt'] = ARGUMENTS.attach[attachPaths[n.XmlAttributes.src]].Title;
 			}
 			if (n.XmlParent.XmlName != 'a') {
 				for (var i=1; i<=ArrayLen(n.XmlParent.XmlNodes); i++) {
@@ -190,21 +194,24 @@ component persistent="false" accessors="true" output="false" {
 
 		// fix thumbnails
 		attachPaths = {};
-		for (var p in StructKeyArray(attach)) {
-			if (attach[p].contenttype == 'image') {
-				StructInsert(attachpaths, ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[p].fileid, size='small'), attach[p].fileid);
-				StructInsert(attachpaths, ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[p].fileid, size='small', complete=true), attach[p].fileid);
+		for (var p in StructKeyArray(ARGUMENTS.attach)) {
+			if (ARGUMENTS.attach[p].contenttype == 'image') {
+				StructInsert(attachpaths, ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[p].fileid, size='small'), ARGUMENTS.attach[p]);
+				StructInsert(attachpaths, ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[p].fileid, size='small', complete=true), ARGUMENTS.attach[p]);
 			}
 		}
 		for (n in XmlSearch(thisBlurb, '//*[name()="img" and @src]')) {
 			if (!ArrayFindNoCase(StructKeyArray(attachPaths), n.XmlAttributes.src) || !StructKeyExists(n, 'XmlParent')) {
 				continue;
 			}
+			if (!StructKeyExists(n.XmlAttributes, 'alt')) {
+				n.XmlAttributes['alt'] = attachPaths[n.XmlAttributes.src].Title;
+			}
 			if (n.XmlParent.XmlName != 'a') {
 				for (var i=1; i<=ArrayLen(n.XmlParent.XmlNodes); i++) {
 					if (n.XmlParent.XmlNodes[i] == n) {
 						ne = XmlElemNew(thisBlurb, 'a');
-						ne.XmlAttributes['href'] = ARGUMENTS.ContentRenderer.createHREFForImage(fileid=attachPaths[n.XmlAttributes['src']], size='source');
+						ne.XmlAttributes['href'] = ARGUMENTS.ContentRenderer.createHREFForImage(fileid=attachPaths[n.XmlAttributes['src']].fileid, size='source');
 						ne.XmlAttributes['data-rel'] = 'shadowbox[body]';
 						ne.XmlNodes[1] = n;
 						addClass(ne, 'media');
@@ -213,7 +220,7 @@ component persistent="false" accessors="true" output="false" {
 					}
 				}
 			} else {
-				n.XmlParent.XmlAttributes['href'] = ARGUMENTS.ContentRenderer.createHREFForImage(fileid=attachPaths[n.XmlAttributes['src']], size='source');
+				n.XmlParent.XmlAttributes['href'] = ARGUMENTS.ContentRenderer.createHREFForImage(fileid=attachPaths[n.XmlAttributes['src']].fileid, size='source');
 				n.XmlParent.XmlAttributes['data-rel'] = 'shadowbox[body]';
 				addClass(n.XmlParent, 'media');
 			}
