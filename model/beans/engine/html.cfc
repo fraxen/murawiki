@@ -96,6 +96,16 @@ component persistent="false" accessors="true" output="false" {
 			}
 		}
 
+		// Delete empty code tags
+		for (n in XmlSearch(thisBlurb, '//*[(name()="code" and not(*))]')) {
+			for (var i=1; i<=ArrayLen(n.XmlParent.XmlNodes); i++) {
+				if (n.XmlParent.XmlNodes[i] == n) {
+					ArrayDeleteAt(n.XmlParent.XmlNodes, i);
+					break;
+				}
+			}
+		}
+
 		// Make sure that the inside of pre tags are escaped
 		for (n in XmlSearch(thisBlurb, '//*[(name()="pre" or name()="code") and (not(ancestor::code) and not(ancestor::pre))]')) {
 			if(StructKeyExists(n, 'XmlChildren') && ArrayLen(n.XmlChildren)) {
