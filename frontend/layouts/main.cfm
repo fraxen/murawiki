@@ -7,6 +7,15 @@
 	}
 	wikiList = StructKeyArray(rc.wiki.getWikiList());
 	ArraySort(wikiList, 'textnocase');
+	$.addToHTMLHeadQueue(action='append', text='
+		<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+		<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+		<style>
+			.select2-dropdown--below {
+				top: 3rem; /*your input height*/
+			}
+		</style>
+	');
 </cfscript>
 <cfoutput>
 <div id="status"></div>
