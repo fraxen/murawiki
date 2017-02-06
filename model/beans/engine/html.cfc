@@ -286,16 +286,55 @@ component persistent="false" accessors="true" output="false" {
 		var outScript = '';
 		savecontent variable='outScript' {
 			writeOutput("
-				function insertText(addText) {
-					var cursorPos = $('textarea[name=""blurb""]').prop('selectionStart'),
-						v = $('textarea[name=""blurb""]').val(),
-						textBefore = v.substring(0, cursorPos),
-						textAfter = v.substring(cursorPos, v.length);
-					$('textarea[name=""blurb""]').val(textBefore + addText + textAfter);
-					$('textarea[name=""blurb""]').prop('selectionStart', cursorPos);
-					$('textarea[name=""blurb""]').prop('selectionEnd', cursorPos);
-				}
-
+				$(document).ready(function() {
+					$('##wikilinkModal').on('shown.bs.modal', function() {
+						$('##wikilinkModal form')[0].reset()
+						$('##wikilinkModal select.s2').select2();
+					});
+					$('##wikilinkModal form').on('submit', function(e) {
+						var link = $('##wikilinkModal input[name=""thisLink""]').val();
+						var thisLabel = $('##wikilinkModal input[name=""thisLabel""]').val().toLowerCase();
+						var n = link.lastIndexOf(thisLabel);
+						var pat = new RegExp(thisLabel, 'i');
+						link = link.slice(0,n) + link.slice(7).replace(pat, $('##wikilinkModal select').val());
+						$('##wikilinkModal').modal('hide');
+						CKEDITOR.instances.blurb.insertHtml('<a href=""' + link + '"" class=""int"">' + $('##wikilinkModal input[name=""linkname""]').val() + '</a>');
+						return false;
+					});
+					$('textarea##blurb').on('DOMAttrModified', function() {
+						$('textarea##blurb').off('DOMAttrModified');
+						CKEDITOR.instances.blurb.destroy(true);
+						CKEDITOR.plugins.add('WikiLink', {
+							init: function(editor) {
+								var pluginName = 'WikiLink';
+								editor.addCommand(pluginName, {
+									exec : function(editor)
+									{
+										$('##wikilinkModal').modal('show');
+									},
+									canUndo : true
+								});
+								editor.ui.addButton('WikiLink',
+								{
+									label: 'Insert&nbsp;Wikilink',
+									command: pluginName,
+									class: 'cke_button_wikilink'
+								});
+							}
+						});
+						CKEDITOR.config.toolbar_htmlEditor = [
+							{name: 'group0', items: ['A11ychecker','Source']},
+							{name: 'group1', items: ['Cut','Copy','Paste','PasteText','PasteFromWord']},
+							{name: 'group2', items: ['Bold','Italic','Subscript','Superscript','-','Format','-','HorizontalRule','Blockquote','NumberedList','BulletedList','-','Link','Unlink','-','Image']},
+							{name: 'group3', items: ['WikiLink']},
+						];
+						CKEDITOR.config.toolbar = 'htmlEditor';
+						CKEDITOR.config.removeButtons = 'Underline';
+						CKEDITOR.config.extraPlugins = 'WikiLink';
+						CKEDITOR.config.format_tags = 'p;h1;h2;h3;pre';
+						CKEDITOR.replace('blurb', CKEDITOR.config);
+					});
+				});
 				$('a.attachInsert').on('click', function() {
 					var attach = JSON.parse( $(this).parent().parent().find('input').val() ),
 						fn = '';
@@ -307,21 +346,23 @@ component persistent="false" accessors="true" output="false" {
 					}
 					if ('CONTENTTYPE' in attach && attach.CONTENTTYPE == 'image') {
 						$('##attachImageModal').modal('show');
-						$('##attachImageModal').attr('data-attach', fn);
+						$('##attachImageModal').data('attach', attach);
 					} else {
-						insertText('[[file:' + fn + '|' + fn + ']]');
+						CKEDITOR.instances.blurb.insertHtml('<a href=""' + attach.LINK + '"" class=""media"" target=""_blank"">' + attach.TITLE + '</a>');
 					}
 					return false;
 				});
 
 				$('##attachImageModal a').on('click', function() {
-					var fn = $('##attachImageModal').attr('data-attach');
+					var f = $('##attachImageModal').data('attach'),
 						types = {
-						'file': '[[file:' + fn + '|' + fn + ']]',
-						'thumb': '[[thumb:' + fn + '|' + fn + ']]',
-						'image': '[[image:' + fn + '|' + fn + ']]'
+						'file': '<a href=""' + f.SOURCELINK + '"" class=""media"" target=""_blank"">' + f.TITLE + '</a>',
+						'thumb': '<a href=""' + f.SOURCELINK + '"" class=""media"" target=""_blank"" data-rel=""shadowbox[body]""><img src=""' + f.SMALLLINK + '"" alt=""' + f.TITLE + '""/></a>',
+						'image': '<a href=""' + f.SOURCELINK + '"" class=""media"" target=""_blank"" data-rel=""shadowbox[body]""><img src=""' + f.SOURCELINK + '"" alt=""' + f.TITLE + '""/></a>'
 					};
-					insertText(types[$(this).attr('data-type')]);
+					console.log(f);
+					console.log(types);
+					CKEDITOR.instances.blurb.insertHtml(types[$(this).attr('data-type')])
 					$('##attachImageModal').modal('hide');
 					return false;
 				});

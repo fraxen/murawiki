@@ -1,12 +1,5 @@
 <cfscript>
 	param rc.Attachments = {};
-	$.addToHTMLHeadQueue(action='append', text='
-		<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
-		<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
-		<style>.select2-dropdown--below {
-			top: 3rem; /*your input height*/
-		}</style>
-	');
 	thisTags = rc.wiki.getWikiTags();
 	for (t in rc.wikiPage.getTags()) {
 		if (!ArrayFindNoCase(thisTags, t)) {
@@ -15,6 +8,21 @@
 	}
 	ArraySort(thisTags, 'textnocase');
 	wikiList = StructKeyArray(rc.wiki.getWikiList());
+	ArraySort(wikiList, 'textnocase');
+	for (a in StructKeyArray(rc.Attachments)) {
+		if (rc.attachments[a].contenttype == 'image') {
+			rc.attachments[a]['SOURCELINK'] = $.getContentRenderer().createHREFForImage(fileid=rc.attachments[a].fileid, size='source');
+			rc.attachments[a]['SMALLLINK'] = $.getContentRenderer().createHREFForImage(fileid=rc.attachments[a].fileid, size='small');
+		} else {
+			rc.attachments[a]['LINK'] = $.getContentRenderer().createHREF(filename=rc.attachments[a].filename);
+		}
+	}
+	$.addToHTMLHeadQueue(action='append', text='
+		<style>
+			.cke_button__wikilink_icon { DISPLAY: none !important; }
+			.cke_button__wikilink_label { DISPLAY: inline !important; }
+		</style>
+	');
 </cfscript>
 <cfoutput>
 	<h4 class="modal-title">#rc.rb.getKey('wikiPageEditTitle')#</h4>
@@ -107,13 +115,41 @@
 		</ul>
 	</div>
 </div></div></div>
+<div id="wikilinkModal" class="modal fade" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h4 class="modal-title">#rc.rb.getKey('wikiPageEditWikiLinkHeader')#</h4>
+	</div>
+	<div class="modal-body" style="PADDING: 2em;">
+		<form id="wikiLinkForm" class="mura-form-builder" action="" onsubmit="">
+			<input type="hidden" name="thisLink" value="#$.getContentRenderer().CreateHREF(filename=$.getFilename())#" />
+			<input type="hidden" name="thisLabel" value="#$.getLabel()#" />
+			<div class="mura-form-textfield req form-group control-group">
+				<select name="wikilink" class="form-control s2" data-placeholder="#rc.rb.getKey('wikiPageEditWikiLinkTop')#" data-tags="tags">
+					<option></option>
+					<cfloop index="label" array="#wikiList#">
+						<cfif label NEQ rc.wikiPage.getLabel()>
+						<option value="#label#">#label#</option>
+						</cfif>
+					</cfloop>
+				</select>
+			</div>
+			<div class="mura-form-textfield req form-group control-group">
+				<input type="text" name="linkname" value="" class="form-control" placeholder="#rc.rb.getKey('wikiPageEditWikiLinkName')#" />
+			</div>
+			<div >
+				<br/><button type="submit" class="btn btn-default" value="#rc.rb.getKey('wikiPageEditWikiLinkSubmit')#">#rc.rb.getKey('wikiPageEditWikiLinkSubmit')#</button>
+			</div>
+		</form>
+	</div>
+</div></div></div>
 </cfoutput>
 <script type="text/javascript">
 	$(document).ready(function() {
+		$('#editform select.s2').select2();
 		<cfoutput>
 		var wikiList = #LCase(SerializeJson(wikiList))#;
 		</cfoutput>
-		$('#editform select.s2').select2();
 		$('#attachAdd').on('click', function() {
 			var lastAttach = $('#editform input[type="file"]').last(),
 				i = +lastAttach.attr('name').replace('attachment', '') + 1,
@@ -157,6 +193,7 @@
 			return true;
 		});
 		$('#preview').on('click', function() {
+			var blurb = typeof CKEDITOR === 'undefined' ? $('textarea[name="blurb"]').val() : CKEDITOR.instances.blurb.document.getBody().getHtml();
 			$('#previewModal').modal('show');
 			$('#previewModal div.modal-body').html('<div style="text-align:center; MARGIN: 2em;"><i class="fa fa-spinner fa-spin" style="font-size:48px"></div>')
 			<cfoutput>
@@ -166,7 +203,7 @@
 				data: {
 					wikiid: '#rc.wiki.getContentBean().getContentID()#',
 					contentid: '#rc.wikiPage.getContentID()#',
-					blurb: $('textarea[name="blurb"]').val()
+					blurb: blurb
 				},
 				cache: false,
 				global: false,
