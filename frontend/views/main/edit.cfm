@@ -123,7 +123,7 @@
 	<div class="modal-body" style="PADDING: 2em;">
 		<form id="wikiLinkForm" class="mura-form-builder" action="" onsubmit="">
 			<input type="hidden" name="thisLink" value="#$.getContentRenderer().CreateHREF(filename=$.getFilename())#" />
-			<input type="hidden" name="thisLabel" value="#$.getLabel()#" />
+			<input type="hidden" name="thisLabel" value="#$.content().getLabel()#" />
 			<div class="mura-form-textfield req form-group control-group">
 				<select name="wikilink" class="form-control s2" data-placeholder="#rc.rb.getKey('wikiPageEditWikiLinkTop')#" data-tags="tags">
 					<option></option>
