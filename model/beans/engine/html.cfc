@@ -296,7 +296,7 @@ component persistent="false" accessors="true" output="false" {
 						var thisLabel = $('##wikilinkModal input[name=""thisLabel""]').val().toLowerCase();
 						var n = link.lastIndexOf(thisLabel);
 						var pat = new RegExp(thisLabel, 'i');
-						link = link.slice(0,n) + link.slice(7).replace(pat, $('##wikilinkModal select').val());
+						link = link.slice(0,n) + link.slice(n).replace(pat, $('##wikilinkModal select').val());
 						$('##wikilinkModal').modal('hide');
 						CKEDITOR.instances.blurb.insertHtml('<a href=""' + link + '"" class=""int"">' + $('##wikilinkModal input[name=""linkname""]').val() + '</a>');
 						return false;
