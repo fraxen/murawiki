@@ -18,13 +18,15 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		var wiki = getWiki(wp.getParentID());
 		var rendered = '';
 		rendered = Wiki.renderHTML(wp, ContRend);
+		if (Wiki.getContentBean().getWikiEngine() == 'html') {
+			wp.setBlurb(rendered);
+		}
 		wp.set({
 			urltitle = LCase(wp.getLabel()),
 			mentitle = wp.getTitle(),
 			active=1,
 			approved=1,
 			display=1,
-			blurb = rendered,
 			summary = rendered,
 			body = rendered,
 			metadesc = stripHTML( rendered ),
