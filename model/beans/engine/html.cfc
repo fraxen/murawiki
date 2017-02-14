@@ -243,7 +243,7 @@ component persistent="false" accessors="true" output="false" {
 
 		// fix wiki links
 		for (n in XmlSearch(thisBlurb, '//*[name()="a" and @href and not(contains(@class, "media"))]')) {
-			if (REFindNoCase(wikiPathMatch, n.XmlAttributes.href)) {
+			if (REFindNoCase(wikiPathMatch, n.XmlAttributes.href) || REFind('^\w*$', n.XmlAttributes.href)) {
 				lbl = ListLast(n.XmlAttributes.href, '/');
 				n.XmlAttributes.href = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#lbl#');
 				addClass(n, 'int');
