@@ -17,13 +17,6 @@
 		COLOR: #999;
 		content: "\f08e"; 
 	}
-	.content a.thisLabel:link, .content a.thisLabel:visited, .content a.thisLabel:hover {
-		COLOR: Black;
-		BORDER-BOTTOM: None;
-		TEXT-DECORATION: None;
-		CURSOR: Default;
-		FONT-WEIGHT: Bold;
-	}
 /* }}} */
 
 div.panel {
