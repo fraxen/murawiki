@@ -45,6 +45,7 @@ https://github.com/stevewithington/MuraFW1
 			<div class="row-fluid">
 
 					<!--- SUB-NAV --->
+					<!--
 					<div class="span3">
 						<ul class="nav nav-list murafw1-sidenav">
 							<li class="<cfif rc.action eq 'admin:main.default'>active</cfif>">
@@ -62,9 +63,10 @@ https://github.com/stevewithington/MuraFW1
 							</li>
 						</ul>
 					</div>
+					-->
 
 					<!--- BODY --->
-					<div class="span9">
+					<div class="span12">
 						#body#
 					</div>
 

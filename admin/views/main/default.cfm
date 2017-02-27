@@ -4,9 +4,12 @@
 		// wikiList[w.getSiteID()][w.getFileName()] = w;
 		wikiList[rc.wikis[ContentID].getContentBean().getSiteID()][rc.wikis[ContentID].getContentBean().getFileName()] = rc.wikis[ContentID];
 	}
+	isMura7 = $.getConfigBean().getVersion() >= 7;
 </cfscript>
 <cfoutput>
-	<h2>MuraWiki</h2>
+	<div class="mura-header">
+	<h1>MuraWiki</h1>
+	</div>
 	<p>This is a simple wiki system for Mura CMS.</p>
 	<p>To start using it, create a new content node in the Site Manager, with the type "Wiki" - then go to the plugin configuration to initialize it.</p>
 	<h3>Wikis set up on this instance:</h3>
