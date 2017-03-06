@@ -81,7 +81,7 @@ component persistent="false" accessors="true" output="false" extends="controller
 				.Initialize(wiki, rb, framework, $.CreateHREF(filename=wiki.getContentBean().getFilename(), complete=true));
 		} 
 		wiki.getContentBean().setIsInit(True).save();
-		framework.redirect(action='admin:edit', querystring='wiki=#rc.ContentID#');
+		framework.redirect(action='admin:main');
 	}
 
 }
