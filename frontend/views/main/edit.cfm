@@ -14,6 +14,8 @@
 		}
 	}
 	ArraySort(thisTags, 'textnocase');
+	wikiList = StructKeyArray(rc.wiki.getWikiList());
+	ArraySort(wikiList, 'textnocase');
 </cfscript>
 <cfoutput>
 	<h4 class="modal-title">#rc.rb.getKey('wikiPageEditTitle')#</h4>
@@ -167,11 +169,20 @@
 				global: false,
 				async: true,
 				success: function(data, textStatus, jqXHR) {
+					var wikiList = #LCase(SerializeJson(wikiList))#;
 					$('##previewModal div.modal-body').html(
 						'<h4>' + $('input[name="title"]').val() + '</h4>' +
 						data.BODY
 					);
-					$('##previewModal div.modal-body a').each(function() {$(this).attr('target', '_blank')});
+					$('##previewModal div.modal-body a').each(function() {$(this).attr('target', '_' + Math.random())});
+					$('##previewModal div.modal-body a.int')
+						.filter(function() {
+							var thisLabel = $(this).attr('data-label');
+							return typeof thisLabel != 'undefined' && $.inArray( thisLabel.toLowerCase(), wikiList ) == -1;
+						})
+						.each(function() {
+							$(this).addClass('undefined');
+						});
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
 					$('##previewModal').modal('hide');
