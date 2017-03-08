@@ -1,12 +1,5 @@
 <cfscript>
 	param rc.Attachments = {};
-	$.addToHTMLHeadQueue(action='append', text='
-		<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
-		<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
-		<style>.select2-dropdown--below {
-			top: 3rem; /*your input height*/
-		}</style>
-	');
 	thisTags = rc.wiki.getWikiTags();
 	for (t in rc.wikiPage.getTags()) {
 		if (!ArrayFindNoCase(thisTags, t)) {
@@ -16,6 +9,20 @@
 	ArraySort(thisTags, 'textnocase');
 	wikiList = StructKeyArray(rc.wiki.getWikiList());
 	ArraySort(wikiList, 'textnocase');
+	for (a in StructKeyArray(rc.Attachments)) {
+		if (rc.attachments[a].contenttype == 'image') {
+			rc.attachments[a]['SOURCELINK'] = $.getContentRenderer().createHREFForImage(fileid=rc.attachments[a].fileid, size='source');
+			rc.attachments[a]['SMALLLINK'] = $.getContentRenderer().createHREFForImage(fileid=rc.attachments[a].fileid, size='small');
+		} else {
+			rc.attachments[a]['LINK'] = $.getContentRenderer().createHREF(filename=rc.attachments[a].filename);
+		}
+	}
+	$.addToHTMLHeadQueue(action='append', text='
+		<style>
+			.cke_button__wikilink_icon { DISPLAY: none !important; }
+			.cke_button__wikilink_label { DISPLAY: inline !important; }
+		</style>
+	');
 </cfscript>
 <cfoutput>
 	<h4 class="modal-title">#rc.rb.getKey('wikiPageEditTitle')#</h4>
