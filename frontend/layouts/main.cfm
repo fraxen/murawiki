@@ -75,6 +75,7 @@
 			.each(function() {
 				$(this).addClass('undefined');
 			});
+		$('.content a.int[data-label="#LCase($.content().getLabel())#"]').addClass('thisLabel');
 		</cfoutput>
 		statusQueue.forEach(function(sm) {
 			murawiki.dispStatus(sm.class, sm.message);
