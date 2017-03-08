@@ -17,6 +17,9 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		var wp = ARGUMENTS.wikiPage;
 		var wiki = getWiki(wp.getParentID());
 		var rendered = Wiki.renderHTML(wp, ContRend);
+		if (Wiki.getContentBean().getWikiEngine() == 'html') {
+			wp.setBlurb(rendered);
+		}
 		wp.set({
 			urltitle = LCase(wp.getLabel()),
 			mentitle = wp.getTitle(),
