@@ -62,7 +62,7 @@ component persistent="false" accessors="true" output="false" {
 			if (Left(t, 10) == 'index.cfm/') {
 				label = REReplace(t, '^index.cfm/([^"]*)".*', '\1', 'ONE');
 				ArrayAppend(outLinks, label);
-				link = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#label#') & '" class="int" data-label="#label#"';
+				link = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#label#') & '" class="int" data-label="#LCase(label)#';
 				outHTML = outHTML & 'href="#REReplace(t, '^index.cfm/#label#', link, 'ONE')#';
 			} else {
 				outHTML = outHTML & t;

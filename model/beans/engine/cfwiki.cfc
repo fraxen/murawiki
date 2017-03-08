@@ -248,7 +248,7 @@ component persistent="false" accessors="true" output="false" {
 				thisLabel = ListFirst(sTemp.labelList,",");
 				thisLink = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#thisLabel#');
 				// otherwise create a link to edit the document and replace all Instances of that wikiname with the link
-				sTemp.labelLink = '<a href="#thisLink#" class="int" data-label="#thisLabel#">#thisLabel#</a>';
+				sTemp.labelLink = '<a href="#thisLink#" class="int" data-label="#LCase(thisLabel)#">#thisLabel#</a>';
 				thisBlurb = Replace(thisBlurb, '<wiki>#thisLabel#</wiki>', sTemp.LabelLink, 'ALL');
 				// remove the list item we just checked
 				sTemp.LabelList = listdeleteat(sTemp.LabelList, 1, ',');
@@ -304,7 +304,7 @@ component persistent="false" accessors="true" output="false" {
 				if (ReFind('^([A-Z]|[a-z]|[0-9]|_)*$', link, 1, False)) {
 					// this is an internal wiki link
 					ArrayAppend(outLinks, link);
-					cssClass = 'class="int" data-label="#link#"';
+					cssClass = 'class="int" data-label="#LCase(link)#"';
 					link = ContentRenderer.CreateHREF(filename='#parentpath#/#LCase(link)#');
 				};
 				thisBlurb = Replace(thisBlurb, '<bracketlink>', '<a href="#link#" #cssClass#>#linkName#</a>', 'ONE');

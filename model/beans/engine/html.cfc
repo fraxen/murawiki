@@ -247,7 +247,7 @@ component persistent="false" accessors="true" output="false" {
 				lbl = ListLast(n.XmlAttributes.href, '/');
 				n.XmlAttributes.href = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#lbl#');
 				addClass(n, 'int');
-				n.XmlAttributes['data-label'] = lbl;
+				n.XmlAttributes['data-label'] = LCase(lbl);
 				ArrayAppend(outLinks, lbl);
 			} else {
 				n.XmlAttributes['target'] = '_blank';
@@ -272,7 +272,7 @@ component persistent="false" accessors="true" output="false" {
 					ArrayAppend(outLinks, ReReplace(l, '^&##26;(.*?)&##1;wikilink&##1;.*', '\1'));
 				}
 			}
-			thisBlurb = ReReplace(thisBlurb, '&##26;wikilink&##26;(.*?)&##1;wikilink&##1;', '<a href="#ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/\1')#" data-label="\1" class="int">\1</a>', 'ALL');
+			thisBlurb = ReReplace(thisBlurb, '&##26;wikilink&##26;(.*?)&##1;wikilink&##1;', '<a href="#ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/\1')#" data-label="\L\1" class="int">\1</a>', 'ALL');
 		}
 
 		return { blurb:thisBlurb, outLinks:outLinks };
