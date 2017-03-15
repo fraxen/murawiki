@@ -50,7 +50,12 @@ component persistent="false" accessors="true" output="false" {
 		var didFix = false;
 		ARGUMENTS.blurb = REReplace(ARGUMENTS.blurb, '(#Chr(13)##Chr(10)#|#Chr(10)#|#Chr(13)#)', '#Chr(13)##Chr(10)#', 'all');
 		page.setBody(ARGUMENTS.blurb);
-		temp = getRenderer().renderbody_normal_mura(page, '#chr(9)#', ARGUMENTS.blurb);
+		temp = getRenderer().renderbody_normal_mura(page, '#Chr(9)#', ARGUMENTS.blurb);
+
+		// FIX NO CONTENT YET
+		if (temp == '<p>{{<a href="#Chr(9)#/index.cfm/NoContentYet">NoContentYet</a>}}</p>#Chr(10)#') {
+			temp = '';
+		}
 				
 		// {{{ FIX EXTERNAL LINKS
 		temp = REReplace(temp, '<a (href="[^#Chr(9)#])', '<a target="_blank" class="ext" \1', 'ALL');

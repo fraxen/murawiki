@@ -122,7 +122,7 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 			)
 			.addParam(
 				field='redirect',
-				condition='NOT IN',
+				condition='IN',
 				criteria='',
 				dataType='varchar'
 			)
