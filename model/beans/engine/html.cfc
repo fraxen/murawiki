@@ -294,11 +294,12 @@ component persistent="false" accessors="true" output="false" {
 					$('##wikilinkModal form').on('submit', function(e) {
 						var link = $('##wikilinkModal input[name=""thisLink""]').val();
 						var thisLabel = $('##wikilinkModal input[name=""thisLabel""]').val().toLowerCase();
+						var linkname= $('##wikilinkModal input[name=""linkname""]').val() == '' ? $('##wikilinkModal select').val() : $('##wikilinkModal input[name=""linkname""]').val();
 						var n = link.lastIndexOf(thisLabel);
 						var pat = new RegExp(thisLabel, 'i');
 						link = link.slice(0,n) + link.slice(n).replace(pat, $('##wikilinkModal select').val());
 						$('##wikilinkModal').modal('hide');
-						CKEDITOR.instances.blurb.insertHtml('<a href=""' + link + '"" class=""int"">' + $('##wikilinkModal input[name=""linkname""]').val() + '</a>');
+						CKEDITOR.instances.blurb.insertHtml('<a href=""' + link + '"" class=""int"">' + linkname + '</a>');
 						return false;
 					});
 					$('textarea##blurb').on('DOMAttrModified', function() {
