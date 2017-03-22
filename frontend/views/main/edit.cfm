@@ -43,8 +43,9 @@
 		<div class="mura-form-textfield form-group">
 			<label for="blurb">#rc.rb.getKey('blurb')#</label>
 			<textarea
+				id="blurb"
 				name="blurb"
-				class="form-control"
+				class="form-control<cfif rc.wiki.getContentBean().getWikiEngine() EQ 'html'> htmlEditor</cfif>"
 				data-required="false"
 				>#REReplace(rc.wikiPage.getBlurb(),'(#Chr(13)##Chr(10)#|#Chr(10)#|#Chr(13)#)', Chr(13), 'all')#</textarea>
 		</div>
@@ -114,6 +115,34 @@
 		</ul>
 	</div>
 </div></div></div>
+<div id="wikilinkModal" class="modal fade" role="dialog"><div class="modal-dialog modal-lg"><div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h4 class="modal-title">#rc.rb.getKey('wikiPageEditWikiLinkHeader')#</h4>
+	</div>
+	<div class="modal-body" style="PADDING: 2em;">
+		<form id="wikiLinkForm" class="mura-form-builder" action="" onsubmit="">
+			<input type="hidden" name="thisLink" value="#$.getContentRenderer().CreateHREF(filename=$.getFilename())#" />
+			<input type="hidden" name="thisLabel" value="#$.content().getLabel()#" />
+			<div class="mura-form-textfield req form-group control-group">
+				<select name="wikilink" class="form-control s2" data-placeholder="#rc.rb.getKey('wikiPageEditWikiLinkTop')#" data-tags="tags">
+					<option></option>
+					<cfloop index="label" array="#wikiList#">
+						<cfif label NEQ rc.wikiPage.getLabel()>
+						<option value="#label#">#label#</option>
+						</cfif>
+					</cfloop>
+				</select>
+			</div>
+			<div class="mura-form-textfield req form-group control-group">
+				<input type="text" name="linkname" value="" class="form-control" placeholder="#rc.rb.getKey('wikiPageEditWikiLinkName')#" />
+			</div>
+			<div >
+				<br/><button type="submit" class="btn btn-default" value="#rc.rb.getKey('wikiPageEditWikiLinkSubmit')#">#rc.rb.getKey('wikiPageEditWikiLinkSubmit')#</button>
+			</div>
+		</form>
+	</div>
+</div></div></div>
 </cfoutput>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -161,6 +190,7 @@
 			return true;
 		});
 		$('#preview').on('click', function() {
+			var blurb = typeof CKEDITOR === 'undefined' ? $('textarea[name="blurb"]').val() : CKEDITOR.instances.blurb.document.getBody().getHtml();
 			$('#previewModal').modal('show');
 			$('#previewModal div.modal-body').html('<div style="text-align:center; MARGIN: 2em;"><i class="fa fa-spinner fa-spin" style="font-size:48px"></div>')
 			<cfoutput>
@@ -170,7 +200,7 @@
 				data: {
 					wikiid: '#rc.wiki.getContentBean().getContentID()#',
 					contentid: '#rc.wikiPage.getContentID()#',
-					blurb: $('textarea[name="blurb"]').val()
+					blurb: blurb
 				},
 				cache: false,
 				global: false,
