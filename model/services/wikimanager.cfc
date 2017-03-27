@@ -16,15 +16,19 @@ component accessors="true" output="false" extends="mura.cfobject" {
 		// Triggered from event handler
 		var wp = ARGUMENTS.wikiPage;
 		var wiki = getWiki(wp.getParentID());
+		var rendered = Wiki.renderHTML(wp, ContRend);
+		if (Wiki.getContentBean().getWikiEngine() == 'html') {
+			wp.setBlurb(rendered);
+		}
 		wp.set({
 			urltitle = LCase(wp.getLabel()),
 			mentitle = wp.getTitle(),
 			active=1,
 			approved=1,
 			display=1,
-			summary = Wiki.renderHTML(wp, ContRend),
-			body = Wiki.renderHTML(wp, ContRend),
-			metadesc = stripHTML( Wiki.renderHTML(wp, ContRend) ),
+			summary = rendered,
+			body = rendered,
+			metadesc = stripHTML(rendered),
 			metakeywords = wp.getTags(),
 			outLinks = Wiki.outLinks(wp, ContRend),
 			isNav = wiki.getContentBean().getSiteNav(),

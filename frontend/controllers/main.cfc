@@ -84,7 +84,6 @@ component displayname="frontend" persistent="false" accessors="true" output="fal
 				);
 			}
 		}
-		rc.blurb = rc.Wiki.renderHTML(rc.wikiPage, $.getContentRenderer());
 		rc.attachments = isJson(rc.wikiPage.getAttachments()) ? DeserializeJSON(rc.wikiPage.getAttachments()): {};
 		rc.tags = [];
 		if (rc.wiki.getContentBean().getUseTags()) {

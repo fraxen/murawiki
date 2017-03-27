@@ -121,10 +121,24 @@ component displayname="quick" persistent="false" accessors="true" output="false"
 				dataType='varchar'
 			)
 			.addParam(
+				relationship='AND ('
+			)
+			.addParam(
 				field='redirect',
+				relationship='OR',
+				condition='EQUALS',
+				criteria='null',
+				dataType='varchar'
+			)
+			.addParam(
+				field='redirect',
+				relationship='OR',
 				condition='EQUALS',
 				criteria='',
 				dataType='varchar'
+			)
+			.addParam(
+				relationship=')'
 			)
 			.setSortBy('lastupdate')
 			.setSortDirection('asc')

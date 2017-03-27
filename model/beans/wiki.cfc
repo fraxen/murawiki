@@ -5,6 +5,7 @@
 	<cfproperty name='WikiTags' />
 	<cfproperty name='Engine' />
 	<cfproperty name='Rb' />
+	<cfproperty type='struct' name='RelatedTags' />
 
 	<!--- {{{ TAG BASED FUNCTIONS - For ACF compatibility --->
 	<cffunction name='collectionSearch' output='false' returnType='any' access='private'>
@@ -91,6 +92,54 @@
 	<!--- }}} --->
 
 <cfscript>
+	private struct function loadRelatedTags() {
+		var allTags = {};
+		var page = '';
+		var tag = '';
+		var tag2 = '';
+		var allPages = getBean('feed')
+			.setMaxItems(0)
+			.setSiteID( getContentBean().getSiteID() )
+			.addParam(
+				field='parentid',
+				condition='EQUALS',
+				criteria=getContentBean().getContentID(),
+				dataType='varchar'
+			)
+			.addParam(
+				field='subtype',
+				condition='EQUALS',
+				criteria='WikiPage',
+				dataType='varchar'
+			)
+			.setShowNavOnly(0)
+			.setShowExcludeSearch(1)
+			.getQuery();
+		for (page in allPages) {
+			for (tag in ListToArray(LCase(page.tags))) {
+				if (!StructKeyExists(allTags, tag)) {
+					allTags[tag] = {
+						frequency: 0,
+						related: {}
+					};
+				}
+				for (tag2 in ListToArray(LCase(page.tags))) {
+					if (tag2 == tag) {
+						continue;
+					}
+					if (!StructKeyExists(allTags[tag].related, tag2)) {
+						allTags[tag].related[tag2] = {
+							frequency: 0
+						};
+					}
+					allTags[tag].related[tag2].frequency++;
+				}
+				allTags[tag].frequency++;
+			}
+		}
+		return(allTags);
+	}
+
 	public any function init(required string ContentID, required string SiteID, beanFactory) {
 		setContentBean(
 			getBean('content').loadBy(
@@ -136,6 +185,7 @@
 				indexRefresh(collection='Murawiki_#getContentBean().getContentID()#',query=allPages,key='Label',title='Title',body='Body');
 			}
 		}
+		setRelatedTags(loadRelatedTags());
 		// }}}
 
 		return THIS;

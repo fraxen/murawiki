@@ -1,13 +1,30 @@
-a.undefined:link {
-	COLOR: #555;
-	BORDER-BOTTOM: 1px dotted #555;
-}
-a.undefined:after {
-	font-family: FontAwesome;
-	top:0;
-	padding-left:0.1em;
-	content: "\f128"; 
-}
+/* {{{ LINKS */
+	.content a.undefined:link {
+		COLOR: #555;
+		BORDER-BOTTOM: 1px dotted #555;
+	}
+	.content a.undefined:after {
+		font-family: FontAwesome;
+		top:0;
+		padding-left:0.1em;
+		content: "\f128"; 
+	}
+	.content a[target="_blank"]:after {
+		font-family: FontAwesome;
+		top:0;
+		padding-left:0.1em;
+		font-size: 80%;
+		COLOR: #999;
+		content: "\f08e"; 
+	}
+	.content a.thisLabel:link, .content a.thisLabel:visited, .content a.thisLabel:hover {
+		COLOR: Black;
+		BORDER-BOTTOM: None;
+		TEXT-DECORATION: None;
+		CURSOR: Default;
+		FONT-WEIGHT: Bold;
+	}
+/* }}} */
 div.panel {
 	PADDING: 0.5em;
 	BORDER: 2px outset;

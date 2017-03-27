@@ -7,6 +7,15 @@
 	}
 	wikiList = StructKeyArray(rc.wiki.getWikiList());
 	ArraySort(wikiList, 'textnocase');
+	$.addToHTMLHeadQueue(action='append', text='
+		<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+		<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+		<style>
+			.select2-dropdown--below {
+				top: 3rem; /*your input height*/
+			}
+		</style>
+	');
 </cfscript>
 <cfoutput>
 <div id="status"></div>
@@ -61,10 +70,21 @@
 	</div>
 </div></div></div>
 </cfoutput>
+
 <script type="text/javascript">
 	$(document).ready(function() {
 		<cfoutput>
 		var statusQueue = #SerializeJson(rc.statusQueue())#;
+		var wikiList = #LCase(SerializeJson(wikiList))#;
+		$('.content a.int')
+			.filter(function() {
+				var thisLabel = $(this).attr('data-label');
+				return typeof thisLabel != 'undefined' && $.inArray( thisLabel.toLowerCase(), wikiList ) == -1;
+			})
+			.each(function() {
+				$(this).addClass('undefined');
+			});
+		$('.content a.int[data-label="#LCase($.content().getLabel())#"]').addClass('thisLabel');
 		</cfoutput>
 		statusQueue.forEach(function(sm) {
 			murawiki.dispStatus(sm.class, sm.message);

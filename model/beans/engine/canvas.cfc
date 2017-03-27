@@ -50,18 +50,24 @@ component persistent="false" accessors="true" output="false" {
 		var didFix = false;
 		ARGUMENTS.blurb = REReplace(ARGUMENTS.blurb, '(#Chr(13)##Chr(10)#|#Chr(10)#|#Chr(13)#)', '#Chr(13)##Chr(10)#', 'all');
 		page.setBody(ARGUMENTS.blurb);
-		temp = getRenderer().renderbody_normal_mura(page, '#chr(9)#', ARGUMENTS.blurb);
-		for (var t in ListToArray(temp, 'href="#chr(9)#/', false, true)) {
+		temp = getRenderer().renderbody_normal_mura(page, '#Chr(9)#', ARGUMENTS.blurb);
+
+		// FIX NO CONTENT YET
+		if (temp == '<p>{{<a href="#Chr(9)#/index.cfm/NoContentYet">NoContentYet</a>}}</p>#Chr(10)#') {
+			temp = '';
+		}
+				
+		// {{{ FIX EXTERNAL LINKS
+		temp = REReplace(temp, '<a (href="[^#Chr(9)#])', '<a target="_blank" class="ext" \1', 'ALL');
+		// }}}
+
+		for (var t in ListToArray(temp, 'href="#Chr(9)#/', false, true)) {
 			label = '';
 			link = '';
 			if (Left(t, 10) == 'index.cfm/') {
 				label = REReplace(t, '^index.cfm/([^"]*)".*', '\1', 'ONE');
 				ArrayAppend(outLinks, label);
-				if (StructKeyExists(ARGUMENTS.wikiList, label)) {
-					link = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#LCase(label)#');
-				} else {
-					link = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#label#') & '" class="undefined';
-				}
+				link = ARGUMENTS.ContentRenderer.createHREF(filename='#ARGUMENTS.parentpath#/#label#') & '" class="int" data-label="#LCase(label)#';
 				outHTML = outHTML & 'href="#REReplace(t, '^index.cfm/#label#', link, 'ONE')#';
 			} else {
 				outHTML = outHTML & t;
@@ -88,14 +94,14 @@ component persistent="false" accessors="true" output="false" {
 						outHTML = REReplace(
 							outHTML,
 							'<a index.cfm\?event=Main&path=Special.Files.([^&]+)&showfile=1"(>media:|>)',
-							'<a href="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" target="_blank">',
+							'<a href="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" target="_blank" class="media">',
 							'ONE'
 						);
 					} else {
 						outHTML = REReplace(
 							outHTML,
 							'<a index.cfm\?event=Main&path=Special.Files.([^&]+)&showfile=1"(>media:|>)',
-							'<a href="#ARGUMENTS.ContentRenderer.createHREF(filename=ARGUMENTS.attach[f].filename)#" target="_blank">',
+							'<a href="#ARGUMENTS.ContentRenderer.createHREF(filename=ARGUMENTS.attach[f].filename)#" target="_blank" class="media">',
 							'ONE'
 						);
 					}
@@ -132,7 +138,7 @@ component persistent="false" accessors="true" output="false" {
 						outHTML = REReplace(
 							outHTML,
 							'<a href="[^<]*?<img src="([^"]*?)"([^>]*?)class="wiki_inline_image_todo"',
-							'<a href="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" data-rel="shadowbox[body]"><img src="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#"\2class="wiki_inline_image"',
+							'<a href="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#" data-rel="shadowbox[body]" class="media"><img src="#ARGUMENTS.ContentRenderer.createHREFForImage(fileid=ARGUMENTS.attach[f].fileid, size='source')#"\2class="wiki_inline_image"',
 							'ONE'
 						);
 						didFix = True;
