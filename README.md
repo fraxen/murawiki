@@ -1,16 +1,16 @@
 # MuraWiki - Mura CMS plugin for Wiki
-A full wiki-implementation as a plugin for [Mura CMS 6.2](http://www.getmura.com/) - a CFML (Adobe ColdFusion/Lucee) content management system.
+A full wiki-implementation as a plugin for [Mura CMS](http://www.getmura.com/) - a CFML (Adobe ColdFusion/Lucee) content management system.
 
 <p align="center"><strong><a href="https://github.com/fraxen/murawiki/releases">Download latest release</a></strong></p>
 
 ## Status
-This projects is sort of at a beta/rc stage. Version 1.0 is feature complete and has been tested with various CFML engines (Adobe/Lucee), but it could use some more real-world testing. It is recommended that you start by deploying this on a development/staging server and reviewe it fully before putting into production.
+This projects is sort of at a beta/rc stage. It is feature complete and has been tested with various CFML engines (Adobe/Lucee), but it could use some more real-world testing. It is recommended that you start by deploying this on a development/staging server and review it fully before putting into production.
 [Please report any bugs/issues that you might find!](https://github.com/fraxen/murawiki/issues)
 
 ## Requirements
-A Mura CMS 6.2 install, using either MySQL or Microsoft SQL Server. The plugin has been reviewed on Lucee 4.5 and Adobe Coldfusion 10 and 11. It should work fine on Railo and [Lucee 5](https://github.com/fraxen/murawiki/issues/28), not sure about [Coldfusion 9](https://github.com/fraxen/murawiki/issues/29) - in either case it shouldn't be too hard to fix for those.
+A Mura CMS 6.2 or 7 install, using either MySQL or Microsoft SQL Server. The plugin has been reviewed on Lucee 4.5/5 and Adobe Coldfusion 10 and 11. Not sure about [Coldfusion 9](https://github.com/fraxen/murawiki/issues/29) - in either case it shouldn't be too hard to fix for those.
 
-*MuraWiki has not been tested on [Mura 7](https://github.com/fraxen/murawiki/issues/25) nor any other database engines ([Oracle](https://github.com/fraxen/murawiki/issues/26), [PostgreSQL](https://github.com/fraxen/murawiki/issues/27))*
+*MuraWiki has not been tested on any other database engines ([Oracle](https://github.com/fraxen/murawiki/issues/26), [PostgreSQL](https://github.com/fraxen/murawiki/issues/27))*
 
 
 ## Why MuraWiki
@@ -63,10 +63,10 @@ See the _credits_ section for parts inherited/included from other pieces.
 ## Future
 ###Highest priority
 * [x] [Implement locking to prevent simultaneous editing of a page](https://github.com/fraxen/murawiki/issues/24)
-* [ ] [Full Mura 7 compatibility](https://github.com/fraxen/murawiki/issues/25)
-* [ ] [Lucee 5 testing](https://github.com/fraxen/murawiki/issues/28)
-* [ ] [HTML renderer, to allow for full WYSIWYG editing](https://github.com/fraxen/murawiki/issues/30)
-* [ ] [Preview pane, to inspect how the wiki code will render](https://github.com/fraxen/murawiki/issues/33)
+* [x] [Full Mura 7 compatibility](https://github.com/fraxen/murawiki/issues/25)
+* [x] [Lucee 5 testing](https://github.com/fraxen/murawiki/issues/28)
+* [x] [HTML renderer, to allow for full WYSIWYG editing](https://github.com/fraxen/murawiki/issues/30)
+* [x] [Preview pane, to inspect how the wiki code will render](https://github.com/fraxen/murawiki/issues/33)
 * [ ] [Links that easily inserts attachment/image/thumbnail into the editing box](https://github.com/fraxen/murawiki/issues/34)
 * [ ] [A decent print stylesheet](https://github.com/fraxen/murawiki/issues/36)
 
